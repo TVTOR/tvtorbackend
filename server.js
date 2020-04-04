@@ -5,6 +5,7 @@ var cors = require('cors');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var router = require('./Routers/Routes');
+var path = require('path')
 var port = process.env.PORT || 5000;
 mongoose.Promise = Promise;
 // connect to mongo db
@@ -36,10 +37,15 @@ var corsOption = {
     exposedHeaders: ["Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, access-token"]
 }
 
-app.get('/forgotPassword', function (req, res) {
+app.get('/forgotpassword', function (req, res) {
     res.sendFile(__dirname + "/public/Reset/" + "index.html");
 })
 app.use(cors(corsOption));
+
+app.use(express.static(path.join(__dirname + '/')));
+
+config.appRoot = __dirname;
+
 
 app.use('/', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -50,6 +56,12 @@ app.use('/', function(req, res, next) {
 
 
 app.use('/api/v1', router);
+
+
+app.route('/')
+    .get(function (req, res) {
+        return res.status(200).json({message:"Welcome to admin apis"});
+    });
 app.listen(port, () => {
     console.log('Server is running on port ---->', port);
 })
