@@ -2,16 +2,14 @@ var User = require('../Models/User');
 var jwt = require('jsonwebtoken');
 var config = require('../config/config');
 var nodemailer = require('nodemailer');
-var tokener = require('../Services/Tokener');
 var bcrypt = require('bcryptjs');
-
+var utilServices = require('../Services/Util');
 
 
 let login = async (req, res) => {
- 
     try {
       if (!req.body.email || !req.body.password) {
-        res.status(401).json({ success: false, message: 'Parameters are missing' });
+        return utilServices.errorResponse(res, "Parameters are missing", 401);
       } else {
         try {
           let criteria = {
@@ -21,20 +19,20 @@ let login = async (req, res) => {
           if (checkEmail) {
             let encryptedPassword = await bcrypt.compare(req.body.password, checkEmail.password);
             if (encryptedPassword) {
-              secretToken = jwt.sign({ email: checkEmail.email, name: checkEmail.name }, 'secretKey', { expiresIn: '2minutes' })
+              secretToken = jwt.sign({ email: checkEmail.email, name: checkEmail.name, rollId: checkEmail.rollId }, 'secretKey', { expiresIn: '2minutes' })
               res.status(200).json({ message: 'Logged in successfully!', success: true, token: secretToken, record: checkEmail });
             } else {
-              res.status(401).json({ success: false, message: 'Please enter correct password.' });
+              return utilServices.errorResponse(res, "Please enter correct password.", 401);
             }
           } else {
-            res.status(401).json({ success: false, message: 'Email does not exist!' });
+            return utilServices.errorResponse(res, "Email does not exist!", 401);
           }
         } catch (error) {
-          res.status(401).json({ success: false, message: 'Something went wrong' });
+          return utilServices.errorResponse(res, "Something went wrong", 401);
         }
       }
     } catch (err) {
-        return res.status(400).json({ success: false, message: "Something went wrong" });
+        return utilServices.errorResponse(res, "Something went wrong", 400);
     }
   };
 
@@ -45,33 +43,35 @@ const register = async (req, res) => {
       }
       const checkEmail = await User.find(criteria);
       if (checkEmail.length > 0) {
-        res.status(401).json({ success: false, message: 'Email already registered' })
+        return utilServices.errorResponse(res, "Email already registered", 409);
       } else {
           const user = new User({
             name: req.body.name,
+            surname: req.body.surname,
             email: req.body.email,
             password: User.hashPassword(req.body.password),
-            createdOn: Date.now(),
+            location: req.body.location,
+            subjects: req.body.subjects,
+            role: req.body.role
           });
           return user.save().then((doc) => {
             const data = {
               id: doc._id,
               email: doc.email,
+              surname: doc.surname,
               name: doc.name,
               password: doc.password,
+              location: doc.location,
+              subjects: doc.subjects,
+              role: doc.role
             };
-            const tmp = {
-              id: user._id,
-              email: user.email,
-              name: user.name,
-            };
-            return res.status(201).json({ success: true, user: data });
+            return utilServices.successResponse(res, "User created successfully", 201, data);
           }).catch((err) => {
-            return res.status(400).json({ success: false, message: "Something went wrong", error: err });
+            return utilServices.errorResponse(res, "Something went wrong", 401);
           });
       }
     } catch (err) {
-      return res.status(400).json({ success: false, message: "Something went wrong", error: err })
+      return utilServices.errorResponse(res, "Something went wrong", 401);
     }
   };
 
@@ -81,10 +81,10 @@ const forgotPassword = async (req, res) => {
     try {
         await User.findOne({ email: req.body.email.toLowerCase() }, (err, data) => {
             if (err) {
-                return res.status(400).json({ success: false,message: "Something went wrong" })
+              return utilServices.errorResponse(res, "Something went wrong", 401);
             } else {
                 if (!data) {
-                    return res.status(400).json({ success: false, message: 'Email not found'});
+                    return utilServices.errorResponse(res, "Email not found", 401);
                 } else {
                     let transporter = nodemailer.createTransport({
                         host: "smtp.gmail.com",
@@ -110,12 +110,12 @@ const forgotPassword = async (req, res) => {
                             console.log('Email sent: ' + info.response);
                         }
                     });
-                    return res.status(400).json( { success: true, message: "Please check your email to reset password."});
-                }
+                    return utilServices.successResponse(res, "Please check your email to reset password.", 201);
+                  }
             }
         });
     } catch (error) {
-        return res.status(400).json({ success: false, message: "Something went wrong."});
+      return utilServices.errorResponse(res, "Something went wrong", 401);
     }
 }
 
@@ -130,20 +130,20 @@ const resetPassword = async (req, res) => {
         }
         await User.findByIdAndUpdate({ _id: req.params._id }, passwordToUpadate, (err, updatedPassword) => {
           if (err) {
-            res.status(401).json({ success: false, message: "Something went wrong." });
+            return utilServices.errorResponse(res, "Something went wrong", 401);
           } else {
             if (!updatedPassword) {
-              res.status(404).json({ success: false, message: "Data not found." });
+              return utilServices.errorResponse(res, "Data not found", 401);
             } else {
-              res.status(200).json({ success: true, message: "Password successfully updated." });
+              return utilServices.successResponse(res, "Password successfully reset.", 201);
             }
           }
         });
       } else {
-        res.status(404).json({ success: false, message: "Password not matched." });
+        return utilServices.errorResponse(res, "Something went wrong", 401);
       }
     } catch (err) {
-        res.status(401).json({ success: false, message: "Something went wrong." });
+      return utilServices.errorResponse(res, "Something went wrong", 401);
     }
   }
 
@@ -152,24 +152,24 @@ const updatePassword = async (req, res) => {
   try {
     User.findById({ _id: req.params.id }, async function (err, obj) {
       if (err) {
-        return res.status(401).json({ success: false, message: "Something went wrong." });
+        return utilServices.errorResponse(res, "Something went wrong", 401);
       } else {
         if(req.body.password){
             obj.password = User.hashPassword(req.body.password);
             obj.save(function (err, data) {
                 if (err) {
-                  return res.status(401).json({ success: false, message: "Something went wrong." });
+                  return utilServices.errorResponse(res, "Something went wrong", 401);
                 } else {
-                    return res.status(200).json({ success: true, message: "Password successfully updated." });
+                    return utilServices.successResponse(res, "Password successfully updated.", 201);
                 }
             })
         } else {
-       return res.status(401).json({ success: false, message: "Something went wrong." });
+          return utilServices.errorResponse(res, "Something went wrong", 401);
         }
       }
   })
   } catch (err) {
-    res.status(401).json({ success: false, message: "Something went wrong." });
+    return utilServices.errorResponse(res, "Something went wrong", 401);
   }
 }
 
@@ -178,17 +178,17 @@ const getUsers = (req, res) => {
     try {
       User.find({}, (err, data) => {
         if (err) {
-          res.status(401).json({ success: false, message: "Something went wrong." });
+          return utilServices.errorResponse(res, "Something went wrong", 401);
         } else {
           if (!data) {
-            res.status(404).json({ success: false, message: "Data not found." });
+            return utilServices.errorResponse(res, "Data not found", 401);
           } else {
-            res.status(200).json({ data });
+            return utilServices.successResponse(res, "Data found.", 201, data);
           }
         }
       })
     } catch (err) {
-        res.status(401).json({ success: false, message: "Something went wrong." });
+      return utilServices.errorResponse(res, "Something went wrong", 401);
     }
   }
   
