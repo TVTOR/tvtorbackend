@@ -9,7 +9,11 @@ var user = new Schema({
     password: { type: String },
     location: {type: String},
     subjects: {type: String},
-    role: {type: String}
+    code: {type: Number},
+    status: { type: Boolean, default: false },
+    isDeleted: {type: Boolean, default: false },
+    managerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    userType: {type: String, enum: ['tutormanager', 'admin','tutor'], default:'tutormanager'}
 }, {timestamps: true})
 
 user.statics.hashPassword = function hashPassword(password) {
