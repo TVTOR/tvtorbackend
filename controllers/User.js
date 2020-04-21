@@ -464,7 +464,7 @@ const changeUserDelete = async function(req, res){
   try {
        var userId = req.params.id;
        await User.updateOne({_id: userId}, {isDeleted : true})
-       return utilServices.successResponse(res, "Status has been deleted successfully.", 200, tdata); 
+       return utilServices.successResponse(res, "Status has been deleted successfully.", 200); 
   } catch (error) {
     return utilServices.errorResponse(res, "Something went wrong.", 500);
   }
