@@ -453,8 +453,9 @@ const changeUserStatus = async function(req, res){
   try {
        var userId = req.params.id;
        await User.updateOne({_id: userId}, {status : true})
-       return utilServices.successResponse(res, "Status has been updated successfully.", 200, tdata); 
+       return utilServices.successResponse(res, "Status has been updated successfully.", 200); 
   } catch (error) {
+    console.log(error)
     return utilServices.errorResponse(res, "Something went wrong.", 500);
   }
 }
