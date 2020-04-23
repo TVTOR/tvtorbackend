@@ -67,7 +67,7 @@ const getAllLocations = async function (req, res){
   const deleteLocations = function(req, res){
     try {
       var locationId = req.params.id;
-      Subjects.findByIdAndDelete({_id: locationId}, (err, data)=>{
+      Locations.findByIdAndDelete({_id: locationId}, (err, data)=>{
         if(err){
           return utilServices.errorResponse(res, "Something went wrong.", 500);
         } else {
@@ -79,6 +79,7 @@ const getAllLocations = async function (req, res){
         }
       })
     } catch (error) {
+      console.log('-----------------', error);
       return utilServices.errorResponse(res, "Something went wrong.", 500);
     }
   }

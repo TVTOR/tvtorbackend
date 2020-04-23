@@ -6,6 +6,7 @@ const randomNumber = async(req, res)=>{
    try {
        var obj = {};
        obj.code = Math.floor(100000 + Math.random() * 900000);
+       obj.used = req.body.used
        obj.managerId = req.body.managerId
        Code.create(obj, (err, data) => {
         if (err) {

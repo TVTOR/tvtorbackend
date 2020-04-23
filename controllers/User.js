@@ -75,6 +75,10 @@ const register = async (req, res) => {
       if(!checkCode && req.body.userType == 'tutor'){
         return  utilServices.errorResponse(res, "Please enter valid code.", 400);
       } 
+      if(checkCode && checkCode.used && req.body.userType == 'tutor'){
+        return  utilServices.errorResponse(res, "This code already used.", 400);
+      }
+
       if (checkCode) {
         var obj = {};
         obj.name = req.body.name,
@@ -86,10 +90,11 @@ const register = async (req, res) => {
         obj.managerId = checkCode.managerId,
         obj.code = req.body.code,
         obj.userType = req.body.userType
-        User.create(obj, function(err, data) {
+        User.create(obj, async function(err, data) {
             if (err) {
                 return utilServices.errorResponse(res, "Somthing went wrong", 500);
             } else {
+        await Code.updateOne({code: req.body.code}, {used: true});
         secretToken = jwt.sign({ email: data.email, name: data.name, userType: data.userType }, config.jwtSecret, { expiresIn: '365d' });
         res.header('access-token', secretToken);
         var responseData = {
@@ -361,11 +366,21 @@ const deleteUser = function(req, res){
 const getAllTM = async function (req, res){
   try {
     const query = req.query;
-    const perpage = 10;
-    const page = query.page;
-    const skip = (page * perpage) - perpage;
-    await User.find({userType: "tutormanager", status: false, isDeleted: false })
-    .sort({ 'createdAt': -1, 'name': -1 })
+    const perpage = parseInt(query.length);
+    const skip = parseInt(query.start)
+    const search = {};
+    if (query.searchdata) {
+      if (query.searchdata.length > 0) {
+        var value = new RegExp("^" + query.searchdata, "i");
+        search['$or'] = [{ name: value }, { email: value }];
+      }
+    }
+    search.userType = "tutormanager";
+    search.status = false;
+    search.isDeleted = false;
+    const total = await User.count(search);
+    await User.find(search)
+    .sort({  'name': 1, 'createdAt': -1, })
     .skip(skip)
     .limit(perpage)
     .exec( function (err, data){
@@ -375,21 +390,11 @@ const getAllTM = async function (req, res){
                 if(!data.length){
                   return utilServices.errorResponse(res, "Data not found.", 500);
                 } else {
-                  return utilServices.successResponse(res, "Data found.", 200, data);
+                  
+                  return utilServices.successResponse(res, "Data found.", 200, {data: data, total: total});
                 }
               }
     })
-      // await User.find({userType: "tutormanager", status: false, isDeleted: false }, (err, tmdata)=>{
-      //       if(err){
-      //         return utilServices.errorResponse(res, "Something went wrong.", 500);
-      //       } else {
-      //         if(!tmdata.length){
-      //           return utilServices.errorResponse(res, "Data not found.", 500);
-      //         } else {
-      //           return utilServices.successResponse(res, "Data found.", 200, tmdata);
-      //         }
-      //       }
-      //  })
   } catch (error) {
     return utilServices.errorResponse(res, "Something went wrong.", 500);
   }
@@ -398,11 +403,25 @@ const getAllTM = async function (req, res){
 
 const getAllTManager = async function (req, res){
   try {
+    // const query = req.query;
+    // const perpage = 10;
+    // const page = query.page;
+    // const skip = (page * perpage) - perpage;
     const query = req.query;
-    const perpage = 10;
-    const page = query.page;
-    const skip = (page * perpage) - perpage;
-       await User.find({userType: "tutormanager", status: true})
+    const perpage = parseInt(query.length);
+    const skip = parseInt(query.start);
+    console.log('----------------', query)
+    const search = {};
+    if (query.searchdata) {
+      if (query.searchdata.length > 0) {
+        var value = new RegExp("^" + query.searchdata, "i");
+        search['$or'] = [{ name: value }, { email: value }];
+      }
+    }
+    search.userType = "tutormanager";
+    search.status = true;
+    const total = await User.count(search);
+       await User.find(search)
         .sort({ 'createdAt': -1, 'name': -1 })
         .skip(skip)
         .limit(perpage)
@@ -413,7 +432,7 @@ const getAllTManager = async function (req, res){
                     if(!data.length){
                       return utilServices.errorResponse(res, "Data not found.", 500);
                     } else {
-                      return utilServices.successResponse(res, "Data found.", 200, data);
+                      return utilServices.successResponse(res, "Data found.", 200, {data: data, total: total});
                     }
                   }
         })
@@ -472,9 +491,37 @@ const changeUserDelete = async function(req, res){
 
 const getAllTutorsOfManager = async function(req, res){
   try {
+    const query = req.query;
+    const perpage = parseInt(query.length);
+    const skip = parseInt(query.start);
+    const search = {};
+    if (query.searchdata) {
+      if (query.searchdata.length > 0) {
+        var value = new RegExp("^" + query.searchdata, "i");
+        search['$or'] = [{ name: value }, { email: value }];
+      }
+    }
     const tmId = req.params.id;
-    const tdata =  await User.find({managerId: tmId, isDeleted: false, userType: "tutor"})
-    return utilServices.successResponse(res, "Data found.", 200, tdata);
+    search.userType = "tutor";
+    search.isDeleted = false;
+    search.managerId = tmId
+    const total = await User.count(search);
+   await User.find(search)
+   .sort({ 'name': 1 })
+   .skip(skip)
+   .limit(perpage)
+   .exec( function (err, data){
+     if(err){
+               return utilServices.errorResponse(res, "Something went wrong.", 500);
+             } else {
+               if(!data.length){
+                 return utilServices.errorResponse(res, "Data not found.", 500);
+               } else {
+                 return utilServices.successResponse(res, "Data found.", 200, {data: data, total: total});
+               }
+             }
+   })
+    // return utilServices.successResponse(res, "Data found.", 200, tdata);
   } catch (error) {
     return utilServices.errorResponse(res, "Something went wrong.", 500);
   }
