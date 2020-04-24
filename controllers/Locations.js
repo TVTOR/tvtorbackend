@@ -5,6 +5,13 @@ const createLocations = async function(req, res){
     try {
         var obj = {};
         obj.location = req.body.location;
+        const criteria = {
+          location: req.body.location
+        } 
+        const checkLocation = await Locations.findOne(criteria);
+        if(checkLocation){
+          return utilServices.errorResponse(res, "This location already created.", 409);
+        }
         Locations.create(obj, (err, data)=>{
             if(err){
                 return utilServices.errorResponse(res, "Something went wrong.", 500);

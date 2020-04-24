@@ -5,6 +5,13 @@ const createSubjects = async function(req, res){
     try {
         var obj = {};
         obj.subject = req.body.subject;
+        const criteria = {
+          subject: req.body.subject
+        } 
+        const checkSubject = await Subjects.findOne(criteria);
+        if(checkSubject){
+          return utilServices.errorResponse(res, "This subject already created.", 409);
+        }
         Subjects.create(obj, (err, data)=>{
             if(err){
                 return utilServices.errorResponse(res, "Something went wrong.", 500);

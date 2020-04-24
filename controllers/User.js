@@ -296,7 +296,7 @@ const getUsers = (req, res) => {
 const getUser = function(req, res){
   try {
       var userId = req.params.id;
-      User.findById({_id: userId}, (err, data)=>{
+      User.findById({_id: userId }, (err, data)=>{
         if(err){
           return utilServices.errorResponse(res, "Something went wrong.", 500);
         } else {
@@ -304,6 +304,7 @@ const getUser = function(req, res){
         }
       })
   } catch (error) {
+    console.log('-------------', error)
     return utilServices.errorResponse(res, "Something went wrong.", 500);
   }
 }
