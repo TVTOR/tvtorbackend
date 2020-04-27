@@ -38,27 +38,27 @@ router.get('/users', User.getUsers);
 router.post('/forgotpassword', User.forgotPassword);
 router.post('/resetpassword/:_id', Authorization.verifyToken, User.resetPassword);
 router.put('/updatepassword/:id', User.updatePassword);
-router.post('/randomnumber', Code.randomNumber);
+router.post('/randomnumber', Authorization.verifyToken, Code.randomNumber);
 router.delete('/user/logout/:id', Authorization.verifyToken, User.logout);
-router.get('/user/:id', User.getUser);
+router.get('/user/:id', Authorization.verifyToken, User.getUser);
 router.delete('/user/:id', Authorization.verifyToken, User.deleteUser);
 router.put('/user/:id', upload.single('image'), User.updateUser);
-router.get('/managers', User.getAllTM);
-router.get('/tutors', User.getAllTutors);
+router.get('/managers',Authorization.verifyToken, User.getAllTM);
+router.get('/tutors',Authorization.verifyToken, User.getAllTutors);
 router.put('/changeuserstatus/:id', User.changeUserStatus);
-router.put('/userdelete/:id', User.changeUserDelete);
-router.get('/getallTManager', User.getAllTManager);
-router.get('/getAllTutorsOfManager/:id', User.getAllTutorsOfManager);
+router.put('/userdelete/:id',Authorization.verifyToken, User.changeUserDelete);
+router.get('/getallTManager',Authorization.verifyToken, User.getAllTManager);
+router.get('/getAllTutorsOfManager/:id',Authorization.verifyToken, User.getAllTutorsOfManager);
 
-router.post('/subject', Subject.createSubjects);
-router.get('/subject', Subject.getAllSubjects);
-router.put('/subject/:id', Subject.updateSubjects);
-router.delete('/subject/:id', Subject.deleteSubjects);
+router.post('/subject',Authorization.verifyToken, Subject.createSubjects);
+router.get('/subject',Authorization.verifyToken, Subject.getAllSubjects);
+router.put('/subject/:id',Authorization.verifyToken, Subject.updateSubjects);
+router.delete('/subject/:id',Authorization.verifyToken, Subject.deleteSubjects);
 
-router.post('/location', Location.createLocations);
-router.get('/location', Location.getAllLocations);
-router.put('/location/:id', Location.updateLocations);
-router.delete('/location/:id', Location.deleteLocations);
+router.post('/location',Authorization.verifyToken, Location.createLocations);
+router.get('/location',Authorization.verifyToken, Location.getAllLocations);
+router.put('/location/:id',Authorization.verifyToken, Location.updateLocations);
+router.delete('/location/:id',Authorization.verifyToken, Location.deleteLocations);
 
 
 module.exports = router;

@@ -146,7 +146,7 @@ const register = async (req, res) => {
           userType: data.userType,
           token: secretToken
       }
-                return utilServices.successResponse(res, "Tutor manager created successfully.", 200, responseData);
+                return utilServices.successResponse(res, "Tutor created successfully.", 200, responseData);
             }
         })
       }
