@@ -6,6 +6,7 @@ var bcrypt = require('bcryptjs');
 var utilServices = require('../services/Util');
 var userSession = require('../models/Session');
 var Code = require('../models/Code');
+const uploadImage = require('../services/imageUpload');
 
 
 let login = async (req, res) => {
@@ -330,13 +331,30 @@ const updateUser = function(req, res){
          if(req.body.subjects){
            updateData.subjects = req.body.subjects
          }
-         updateData.save((err, data) => {
-          if (err) {
-              utilServices.errorResponse(res, "Somthing went wrong", 500);
-          } else {
-              utilServices.successResponse(res, "Data updated successfully", 200, data);
-          }
-      })
+         if(req.file && req.file.path){
+           uploadImage.imageUpload(req.file, function(err, data){
+              if(err){
+                utilServices.errorResponse(res, "Somthing went wrong", 500);
+              } else {
+                updateData.imageUrl = data.secure_url;
+                updateData.save((err, data) => {
+                 if (err) {
+                     utilServices.errorResponse(res, "Somthing went wrong", 500);
+                 } else {
+                     utilServices.successResponse(res, "Data updated successfully", 200, data);
+                 }
+             })
+              }
+           })
+         } else {
+          updateData.save((err, data) => {
+            if (err) {
+                utilServices.errorResponse(res, "Somthing went wrong", 500);
+            } else {
+                utilServices.successResponse(res, "Data updated successfully", 200, data);
+            }
+        })
+         }
         }
       }
     })

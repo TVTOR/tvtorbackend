@@ -4,7 +4,32 @@ var User = require('../controllers/User');
 var Code = require('../controllers/Code');
 var Authorization = require('../services/Auth');
 var Subject = require('../controllers/Subjects');
-var Location = require('../controllers/Locations')
+var Location = require('../controllers/Locations');
+const multer = require("multer");
+var path = require('path');
+
+
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(undefined, './public/images');
+    },
+    filename: function(req, file, cb) {
+        cb(undefined, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({
+    storage: storage,
+    fileFilter: function(req, file, callback, res) {
+        var ext = path.extname(file.originalname);
+        if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+            return callback(new Error('Only images are allowed'))
+        }
+        callback(null, true)
+    },
+    limits: { fileSize: 100000000000000 }
+});
+
 
 
 router.post('/register', User.register);
@@ -17,7 +42,7 @@ router.post('/randomnumber', Code.randomNumber);
 router.delete('/user/logout/:id', Authorization.verifyToken, User.logout);
 router.get('/user/:id', User.getUser);
 router.delete('/user/:id', Authorization.verifyToken, User.deleteUser);
-router.put('/user/:id', Authorization.verifyToken, User.updateUser);
+router.put('/user/:id', upload.single('image'), User.updateUser);
 router.get('/managers', User.getAllTM);
 router.get('/tutors', User.getAllTutors);
 router.put('/changeuserstatus/:id', User.changeUserStatus);

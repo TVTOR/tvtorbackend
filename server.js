@@ -45,7 +45,10 @@ app.use(cors(corsOption));
 app.use(express.static(path.join(__dirname + '/')));
 
 config.appRoot = __dirname;
-
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.originalUrl}`)
+    next()
+})
 
 app.use('/', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");

@@ -7,14 +7,15 @@ var user = new Schema({
     surname: {type: String},
     email: { type: String },
     password: { type: String },
-    location: {type: String},
-    subjects: {type: String},
-    code: {type: Number},
+    location: { type: String },
+    subjects: { type: String },
+    code: { type: Number  },
     status: { type: Boolean, default: false },
     isDeleted: {type: Boolean, default: false },
+    imageUrl: { type: String },
     managerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-    userType: {type: String, enum: ['tutormanager', 'admin','tutor'], default:'tutormanager'}
-}, {timestamps: true})
+    userType: { type: String, enum: ['tutormanager', 'admin','tutor'], default:'tutormanager' }
+}, { timestamps: true })
 
 user.statics.hashPassword = function hashPassword(password) {
     return bcrypt.hashSync(password, 10);
