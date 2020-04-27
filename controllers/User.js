@@ -227,7 +227,7 @@ const resetPassword = async (req, res) => {
           }
         });
       } else {
-        return utilServices.errorResponse(res, "Something went wrong", 401);
+        return utilServices.errorResponse(res, "Password not matched", 401);
       }
     } catch (err) {
       return utilServices.errorResponse(res, "Something went wrong", 401);
