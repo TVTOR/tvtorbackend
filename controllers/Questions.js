@@ -42,12 +42,12 @@ const getQuestion = async(req, res)=>{
           detail.data = dataArray;
 
           if(data.optionTable == "location"){
-             const locationdata = await Location.find();
+             const locationdata = await Location.find({}, { location: 1, _id: 0 });
              detail.locationdata = locationdata;
           }
           if(data.optionTable == "subject"){
-            const subjectdata = await Subject.find();
-            detail.subjectdata = subjectdata;
+            const subjectdata = await Subject.find({}, { subject:1, _id: 0});
+            detail.subjectdata = subjectdata
          }
         return utilServices.successResponse(res, "Questions created successfully.", 200, detail);
     } catch (error) {
