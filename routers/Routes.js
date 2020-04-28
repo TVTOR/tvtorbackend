@@ -7,6 +7,8 @@ var Subject = require('../controllers/Subjects');
 var Location = require('../controllers/Locations');
 const multer = require("multer");
 var path = require('path');
+const Notification = require('../controllers/Notification');
+const Questions = require('../controllers/Questions');
 
 
 
@@ -44,21 +46,26 @@ router.get('/user/:id', Authorization.verifyToken, User.getUser);
 router.delete('/user/:id', Authorization.verifyToken, User.deleteUser);
 router.put('/user/:id', Authorization.verifyToken, upload.single('image'), User.updateUser);
 router.get('/managers',Authorization.verifyToken, User.getAllTM);
-router.get('/tutors',Authorization.verifyToken, User.getAllTutors);
-router.put('/changeuserstatus/:id', User.changeUserStatus);
-router.put('/userdelete/:id',Authorization.verifyToken, User.changeUserDelete);
-router.get('/getallTManager',Authorization.verifyToken, User.getAllTManager);
-router.get('/getAllTutorsOfManager/:id',Authorization.verifyToken, User.getAllTutorsOfManager);
+router.get('/tutors', Authorization.verifyToken, User.getAllTutors);
+router.put('/changeuserstatus/:id', Authorization.verifyToken, User.changeUserStatus);
+router.put('/userdelete/:id', Authorization.verifyToken, User.changeUserDelete);
+router.get('/getallTManager', Authorization.verifyToken, User.getAllTManager);
+router.get('/getAllTutorsOfManager/:id', Authorization.verifyToken, User.getAllTutorsOfManager);
 
-router.post('/subject',Authorization.verifyToken, Subject.createSubjects);
-router.get('/subject',Authorization.verifyToken, Subject.getAllSubjects);
-router.put('/subject/:id',Authorization.verifyToken, Subject.updateSubjects);
-router.delete('/subject/:id',Authorization.verifyToken, Subject.deleteSubjects);
+router.post('/subject', Authorization.verifyToken, Subject.createSubjects);
+router.get('/subject', Authorization.verifyToken, Subject.getAllSubjects);
+router.put('/subject/:id', Authorization.verifyToken, Subject.updateSubjects);
+router.delete('/subject/:id', Authorization.verifyToken, Subject.deleteSubjects);
 
-router.post('/location',Authorization.verifyToken, Location.createLocations);
-router.get('/location',Authorization.verifyToken, Location.getAllLocations);
-router.put('/location/:id',Authorization.verifyToken, Location.updateLocations);
-router.delete('/location/:id',Authorization.verifyToken, Location.deleteLocations);
+router.post('/location', Authorization.verifyToken, Location.createLocations);
+router.get('/location', Authorization.verifyToken, Location.getAllLocations);
+router.put('/location/:id', Authorization.verifyToken, Location.updateLocations);
+router.delete('/location/:id', Authorization.verifyToken, Location.deleteLocations);
 
+router.post('/notification', Authorization.verifyToken, Notification.createNotification);
+router.get('/notification/:id', Authorization.verifyToken, Notification.getNotification);
+
+router.post('/question', Questions.createQuestion);
+router.get('/question', Questions.getQuestion);
 
 module.exports = router;

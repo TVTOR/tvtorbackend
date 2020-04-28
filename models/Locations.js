@@ -6,4 +6,4 @@ var Locations = new Schema({
     managerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, {timestamps: true})
 
-module.exports = mongoose.model('Locations', Locations)
+module.exports = mongoose.model('Locations', Locations);

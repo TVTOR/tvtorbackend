@@ -8,4 +8,4 @@ var Code = new Schema({
     managerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, {timestamps: true})
 
-module.exports = mongoose.model('Code', Code)
+module.exports = mongoose.model('Code', Code);

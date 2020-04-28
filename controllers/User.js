@@ -320,16 +320,22 @@ const updateUser = function(req, res){
           utilServices.errorResponse(res, "Data not found.", 500);
         } else {
           if(req.body.name){
-            updateData.name = req.body.name
+            updateData.name = req.body.name;
           }
           if(req.body.surname){
-           updateData.surname = req.body.surname
+           updateData.surname = req.body.surname;
          }
          if(req.body.location){
-           updateData.location = req.body.location
+           updateData.location = req.body.location;
          }
          if(req.body.subjects){
-           updateData.subjects = req.body.subjects
+           updateData.subjects = req.body.subjects;
+         }
+         if(req.body.availability){
+           updateData.availability = req.body.availability;
+         }
+         if(req.body.description){
+           updateData.description = req.body.description;
          }
          if(req.file && req.file.path){
            uploadImage.imageUpload(req.file, function(err, data){
@@ -429,7 +435,6 @@ const getAllTManager = async function (req, res){
     const query = req.query;
     const perpage = parseInt(query.length);
     const skip = parseInt(query.start);
-    console.log('----------------', query)
     const search = {};
     if (query.searchdata) {
       if (query.searchdata.length > 0) {
@@ -467,7 +472,7 @@ const getAllTutors = async function (req, res){
     const perpage = 10;
     const page = query.page;
     const skip = ( page * perpage) - perpage;
-    await User.find({userType: "tutor"})
+    await User.find({ userType: "tutor" , isDeleted: false })
         .sort({ 'createdAt': -1, 'name': -1 })
         .skip(skip)
         .limit(perpage)
@@ -540,7 +545,6 @@ const getAllTutorsOfManager = async function(req, res){
                }
              }
    })
-    // return utilServices.successResponse(res, "Data found.", 200, tdata);
   } catch (error) {
     return utilServices.errorResponse(res, "Something went wrong.", 500);
   }
