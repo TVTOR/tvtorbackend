@@ -41,13 +41,13 @@ const getQuestion = async(req, res)=>{
           if(data.optionTable == "location"){
              const locationdata = await Location.find({}, { location: 1, _id: 0 });
              let locData = [];
-             const ldata = {};
              locationdata.forEach( (loc)=>{ 
+                const ldata = {};
                 ldata.text = loc.location
                 ldata.value = loc.location
                 locData.push(ldata);
              }) 
-             detail.location = locData
+             detail.optionData = locData
           }
           
           if(data.optionTable == "subject"){
@@ -55,12 +55,11 @@ const getQuestion = async(req, res)=>{
             let subDetails = [];
             subjectdata.forEach( (sub)=>{ 
                 const subData = {};
-                console.log(sub.subject)
                 subData.text = sub.subject
                 subData.value = sub.subject
                 subDetails.push(subData);
             }) 
-            detail.subject = subDetails;
+            detail.optionData = subDetails;
          }
 
         return utilServices.successResponse(res, "Questions created successfully.", 200, detail);
