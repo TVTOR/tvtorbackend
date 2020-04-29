@@ -43,23 +43,23 @@ const getQuestion = async(req, res)=>{
                 const ldata = {};
                 ldata.text = loc.location
                 ldata.value = loc.location
-                if(detail.data.length == 2){
+                if(detail.data.length == 2 && detail.data[1].optionTable == "location"){
                     detail.data[1].options.push(ldata);
-                }else{
+                }else if(data.optionTable == "location"){
                     detail.data[0].options.push(ldata);
                 }
                 
              }) 
           }
-          if(data.optionTable == "subject" || detail.data.length == 2){
+          if(data.optionTable == "subject" || detail.data.length == 2 ){
             const subjectdata = await Subject.find({}, { subject:1, _id: 0});
             subjectdata.forEach( (sub)=>{ 
                 const subData = {};
                 subData.text = sub.subject
                 subData.value = sub.subject
-                if(detail.data.length == 2){
+                if(detail.data.length == 2 && detail.data[1].optionTable == "subject"){
                     detail.data[1].options.push(subData);
-                }else{
+                }else if(data.optionTable == "subject"){
                     detail.data[0].options.push(subData);
                 }
             }) 
