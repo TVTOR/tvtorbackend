@@ -37,29 +37,32 @@ const getQuestion = async(req, res)=>{
            dataArray.push(data1);
          }
           detail.data = dataArray;
-
-          if(data.optionTable == "location"){
+          if(data.optionTable == "location" || detail.data.length == 2){
              const locationdata = await Location.find({}, { location: 1, _id: 0 });
-             let locData = [];
              locationdata.forEach( (loc)=>{ 
                 const ldata = {};
                 ldata.text = loc.location
                 ldata.value = loc.location
-                locData.push(ldata);
+                if(detail.data.length == 2){
+                    detail.data[1].options.push(ldata);
+                }else{
+                    detail.data[0].options.push(ldata);
+                }
+                
              }) 
-             detail.optionData = locData
           }
-          
-          if(data.optionTable == "subject"){
+          if(data.optionTable == "subject" || detail.data.length == 2){
             const subjectdata = await Subject.find({}, { subject:1, _id: 0});
-            let subDetails = [];
             subjectdata.forEach( (sub)=>{ 
                 const subData = {};
                 subData.text = sub.subject
                 subData.value = sub.subject
-                subDetails.push(subData);
+                if(detail.data.length == 2){
+                    detail.data[1].options.push(subData);
+                }else{
+                    detail.data[0].options.push(subData);
+                }
             }) 
-            detail.optionData = subDetails;
          }
 
         return utilServices.successResponse(res, "Questions created successfully.", 200, detail);
