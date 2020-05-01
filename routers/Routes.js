@@ -9,7 +9,8 @@ const multer = require("multer");
 var path = require('path');
 const Notification = require('../controllers/Notification');
 const Questions = require('../controllers/Questions');
-
+const TutorAssign = require('../controllers/TutorAssign');
+const TutorNotification = require('../controllers/TutorNotification');
 
 
 const storage = multer.diskStorage({
@@ -52,13 +53,13 @@ router.put('/userdelete/:id', Authorization.verifyToken, User.changeUserDelete);
 router.get('/getallTManager', Authorization.verifyToken, User.getAllTManager);
 router.get('/getAllTutorsOfManager/:id', Authorization.verifyToken, User.getAllTutorsOfManager);
 
-router.post('/subject', Authorization.verifyToken, Subject.createSubjects);
+router.post('/subject',  Subject.createSubjects);
 router.get('/subject', Authorization.verifyToken, Subject.getAllSubjects);
 router.put('/subject/:id', Authorization.verifyToken, Subject.updateSubjects);
 router.delete('/subject/:id', Authorization.verifyToken, Subject.deleteSubjects);
 
-router.post('/location', Authorization.verifyToken, Location.createLocations);
-router.get('/location', Authorization.verifyToken, Location.getAllLocations);
+router.post('/location', Location.createLocations);
+router.get('/location', Location.getAllLocations);
 router.put('/location/:id', Authorization.verifyToken, Location.updateLocations);
 router.delete('/location/:id', Authorization.verifyToken, Location.deleteLocations);
 
@@ -67,5 +68,8 @@ router.get('/notification/:id', Authorization.verifyToken, Notification.getNotif
 
 router.post('/question', Questions.createQuestion);
 router.get('/question', Questions.getQuestion);
+
+router.post('/assigntutor', TutorAssign.assignTutor);
+router.get('/sendNotificationToTutor/:id', TutorNotification.sendNotificationToTutor);
 
 module.exports = router;

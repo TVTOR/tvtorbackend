@@ -7,6 +7,10 @@ var utilServices = require('../services/Util');
 var userSession = require('../models/Session');
 var Code = require('../models/Code');
 const uploadImage = require('../services/imageUpload');
+var Device = require('../models/Device');
+var Subjects = require('../models/Subjects');
+var mongoose = require('mongoose');
+var Locations = require('../models/Locations');
 
 
 let login = async (req, res) => {
@@ -29,7 +33,7 @@ let login = async (req, res) => {
                 token: secretToken,
               } 
               res.header('access-token', secretToken);
-              userSession.create(userData, (err, data)=>{
+              userSession.create(userData, async (err, data)=>{
                 if(err){
                   return utilServices.errorResponse(res, "Something went wrong", 401);
                 } else {
@@ -42,6 +46,21 @@ let login = async (req, res) => {
                     subjects: checkEmail.subjects,
                     token: secretToken,
                 }
+                  if(checkEmail.userType == 'tutormanager'){
+                   await  Device.create({
+                                deviceId: req.body.deviceId,
+                                deviceType: req.body.deviceType,
+                                deviceToken: req.body.deviceToken,
+                                tmId:  checkEmail._id 
+                              })
+                          } else if(checkEmail.userType == 'tutor'){
+                              await Device.create({
+                                deviceId: req.body.deviceId,
+                                deviceType: req.body.deviceType,
+                                deviceToken: req.body.deviceToken,
+                                tutorId:  checkEmail._id 
+                              })
+                          }
                   return utilServices.successResponse(res, "Login successfully", 201, responseData);
                 }
               })
@@ -79,7 +98,6 @@ const register = async (req, res) => {
       if(checkCode && checkCode.used && req.body.userType == 'tutor'){
         return  utilServices.errorResponse(res, "This code already used.", 400);
       }
-
       if (checkCode) {
         var obj = {};
         obj.name = req.body.name,
@@ -87,12 +105,29 @@ const register = async (req, res) => {
         obj.email = req.body.email,
         obj.password = User.hashPassword(req.body.password),
         obj.location = req.body.location,
-        obj.subjects = req.body.subjects,
+        obj.subjects = req.body.subjects;
+        if (req.body.location) {
+          var splitLocation = req.body.location.map((elem) => mongoose.Types.ObjectId(elem))
+          obj.location = splitLocation;
+          var getLocation = await Locations.find({ _id: { $in: splitLocation } })
+          obj.locationData = await getLocation.map((locationData) => {
+              return { _id: locationData._id, subject: locationData.location }
+          })
+      }
+        if (req.body.subjects) {
+          var splitSubject = req.body.subjects.map((elem) => mongoose.Types.ObjectId(elem))
+          obj.subjects = splitSubject;
+          var getSubject = await Subjects.find({ _id: { $in: splitSubject } })
+          obj.subjectData = await getSubject.map((subjectData) => {
+              return { _id: subjectData._id, subject: subjectData.subject }
+          })
+      }
         obj.managerId = checkCode.managerId,
         obj.code = req.body.code,
         obj.userType = req.body.userType
         User.create(obj, async function(err, data) {
             if (err) {
+              console.log('------Error----------', err)
                 return utilServices.errorResponse(res, "Somthing went wrong", 500);
             } else {
         await Code.updateOne({code: req.body.code}, {used: true});
@@ -104,14 +139,13 @@ const register = async (req, res) => {
           surname: data.surname,
           email: data.email,
           password: data.password,
-          location: data.location,
-          subjects: data.subjects,
+          subjectData: data.subjectData,
+          locationData: data.locationData,
           code: data.code,
           managerId: data.managerId,
           userType: data.userType,
           token: secretToken
       }
-
         return utilServices.successResponse(res, "Tutor created successfully.", 200, responseData);
             }
         })
@@ -120,10 +154,24 @@ const register = async (req, res) => {
         obj.name = req.body.name,
         obj.surname = req.body.surname,
         obj.email = req.body.email,
-        obj.password = User.hashPassword(req.body.password),
-        obj.location = req.body.location,
-        obj.subjects = req.body.subjects,
-        obj.status = req.body.status,
+        obj.password = User.hashPassword(req.body.password);
+        if (req.body.location) {
+          var splitLocation = req.body.location.map((elem) => mongoose.Types.ObjectId(elem))
+          obj.location = splitLocation;
+          var getLocation = await Locations.find({ _id: { $in: splitLocation } })
+          obj.locationData = await getLocation.map((locationData) => {
+              return { _id: locationData._id, subject: locationData.location }
+          })
+      }
+        if (req.body.subjects) {
+          var splitSubject = req.body.subjects.map((elem) => mongoose.Types.ObjectId(elem))
+          obj.subjects = splitSubject;
+          var getSubject = await Subjects.find({ _id: { $in: splitSubject } })
+          obj.subjectData = await getSubject.map((subjectData) => {
+              return { _id: subjectData._id, subject: subjectData.subject }
+          })
+      }
+      obj.status = req.body.status,
         obj.managerId = null,
         obj.isDeleted = req.body.isDeleted,
         obj.userType = req.body.userType
@@ -139,11 +187,11 @@ const register = async (req, res) => {
           surname: data.surname,
           email: data.email,
           password: data.password,
-          location: data.location,
-          subjects: data.subjects,
           status: data.status,
           isDeleted: data.isDeleted,
           userType: data.userType,
+          subjectData: data.subjectData,
+          locationData: data.locationData,
           token: secretToken
       }
                 return utilServices.successResponse(res, "Tutor created successfully.", 200, responseData);

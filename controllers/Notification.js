@@ -1,9 +1,5 @@
 var Notification = require('../models/Notification');
 var utilServices = require('../services/Util');
-var FCM = require('fcm-node');
-var serverKey = 'AAAABsP6cpA:APA91bFECwaBl8OvwcJPFTAYh_aBl9ntoaUtrPIuSKUo4Uc9Vgf-DpE702wF228VyVVxWPBnhmcIZ_pKjij_qYavmPPUhMFGsHPfVqBZzaLj2zYZJD2-T4zfQUQLZqRe2mYtDBswOu_S'; //put your server key here
-var fcm = new FCM(serverKey);
-
 
 const createNotification = async function(req, res){
     try {
@@ -25,8 +21,8 @@ const createNotification = async function(req, res){
 
 const getNotification = async function(req, res){
     try {
-        const managerId = req.params.id;
-        await Notification.find({managerId: managerId}, (err, data)=>{
+        const tmId = req.params.id;
+        await Notification.find({tmId: tmId}, (err, data)=>{
             if(err){
                 return utilServices.errorResponse(res, "Something went wrong.", 500);
             } else {

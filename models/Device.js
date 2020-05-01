@@ -1,0 +1,12 @@
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+var deviceUser = new Schema({
+    deviceId: { type: String },
+    deviceType: { type: String },
+    deviceToken: { type: String },
+    tmId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    tutorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+}, {timestamps: true})
+
+module.exports = mongoose.model('deviceUser', deviceUser);
