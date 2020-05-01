@@ -27,6 +27,7 @@ let login = async (req, res) => {
             let encryptedPassword = await bcrypt.compare(req.body.password, checkEmail.password);
             if (encryptedPassword) {
               secretToken = jwt.sign({ _id: checkEmail._id, email: checkEmail.email, name: checkEmail.name, userType: checkEmail.userType }, config.jwtSecret, { expiresIn: '365d' });
+              console.log('------secretToken---------------', secretToken);
               var userData = {
                 userId: checkEmail._id,
                 userType: checkEmail.userType,
@@ -131,7 +132,7 @@ const register = async (req, res) => {
                 return utilServices.errorResponse(res, "Somthing went wrong", 500);
             } else {
         await Code.updateOne({code: req.body.code}, {used: true});
-        secretToken = jwt.sign({ email: data.email, name: data.name, userType: data.userType }, config.jwtSecret, { expiresIn: '365d' });
+        secretToken = jwt.sign({ _id: data._id, email: data.email, name: data.name, userType: data.userType }, config.jwtSecret, { expiresIn: '365d' });
         res.header('access-token', secretToken);
         var responseData = {
           _id: data._id,
@@ -139,6 +140,7 @@ const register = async (req, res) => {
           surname: data.surname,
           email: data.email,
           password: data.password,
+          location: data.location,
           subjectData: data.subjectData,
           locationData: data.locationData,
           code: data.code,
@@ -179,7 +181,7 @@ const register = async (req, res) => {
             if (err) {
                 return utilServices.errorResponse(res, "Somthing went wrong", 500);
             } else {
-              secretToken = jwt.sign({ email: data.email, name: data.name, userType: data.userType }, config.jwtSecret, { expiresIn: '365d' });
+              secretToken = jwt.sign({ _id: data._id, email: data.email, name: data.name, userType: data.userType }, config.jwtSecret, { expiresIn: '365d' });
         res.header('access-token', secretToken);
         var responseData = {
           _id: data._id,
