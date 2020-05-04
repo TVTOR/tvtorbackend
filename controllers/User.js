@@ -43,6 +43,7 @@ let login = async (req, res) => {
                     name: checkEmail.name,
                     surname: checkEmail.surname,
                     email: checkEmail.email,
+                    mobileNumber: checkEmail.mobileNumber,
                     location: checkEmail.location,
                     subjects: checkEmail.subjects,
                     token: secretToken,
@@ -99,6 +100,13 @@ const register = async (req, res) => {
       if(checkCode && checkCode.used && req.body.userType == 'tutor'){
         return  utilServices.errorResponse(res, "This code already used.", 400);
       }
+      let getMobile = {
+        mobileNumber: req.body.mobileNumber
+      }
+      const checkMobile = await User.find(criteria);
+      if(checkMobile > 0){
+        return utilServices.errorResponse(res, "Mobile number already registered", 409);
+      }
       if (checkCode) {
         var obj = {};
         obj.name = req.body.name,
@@ -124,11 +132,11 @@ const register = async (req, res) => {
           })
       }
         obj.managerId = checkCode.managerId,
+        obj.mobileNumber = req.body.mobileNumber,
         obj.code = req.body.code,
         obj.userType = req.body.userType
         User.create(obj, async function(err, data) {
             if (err) {
-              console.log('------Error----------', err)
                 return utilServices.errorResponse(res, "Somthing went wrong", 500);
             } else {
         await Code.updateOne({code: req.body.code}, {used: true});
@@ -140,7 +148,7 @@ const register = async (req, res) => {
           surname: data.surname,
           email: data.email,
           password: data.password,
-          location: data.location,
+          mobileNumber: data.mobileNumber,
           subjectData: data.subjectData,
           locationData: data.locationData,
           code: data.code,
@@ -173,7 +181,8 @@ const register = async (req, res) => {
               return { _id: subjectData._id, subject: subjectData.subject }
           })
       }
-      obj.status = req.body.status,
+        obj.status = req.body.status,
+        obj.mobileNumber = req.body.mobileNumber
         obj.managerId = null,
         obj.isDeleted = req.body.isDeleted,
         obj.userType = req.body.userType
@@ -194,6 +203,7 @@ const register = async (req, res) => {
           userType: data.userType,
           subjectData: data.subjectData,
           locationData: data.locationData,
+          mobileNumber: data.mobileNumber,
           token: secretToken
       }
                 return utilServices.successResponse(res, "Tutor created successfully.", 200, responseData);
@@ -203,15 +213,9 @@ const register = async (req, res) => {
        
     }
   } catch (err) {
-    console.log('Errror---------', err)
     return utilServices.errorResponse(res, "Something went wrong", 401);
   }
 };
-
-
-
-
-
 
 
 const forgotPassword = async (req, res) => {
@@ -344,21 +348,41 @@ const getUsers = (req, res) => {
     }
     }
 
-const getUser = function(req, res){
+const getUser = async function(req, res){
   try {
       var userId = req.params.id;
-      User.findById({_id: userId }, (err, data)=>{
+      User.findById({_id: userId }, async (err, data)=>{
         if(err){
           return utilServices.errorResponse(res, "Something went wrong.", 500);
         } else {
+         var location = await getLocation(data.location);
+         var subject = await getSubject(data.subjects);
+         data.locationData = location;
+         data.subjectData = subject;
           return utilServices.successResponse(res, "Data found.", 200, data);
         }
       })
   } catch (error) {
-    console.log('-------------', error)
     return utilServices.errorResponse(res, "Something went wrong.", 500);
   }
 }
+
+async function getLocation(location){
+  var getLocation = await Locations.find({ _id: { $in: location } })
+  return locationData = await getLocation.map((locationData) => {
+      return locationData.location 
+  })  
+}
+
+async function getSubject(subject){
+  var getSubjects = await Subjects.find({ _id: { $in: subject } })
+  return SubjectData = await getSubjects.map((subjectData) => {
+      return subjectData.subject 
+  })  
+}
+
+
+
 const updateUser = function(req, res){
   try {
     var userId = req.params.id;
@@ -444,6 +468,14 @@ const getAllTM = async function (req, res){
     const perpage = parseInt(query.length);
     const skip = parseInt(query.start)
     const search = {};
+    const order = (query.dir == 'asc' && parseInt(query.column) > 0) ? 1: -1;
+    let sort = 'createdAt'; 
+    if(parseInt(query.column) == 1){
+      sort = 'name'
+    }
+    if(parseInt(query.column) == 2){
+      sort = 'email'
+    }
     if (query.searchdata) {
       if (query.searchdata.length > 0) {
         var value = new RegExp("^" + query.searchdata, "i");
@@ -455,7 +487,8 @@ const getAllTM = async function (req, res){
     search.isDeleted = false;
     const total = await User.count(search);
     await User.find(search)
-    .sort({  'name': 1, 'createdAt': -1, })
+    .collation({'locale':'en'})
+    .sort({  [sort] : parseInt(order) })
     .skip(skip)
     .limit(perpage)
     .exec( function (err, data){
@@ -465,7 +498,7 @@ const getAllTM = async function (req, res){
                 if(!data.length){
                   return utilServices.errorResponse(res, "Data not found.", 500);
                 } else {
-                  
+                   
                   return utilServices.successResponse(res, "Data found.", 200, {data: data, total: total});
                 }
               }
@@ -478,14 +511,16 @@ const getAllTM = async function (req, res){
 
 const getAllTManager = async function (req, res){
   try {
-    // const query = req.query;
-    // const perpage = 10;
-    // const page = query.page;
-    // const skip = (page * perpage) - perpage;
     const query = req.query;
     const perpage = parseInt(query.length);
     const skip = parseInt(query.start);
     const search = {};
+    const order = (query.dir == 'asc') ? 1: -1;
+    console.log('-----------Order------------', order);
+    let sort = 'createdAt'; 
+    if(parseInt(query.column) == 1){
+      sort = 'name'
+    }
     if (query.searchdata) {
       if (query.searchdata.length > 0) {
         var value = new RegExp("^" + query.searchdata, "i");
@@ -494,9 +529,11 @@ const getAllTManager = async function (req, res){
     }
     search.userType = "tutormanager";
     search.status = true;
+    console.log('-------{ [sort]: parseInt(order) }------------', { [sort]: parseInt(order) })
     const total = await User.count(search);
        await User.find(search)
-        .sort({ 'createdAt': -1, 'name': -1 })
+        .collation({'locale':'en'})
+        .sort({ [sort]: parseInt(order) })
         .skip(skip)
         .limit(perpage)
         .exec( function (err, data){
@@ -545,7 +582,7 @@ const getAllTutors = async function (req, res){
 const changeUserStatus = async function(req, res){
   try {
        var userId = req.params.id;
-       await User.updateOne({_id: userId}, {status : true})
+       await User.updateOne({_id: userId}, { status : true })
        return utilServices.successResponse(res, "Status has been updated successfully.", 200); 
   } catch (error) {
     console.log(error)
@@ -569,6 +606,14 @@ const getAllTutorsOfManager = async function(req, res){
     const perpage = parseInt(query.length);
     const skip = parseInt(query.start);
     const search = {};
+    const order = (query.dir == 'asc' && parseInt(query.column) > 0) ? 1: -1;
+    let sort = 'createdAt'; 
+    if(parseInt(query.column) == 1){
+      sort = 'name'
+    }
+    if(parseInt(query.column) == 2){
+      sort = 'email'
+    }
     if (query.searchdata) {
       if (query.searchdata.length > 0) {
         var value = new RegExp("^" + query.searchdata, "i");
@@ -578,13 +623,15 @@ const getAllTutorsOfManager = async function(req, res){
     const tmId = req.params.id;
     search.userType = "tutor";
     search.isDeleted = false;
-    search.managerId = tmId
+    search.managerId = mongoose.Types.ObjectId(tmId);
     const total = await User.count(search);
    await User.find(search)
-   .sort({ 'name': 1 })
+   .collation({'locale':'en'})
+   .sort({ [sort]: parseInt(order) })
    .skip(skip)
    .limit(perpage)
    .exec( function (err, data){
+     console.log('------------', data)
      if(err){
                return utilServices.errorResponse(res, "Something went wrong.", 500);
              } else {

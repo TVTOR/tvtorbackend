@@ -57,11 +57,13 @@ router.post('/subject',Authorization.verifyToken,  Subject.createSubjects);
 router.get('/subject', Authorization.verifyToken, Subject.getAllSubjects);
 router.put('/subject/:id', Authorization.verifyToken, Subject.updateSubjects);
 router.delete('/subject/:id', Authorization.verifyToken, Subject.deleteSubjects);
+router.get('/subject/:id', Authorization.verifyToken, Subject.getSingleSubject);
 
 router.post('/location',Authorization.verifyToken, Location.createLocations);
 router.get('/location', Authorization.verifyToken, Location.getAllLocations);
 router.put('/location/:id', Authorization.verifyToken, Location.updateLocations);
 router.delete('/location/:id', Authorization.verifyToken, Location.deleteLocations);
+router.get('/location/:id', Authorization.verifyToken, Location.getSingleLocation);
 
 router.post('/notification', Authorization.verifyToken, Notification.createNotification);
 router.get('/notification/:id', Authorization.verifyToken, Notification.getNotification);

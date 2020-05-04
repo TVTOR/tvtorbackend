@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 
 var user = new Schema({
     name: { type: String },
-    surname: {type: String},
+    surname: { type: String },
     email: { type: String },
     password: { type: String },
     location: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Locations' }],
@@ -14,6 +14,7 @@ var user = new Schema({
     isDeleted: { type: Boolean, default: false },
     availability: { type: String },
     description: { type: String },
+    mobileNumber: { type: Number },
     imageUrl: { type: String },
     subjectId: { type: Array },
     subjectData: { type: Array },
