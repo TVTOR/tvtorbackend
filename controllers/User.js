@@ -91,7 +91,7 @@ const register = async (req, res) => {
             data.locationData = await getAllLocation(req.body.location);
           }
           if (req.body.subjects) {
-            data.subjectData = await getAllSubject(req.body.subjects);
+            data.subjectData = await getAllSubject(req.body.subjects); 
           }
           const secretToken = await authHelper.generateJWToken(data);
           res.header('access-token', secretToken);
