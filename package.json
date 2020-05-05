@@ -19,6 +19,7 @@
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "fcm-node": "^1.5.2",
+        "http-status-codes": "^1.4.0",
         "jsonwebtoken": "^8.5.1",
         "mongo-express": "^0.54.0",
         "mongoose": "^5.8.11",

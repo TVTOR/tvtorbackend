@@ -10,210 +10,115 @@ const uploadImage = require('../services/imageUpload');
 var Device = require('../models/Device');
 var Subjects = require('../models/Subjects');
 var mongoose = require('mongoose');
+const userService = require('../services/users');
 var Locations = require('../models/Locations');
-
+const authHelper = require('../helper/auth');
+const { constants } = require(`${appRoot}/lib/constants`);
 
 let login = async (req, res) => {
     try {
       if (!req.body.email || !req.body.password) {
-        return utilServices.errorResponse(res, "Parameters are missing", 401);
+        return utilServices.errorResponse(res, constants.PARAMETER_MISSING, 401);
+      }
+      const checkEmail = await userService.validEmail(req.body.email);
+      if (!checkEmail) {
+        return utilServices.errorResponse(res, constants.INCORRECT_EMAIL, 401);
+      }
+      const encryptedPassword = authHelper.validatePassword(req.body.password, checkEmail.password);
+      if (!encryptedPassword) {
+        return utilServices.errorResponse(res,constants.LOGIN_INCORRECT_PASSWORD, 401);
+      }
+      const secretToken = await authHelper.generateJWToken(checkEmail);
+      const result = await userService.insertSession(checkEmail._id, checkEmail.userType, secretToken);
+      res.header('access-token', secretToken);
+      if(!result){
+        return utilServices.errorResponse(res, constants.DB_ERROR, 401);
       } else {
-        try {
-          let criteria = {
-            email: req.body.email
-          };
-          const checkEmail = await User.findOne(criteria);
-          if (checkEmail) {
-            let encryptedPassword = await bcrypt.compare(req.body.password, checkEmail.password);
-            if (encryptedPassword) {
-              secretToken = jwt.sign({ _id: checkEmail._id, email: checkEmail.email, name: checkEmail.name, userType: checkEmail.userType }, config.jwtSecret, { expiresIn: '365d' });
-              console.log('------secretToken---------------', secretToken);
-              var userData = {
-                userId: checkEmail._id,
-                userType: checkEmail.userType,
-                token: secretToken,
-              } 
-              res.header('access-token', secretToken);
-              userSession.create(userData, async (err, data)=>{
-                if(err){
-                  return utilServices.errorResponse(res, "Something went wrong", 401);
-                } else {
-                  var responseData = {
-                    _id: checkEmail._id,
-                    name: checkEmail.name,
-                    surname: checkEmail.surname,
-                    email: checkEmail.email,
-                    mobileNumber: checkEmail.mobileNumber,
-                    location: checkEmail.location,
-                    subjects: checkEmail.subjects,
-                    token: secretToken,
-                }
-                  if(checkEmail.userType == 'tutormanager'){
-                   await  Device.create({
-                                deviceId: req.body.deviceId,
-                                deviceType: req.body.deviceType,
-                                deviceToken: req.body.deviceToken,
-                                tmId:  checkEmail._id 
-                              })
-                          } else if(checkEmail.userType == 'tutor'){
-                              await Device.create({
-                                deviceId: req.body.deviceId,
-                                deviceType: req.body.deviceType,
-                                deviceToken: req.body.deviceToken,
-                                tutorId:  checkEmail._id 
-                              })
-                          }
-                  return utilServices.successResponse(res, "Login successfully", 201, responseData);
-                }
-              })
-            } else {
-              return utilServices.errorResponse(res, "Please enter correct password.", 401);
-            }
-          } else {
-            return utilServices.errorResponse(res, "Email does not exist!", 401);
-          }
-        } catch (error) {
-          return utilServices.errorResponse(res, "Something went wrong", 401);
+        if (checkEmail.location) {
+          checkEmail.locationData = await getAllLocation(checkEmail.location);
         }
+        if (checkEmail.subjects) {
+          checkEmail.subjectData = await getAllSubject(checkEmail.subjects);
+        }
+        const responseData = response(checkEmail, secretToken);
+        await userService.insertDevice(req.body, checkEmail.userType, checkEmail._id);
+        return utilServices.successResponse(res, constants.LOGIN_SUCCESS, 201, responseData);
       }
     } catch (err) {
-        return utilServices.errorResponse(res, "Something went wrong", 400);
+      return utilServices.errorResponse(res, constants.DB_ERROR, 400);
     }
   };
 
+  async function getAllLocation(location){
+    let locationData = await userService.getLocationData(location);
+    return locationData = await locationData.map((locationData) => {
+        return { _id: locationData._id, subject: locationData.location }
+    });
+  }
+
+  async function getAllSubject(subject) {
+    let subjectData = await userService.getSubjectData(subject);
+    return subjectData = await subjectData.map((subjectData) => {
+        return { _id: subjectData._id, subject: subjectData.subject }
+    });
+  }
+
 const register = async (req, res) => {
   try {
-    let criteria = {
-      email: req.body.email
-    }
-    const checkEmail = await User.find(criteria);
-    if (checkEmail.length > 0) {
-      return utilServices.errorResponse(res, "Email already registered", 409);
+    const checkEmail = await userService.validEmail(req.body.email);
+    if (checkEmail) {
+      return utilServices.errorResponse(res, constants.USER_ALREADY_EXIST, 409);
     } else {
-      let getCode = {
-        code: req.body.code
-      } 
-      const checkCode = await Code.findOne(getCode); 
+      const checkCode = await userService.validCode(req.body.code);
       if(!checkCode && req.body.userType == 'tutor'){
-        return  utilServices.errorResponse(res, "Please enter valid code.", 400);
+        return  utilServices.errorResponse(res, constants.VALID_TOKEN, 400);
       } 
       if(checkCode && checkCode.used && req.body.userType == 'tutor'){
-        return  utilServices.errorResponse(res, "This code already used.", 400);
+        return  utilServices.errorResponse(res, constants.CODE_EXIST, 400);
       }
-      let getMobile = {
-        mobileNumber: req.body.mobileNumber
-      }
-      const checkMobile = await User.find(criteria);
+      const checkMobile = await userService.validMobileNumber(req.body.mobileNumber);
       if(checkMobile > 0){
-        return utilServices.errorResponse(res, "Mobile number already registered", 409);
+        return utilServices.errorResponse(res, constants.MOBILE_EXIST, 409);
       }
       if (checkCode) {
-        var obj = {};
-        obj.name = req.body.name,
-        obj.surname = req.body.surname,
-        obj.email = req.body.email,
-        obj.password = User.hashPassword(req.body.password),
-        obj.location = req.body.location,
-        obj.subjects = req.body.subjects;
-        if (req.body.location) {
-          var splitLocation = req.body.location.map((elem) => mongoose.Types.ObjectId(elem))
-          obj.location = splitLocation;
-          var getLocation = await Locations.find({ _id: { $in: splitLocation } })
-          obj.locationData = await getLocation.map((locationData) => {
-              return { _id: locationData._id, subject: locationData.location }
-          })
-      }
-        if (req.body.subjects) {
-          var splitSubject = req.body.subjects.map((elem) => mongoose.Types.ObjectId(elem))
-          obj.subjects = splitSubject;
-          var getSubject = await Subjects.find({ _id: { $in: splitSubject } })
-          obj.subjectData = await getSubject.map((subjectData) => {
-              return { _id: subjectData._id, subject: subjectData.subject }
-          })
-      }
-        obj.managerId = checkCode.managerId,
-        obj.mobileNumber = req.body.mobileNumber,
-        obj.code = req.body.code,
-        obj.userType = req.body.userType
-        User.create(obj, async function(err, data) {
-            if (err) {
-                return utilServices.errorResponse(res, "Somthing went wrong", 500);
-            } else {
-        await Code.updateOne({code: req.body.code}, {used: true});
-        secretToken = jwt.sign({ _id: data._id, email: data.email, name: data.name, userType: data.userType }, config.jwtSecret, { expiresIn: '365d' });
-        res.header('access-token', secretToken);
-        var responseData = {
-          _id: data._id,
-          name: data.name,
-          surname: data.surname,
-          email: data.email,
-          password: data.password,
-          mobileNumber: data.mobileNumber,
-          subjectData: data.subjectData,
-          locationData: data.locationData,
-          code: data.code,
-          managerId: data.managerId,
-          userType: data.userType,
-          token: secretToken
-      }
-        return utilServices.successResponse(res, "Tutor created successfully.", 200, responseData);
-            }
-        })
+			  const password = authHelper.bcryptPassword(req.body.password);
+        const data = await userService.insertUser(req.body, password, checkCode.managerId);
+        if(!data){
+          return utilServices.errorResponse(res, constants.DB_ERROR, 500);
+        }else{
+          await userService.updateCode(req.body.code);
+          if (req.body.location) {
+            data.locationData = await getAllLocation(req.body.location);
+          }
+          if (req.body.subjects) {
+            data.subjectData = await getAllSubject(req.body.subjects);
+          }
+          const secretToken = await authHelper.generateJWToken(data);
+          res.header('access-token', secretToken);
+          const responseData = response(data, secretToken);
+          return utilServices.successResponse(res, constants.TUTOR_CREATE, 200, responseData);
+        }
       } else {
-        var obj = {};
-        obj.name = req.body.name,
-        obj.surname = req.body.surname,
-        obj.email = req.body.email,
-        obj.password = User.hashPassword(req.body.password);
-        if (req.body.location) {
-          var splitLocation = req.body.location.map((elem) => mongoose.Types.ObjectId(elem))
-          obj.location = splitLocation;
-          var getLocation = await Locations.find({ _id: { $in: splitLocation } })
-          obj.locationData = await getLocation.map((locationData) => {
-              return { _id: locationData._id, subject: locationData.location }
-          })
+        const password = authHelper.bcryptPassword(req.body.password);
+        const data = await userService.insertUser(req.body, password);
+        if(!data){
+          return utilServices.errorResponse(res, constants.DB_ERROR, 500);
+        }else{
+          if (req.body.location) {
+            data.locationData = await getAllLocation(req.body.location);
+          }
+          if (req.body.subjects) {
+            data.subjectData = await getAllSubject(req.body.subjects);
+          }
+          const secretToken = await authHelper.generateJWToken(data);
+          res.header('access-token', secretToken);
+          const responseData = response(data, secretToken);
+          return utilServices.successResponse(res, constants.TUTOR_CREATE, 200, responseData);
+        }
       }
-        if (req.body.subjects) {
-          var splitSubject = req.body.subjects.map((elem) => mongoose.Types.ObjectId(elem))
-          obj.subjects = splitSubject;
-          var getSubject = await Subjects.find({ _id: { $in: splitSubject } })
-          obj.subjectData = await getSubject.map((subjectData) => {
-              return { _id: subjectData._id, subject: subjectData.subject }
-          })
-      }
-        obj.status = req.body.status,
-        obj.mobileNumber = req.body.mobileNumber
-        obj.managerId = null,
-        obj.isDeleted = req.body.isDeleted,
-        obj.userType = req.body.userType
-        User.create(obj, function(err, data) {
-            if (err) {
-                return utilServices.errorResponse(res, "Somthing went wrong", 500);
-            } else {
-              secretToken = jwt.sign({ _id: data._id, email: data.email, name: data.name, userType: data.userType }, config.jwtSecret, { expiresIn: '365d' });
-        res.header('access-token', secretToken);
-        var responseData = {
-          _id: data._id,
-          name: data.name,
-          surname: data.surname,
-          email: data.email,
-          password: data.password,
-          status: data.status,
-          isDeleted: data.isDeleted,
-          userType: data.userType,
-          subjectData: data.subjectData,
-          locationData: data.locationData,
-          mobileNumber: data.mobileNumber,
-          token: secretToken
-      }
-                return utilServices.successResponse(res, "Tutor created successfully.", 200, responseData);
-            }
-        })
-      }
-       
     }
   } catch (err) {
-    return utilServices.errorResponse(res, "Something went wrong", 401);
+    return utilServices.errorResponse(res, constants.DB_ERROR, 401);
   }
 };
 
@@ -224,35 +129,35 @@ const forgotPassword = async (req, res) => {
             if (err) {
               return utilServices.errorResponse(res, "Something went wrong", 401);
             } else {
-                if (!data) {
-                    return utilServices.errorResponse(res, "Email not found", 401);
-                } else {
-                    let transporter = nodemailer.createTransport({
-                        host: "smtp.gmail.com",
-                        port: 587,
-                        secure: false, // true for 465, false for other ports
-                        auth: {
-                          user: 'sunilskv37@gmail.com', // generated ethereal user
-                          pass: '9696533366@#123' // generated ethereal password
-                        }
-                      });
-                    
-                    var mailOptions = {
-                        from: 'sunilskv37@gmail.com',
-                        to: req.body.email,
-                        subject: 'Link to reset password.',
-                        text: 'IMS',
-                        html: '<h1>Change your password</h1><a href ="' + config.API_URL + '/forgotpassword?id=' + data._id + '">Please click here to change your password</a></b>'
-                    };
-                    transporter.sendMail(mailOptions, function (error, info) {
-                        if (error) {
-                            console.log(error);
-                        } else {
-                            console.log('Email sent: ' + info.response);
-                        }
+              if (!data) {
+                  return utilServices.errorResponse(res, "Email not found", 401);
+              } else {
+                  let transporter = nodemailer.createTransport({
+                      host: "smtp.gmail.com",
+                      port: 587,
+                      secure: false, // true for 465, false for other ports
+                      auth: {
+                        user: 'sunilskv37@gmail.com', // generated ethereal user
+                        pass: '9696533366@#123' // generated ethereal password
+                      }
                     });
-                    return utilServices.successResponse(res, "Please check your email to reset password.", 201);
-                  }
+                  
+                  var mailOptions = {
+                      from: 'sunilskv37@gmail.com',
+                      to: req.body.email,
+                      subject: 'Link to reset password.',
+                      text: 'IMS',
+                      html: '<h1>Change your password</h1><a href ="' + config.API_URL + '/forgotpassword?id=' + data._id + '">Please click here to change your password</a></b>'
+                  };
+                  transporter.sendMail(mailOptions, function (error, info) {
+                      if (error) {
+                          console.log(error);
+                      } else {
+                          console.log('Email sent: ' + info.response);
+                      }
+                  });
+                  return utilServices.successResponse(res, "Please check your email to reset password.", 201);
+                }
             }
         });
     } catch (error) {
@@ -646,6 +551,22 @@ const getAllTutorsOfManager = async function(req, res){
     return utilServices.errorResponse(res, "Something went wrong.", 500);
   }
 }
+function response(data, token){
+  return responseData = {
+    _id: data._id,
+    name: data.name,
+    surname: data.surname,
+    email: data.email,
+    password: data.password,
+    mobileNumber: data.mobileNumber,
+    subjectData: data.subjectData,
+    locationData: data.locationData,
+    code: data.code,
+    managerId: data.managerId,
+    userType: data.userType,
+    token: token
+  }
+}
 
 
 
@@ -665,5 +586,7 @@ module.exports = {
     changeUserStatus: changeUserStatus,
     changeUserDelete: changeUserDelete,
     getAllTManager: getAllTManager,
-    getAllTutorsOfManager: getAllTutorsOfManager
+    getAllTutorsOfManager: getAllTutorsOfManager,
+    getAllSubject: getAllSubject,
+    getAllLocation: getAllLocation
 }
