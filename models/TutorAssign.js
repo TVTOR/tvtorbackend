@@ -7,6 +7,7 @@ const TutorAssign = new Schema({
       subject: { type: String },
       location: { type: String },
       tutorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      is_active: { type: Boolean, default: true },
       notificationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }
 }, {timestamps: true});
 

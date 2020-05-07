@@ -1,24 +1,16 @@
 var Code = require('../models/Code')
 var utilServices = require('../services/Util');
-
+const { constants } = require(`${appRoot}/lib/constants`);
+const codeService = require('../services/Code');
 
 const randomNumber = async(req, res)=>{
-   try {
-       var obj = {};
-       obj.code = Math.floor(100000 + Math.random() * 900000);
-       obj.used = req.body.used
-       obj.managerId = req.body.managerId
-       Code.create(obj, (err, data) => {
-        if (err) {
-            return utilServices.errorResponse(res, "Somthing went wrong", 500);
-        } else {
-            return utilServices.successResponse(res, "Randomcode generated successfully", 200, data);
-        }
-    })
-   } catch (error) {
-    return utilServices.errorResponse(res, "Something went wrong", 401); 
-   }
-}
+    try {
+        const data = await codeService.insertCode(req.body);
+        return utilServices.successResponse(res, constants.CREATE_CODE, 200, data);
+      } catch (error) {
+        return utilServices.errorResponse(res, constants.DB_ERROR, 500);
+    }
+ }
 
 module.exports = {
     randomNumber: randomNumber

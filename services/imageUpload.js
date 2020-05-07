@@ -12,7 +12,6 @@ upload.imageUpload = function(file, callback) {
         })
         // let path = (file.file && file.file.path) ? file.file.path : file.path;
         let path = file.path
-        console.log('-----path--------', path)
         const uniqueFilename = new Date().toISOString()
         cloudinary.uploader.upload(
             path, { public_id: `blog/${uniqueFilename}`, tags: `blog` }, // directory and tags are optional

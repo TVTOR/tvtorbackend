@@ -5,42 +5,25 @@ var Subject = require('../models/Subjects');
 var User = require('../models/User');
 var Device = require('../models/Device');
 var NotificationModel = require('../models/Notification');
-var NotificationServise = require('../services/SendNotification')
-
-
-// var FCM = require('fcm-node');
-// var serverKey = 'AAAABsP6cpA:APA91bFECwaBl8OvwcJPFTAYh_aBl9ntoaUtrPIuSKUo4Uc9Vgf-DpE702wF228VyVVxWPBnhmcIZ_pKjij_qYavmPPUhMFGsHPfVqBZzaLj2zYZJD2-T4zfQUQLZqRe2mYtDBswOu_S'; //put your server key here
-// var fcm = new FCM(serverKey);
+var NotificationServise = require('../services/SendNotification');
+const { constants } = require(`${appRoot}/lib/constants`);
+const NotificationService = require('../services/Notification');
+const questionService = require('../services/Question');
 
 
 const createQuestion = async (req, res)=>{
-     try {
-        var obj = {};
-        obj.question = req.body.question;
-        obj.no_answer = req.body.no_answer;
-        obj.options = req.body.options;
-        obj.type = req.body.type;
-        obj.title = req.body.title;
-        obj.question_num = req.body.question_num;
-        obj.optionTable = req.body.optionTable;
-        Ouestions.create(obj, (err, data)=>{
-            if(err){
-                return utilServices.errorResponse(res, "Something went wrong.", 500);
-            } else {
-                return utilServices.successResponse(res, "Questions created successfully.", 200, data);
-            }
-        })
-     } catch (error) {
-        return utilServices.errorResponse(res, "Something went wrong", 400);   
-     }
+    try {
+        const data = await questionService.insertQuestions(req.body);
+        return utilServices.successResponse(res, constants.CREATE_QUESTIONS, 200, data);
+    } catch (error) {
+        return utilServices.errorResponse(res, constants.DB_ERROR, 500);
+    }
 }
 
 const getQuestion = async(req, res)=>{
     try {
-        // req.query.email = 'avee@gmail.com'
-        // console.log('========req.query.email==============', req.query.email)
         if(req.query.name && req.query.email && req.query.location && req.query.subject){
-            createNotification(req.query)
+            questionService.createNotification(req.query)
         }
         const detail = {};
         const dataArray = [];
@@ -84,31 +67,12 @@ const getQuestion = async(req, res)=>{
         return utilServices.successResponse(res, "Questions created successfully.", 200, detail);
     } catch (error) {
         console.log(error)
+        console.log('==================')
         return utilServices.errorResponse(res, "Something went wrong", 400);
     }
 }
 
-const createNotification = async (query)=>{
-    const tmIDs = await User.find({location: query.location, isDeleted: false, userType: 'tutormanager', status: true } )
-    for(let i = 0; i<tmIDs.length; i++){
-      var devicedata =  await Device.findOne({tmId: (tmIDs[i]._id)});
-      if(devicedata && devicedata.deviceToken){
-      const title = 'Notification'
-      const message = `Name: ${query.name}
-                       Email: ${query.email}
-                       Subject: ${query.subject}
-                       Location: ${query.location}`
-        await NotificationModel.create({
-            tmId: tmIDs[i]._id,
-            subject: query.subject,
-            location: query.location,
-            message: message,
-            queryData: query
-        })
-     NotificationServise.sendNotification(devicedata.deviceToken, title, message);                 
-    }
-}
-}
+
     
 module.exports = {
     createQuestion: createQuestion,

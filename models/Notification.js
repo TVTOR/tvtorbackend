@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var Notification = new Schema({
-    tmId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    managerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     subject: { type: String },
     location: { type: String },
     message: {type: String},

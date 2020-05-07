@@ -55,15 +55,15 @@ router.get('/getAllTutorsOfManager/:id', Authorization.verifyToken, User.getAllT
 
 router.post('/subject', Subject.createSubjects);
 router.get('/subject', Subject.getAllSubjects);
-router.put('/subject/:id', Authorization.verifyToken, Subject.updateSubjects);
-router.delete('/subject/:id', Authorization.verifyToken, Subject.deleteSubjects);
-router.get('/subject/:id', Authorization.verifyToken, Subject.getSingleSubject);
+router.put('/subject/:id', Subject.updateSubjects);
+router.delete('/subject/:id', Subject.deleteSubjects);
+router.get('/subject/:id', Subject.getSingleSubject);
 
 router.post('/location', Location.createLocations);
 router.get('/location', Location.getAllLocations);
-router.put('/location/:id', Authorization.verifyToken, Location.updateLocations);
-router.delete('/location/:id', Authorization.verifyToken, Location.deleteLocations);
-router.get('/location/:id', Authorization.verifyToken, Location.getSingleLocation);
+router.put('/location/:id', Location.updateLocations);
+router.delete('/location/:id', Location.deleteLocations);
+router.get('/location/:id', Location.getSingleLocation);
 
 router.post('/notification', Authorization.verifyToken, Notification.createNotification);
 router.get('/notification/:id', Authorization.verifyToken, Notification.getNotification);

@@ -1,41 +1,28 @@
 var Notification = require('../models/Notification');
 var utilServices = require('../services/Util');
+const { constants } = require(`${appRoot}/lib/constants`);
+const notificationService = require('../services/Notification');
 
-const createNotification = async function(req, res){
+const createNotification = async function (req, res) {
     try {
-        var obj = {};
-        obj.managerId = req.body.managerId
-        obj.subject = req.body.subject;
-        obj.location = req.body.location 
-        await Notification.create(obj, (err, data)=>{
-            if(err){
-                return utilServices.errorResponse(res, "Something went wrong.", 500);
-            } else {
-                return utilServices.successResponse(res, "Created successfully.", 200, data);
-            }
-        })
+        const data = await notificationService.insertNotification(req.body);
+        return utilServices.successResponse(res, constants.CREATE_NOTIFICATION, 200, data);
     } catch (error) {
-        return utilServices.errorResponse(res, "Something went wrong.", 500);
+        return utilServices.successResponse(res, constants.DB_ERROR, 500);
     }
 }
 
-const getNotification = async function(req, res){
+const getNotification = async function (req, res) {
     try {
-        const tmId = req.params.id;
-        await Notification.find({tmId: tmId}, (err, data)=>{
-            if(err){
-                return utilServices.errorResponse(res, "Something went wrong.", 500);
-            } else {
-                if(!data){
-                    return utilServices.errorResponse(res, "Data not found.", 500); 
-                } else {
-                    return utilServices.successResponse(res, "Data found.", 200, data); 
-                }
-            }
-        })   
-    } catch (error) {
-        return utilServices.errorResponse(res, "Something went wrong.", 500);
-    }
+        var managerId = req.params.id;
+        var data = await notificationService.getNotifications(managerId);
+        if (!data) {
+          return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 400);
+        }
+        return utilServices.successResponse(res, constants.DATA_FOUND, 200, data);
+      } catch (error) {
+        return utilServices.errorResponse(res, constants.DB_ERROR, 500);
+      }
 }
 
 module.exports = {

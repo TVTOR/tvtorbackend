@@ -8,7 +8,7 @@ const verifyToken = async(req, res, next)=>{
     try {
         let token = req.headers['x-access-token'] || req.headers['authorization'] || req.query.token; // Express headers are auto converted to lowercase
         if(token){
-           jwt.verify(token, config.jwtSecret, (err, decoded)=>{
+          jwt.verify(token, config.jwtSecret, (err, decoded)=>{
                if(err){
                 return utilServices.errorResponse(res, "Unauthorized", 401);
                } else {

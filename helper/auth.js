@@ -2,7 +2,7 @@
 
 const httpStatus = require('http-status-codes');
 const jwtValidator = require(`${appRoot}/validator/jwt`);
-const secret = require(`${appRoot}/config/config`).secret;
+const secret = require(`${appRoot}/config/config`).jwtSecret;
 const jwtErrors  = require(`${appRoot}/lib/constants`);
 const bcrypt = require('bcrypt');
 
