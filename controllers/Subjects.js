@@ -52,6 +52,9 @@ const getAllSubjects = async function (req, res){
     if (req.body.subject) {
       updateData.subject = req.body.subject;
     }
+    if (req.body.colorcode) {
+      updateData.colorcode = req.body.colorcode;
+    }
     const data = await subjectService.subjectUpdate(updateData)
     return utilServices.successResponse(res, constants.UPDATE_DATA, 200, data);
     } catch (error) {

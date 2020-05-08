@@ -59,7 +59,7 @@ async function getAllLocation(location) {
 async function getAllSubject(subject) {
   let subjectData = await userService.getSubjectData(subject);
   return subjectData = await subjectData.map((subjectData) => {
-    return { _id: subjectData._id, subject: subjectData.subject }
+    return { _id: subjectData._id, subject: subjectData.subject, colorcode: subjectData.colorcode }
   });
 }
 
@@ -118,6 +118,7 @@ const register = async (req, res) => {
       }
     }
   } catch (err) {
+    console.log('============>>>', err)
     return utilServices.errorResponse(res, constants.DB_ERROR, 401);
   }
 };
@@ -325,7 +326,7 @@ const updateUser = async function (req, res) {
       return utilServices.successResponse(res, constants.UPDATE_DATA, 200, data1);
     }
   } catch (error) {
-    
+
     return utilServices.successResponse(res, constants.DB_ERROR, 500);
   }
 }

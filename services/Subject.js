@@ -11,6 +11,7 @@ async function checkSubject(subject) {
 async function insertSubject(params) {
 	var obj = {
         subject: params.subject ? params.subject: '',
+        colorcode: params.colorcode ? params.colorcode: '',
 		managerId: params.managerId ? params.managerId : null,
 	};
 	return await subjectModel.create(obj);
