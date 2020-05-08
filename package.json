@@ -24,6 +24,7 @@
         "mongo-express": "^0.54.0",
         "mongoose": "^5.8.11",
         "multer": "^1.4.2",
-        "nodemailer": "^6.4.6"
+        "nodemailer": "^6.4.6",
+        "twilio": "^3.43.0"
     }
 }

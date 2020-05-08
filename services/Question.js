@@ -4,6 +4,7 @@ const questionModel = require(`${appRoot}/models/Question`);
 const Device = require(`${appRoot}/models/Device`);
 const NotificationService = require(`${appRoot}/services/SendNotification`);
 const User = require(`${appRoot}/models/User`);
+const NotificationModel = require('../models/Notification');
 
 async function insertQuestions(params) {
    	var obj = {
@@ -20,8 +21,10 @@ async function insertQuestions(params) {
 
 const createNotification = async (query)=>{
     const tmIDs = await User.find({location: query.location, isDeleted: false, userType: 'tutormanager', status: true } )
+   console.log('================', tmIDs);
     for(let i = 0; i<tmIDs.length; i++){
       var devicedata =  await Device.findOne({tmId: (tmIDs[i]._id)});
+      console.log('============', devicedata)
       if(devicedata && devicedata.deviceToken){
       const title = 'Notification'
       const message = `Name: ${query.name}
@@ -35,7 +38,9 @@ const createNotification = async (query)=>{
             message: message,
             queryData: query
         })
-      NotificationService.sendNotification(devicedata.deviceToken, title, message);                 
+
+      NotificationService.sendNotification(devicedata.deviceToken, title, message); 
+     
     }
 }
 }

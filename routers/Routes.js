@@ -11,6 +11,7 @@ const Notification = require('../controllers/Notification');
 const Questions = require('../controllers/Questions');
 const TutorAssign = require('../controllers/TutorAssign');
 const TutorNotification = require('../controllers/TutorNotification');
+const Message = require('../controllers/sendMessage');
 
 
 const storage = multer.diskStorage({
@@ -73,5 +74,7 @@ router.get('/question', Questions.getQuestion);
 
 router.post('/assigntutor', TutorAssign.assignTutor);
 router.get('/sendNotificationToTutor/:id', TutorNotification.sendNotificationToTutor);
+
+router.get('/message', Message.sendMessage);
 
 module.exports = router;

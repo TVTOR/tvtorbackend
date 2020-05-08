@@ -251,8 +251,11 @@ const getUser = async function (req, res) {
     if (!data) {
       return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 400);
     }
-    var location = await getLocation(data.location);
-    var subject = await getSubject(data.subjects);
+    data = data.toJSON();
+    let location = await getLocation(data.location);
+    let subject = await getSubject(data.subjects);
+    let allLocationList = await getAllLocationList();
+    data.locationList = allLocationList  ;
     data.locationData = location;
     data.subjectData = subject;
     return utilServices.successResponse(res, constants.DATA_FOUND, 200, data);
@@ -261,6 +264,12 @@ const getUser = async function (req, res) {
   }
 }
 
+async function getAllLocationList(){
+  const loactionList = await Locations.find({});
+  return locationData = await loactionList.map((locationData) => {
+    return { _id: locationData._id, location: locationData.location }
+  });
+}
 
 async function getLocation(location) {
   var getLocation = await Locations.find({ _id: { $in: location } })
