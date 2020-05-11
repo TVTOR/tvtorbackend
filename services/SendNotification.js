@@ -42,8 +42,9 @@ async function sendSMS(mobile, title, body) {
     client.messages
         .create({
             body: body,
+            title: 'This student assign for totor',
             from: '+12057514564',
-            to: mobile
+            to: '+91' + mobile
         })
         .then((message) => {
             console.log(message.sid)
