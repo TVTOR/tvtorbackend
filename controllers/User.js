@@ -118,7 +118,6 @@ const register = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log('============>>>', err)
     return utilServices.errorResponse(res, constants.DB_ERROR, 401);
   }
 };

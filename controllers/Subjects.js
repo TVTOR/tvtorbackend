@@ -6,6 +6,9 @@ const subjectService = require('../services/Subject');
 
 const createSubjects = async function(req, res){
   try {
+    if (!req.body.subject) {
+      return utilServices.errorResponse(res, constants.PARAMETER_MISSING, 401);
+    }
     const checkSubject = await subjectService.checkSubject(req.body.subject);
     if (checkSubject) {
       return utilServices.errorResponse(res, constants.SUBJECT_ALREADY_EXIST, 409);

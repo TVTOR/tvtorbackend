@@ -5,6 +5,9 @@ const locationService = require('../services/Location');
 
 const createLocations = async function(req, res){
   try {
+    if (!req.body.location) {
+      return utilServices.errorResponse(res, constants.PARAMETER_MISSING, 401);
+    }
     const checkLocation = await locationService.checkLocation(req.body.location);
     if (checkLocation) {
       return utilServices.errorResponse(res, constants.LOCATION_ALREADY_EXIST, 409);
@@ -15,26 +18,6 @@ const createLocations = async function(req, res){
     return utilServices.successResponse(res, constants.DB_ERROR, 500);
   }
 }
-
-
-// const getAllLocations = async function (req, res){
-//     try {
-//         await Locations.find({}, (err, data)=>{
-//               if(err){
-//                 return utilServices.errorResponse(res, "Something went wrong.", 500);
-//               } else {
-//                 if(!data.length){
-//                   return utilServices.errorResponse(res, "Data not found.", 500);
-//                 } else {
-//                   return utilServices.successResponse(res, "Data found.", 200, data);
-//                 }
-//               }
-//          })
-//     } catch (error) {
-//       return utilServices.errorResponse(res, "Something went wrong.", 500);
-//     }
-//   }
-
 
 const getAllLocations = async function (req, res){
   try {
