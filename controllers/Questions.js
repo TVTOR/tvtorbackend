@@ -66,8 +66,6 @@ const getQuestion = async(req, res)=>{
 
         return utilServices.successResponse(res, "Questions created successfully.", 200, detail);
     } catch (error) {
-        console.log(error)
-        console.log('==================')
         return utilServices.errorResponse(res, "Something went wrong", 400);
     }
 }

@@ -3,8 +3,8 @@ var Schema = mongoose.Schema;
 
 var Notification = new Schema({
     managerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    subject: { type: String },
-    location: { type: String },
+    subject: { type: Array },
+    location: { type: Array },
     message: {type: String},
     queryData: {type: JSON}
 }, {timestamps: true})

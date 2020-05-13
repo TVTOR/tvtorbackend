@@ -6,6 +6,8 @@ const NotificationService = require('../services/SendNotification');
 var utilServices = require('../services/Util');
 const TutorAssignServices = require(`${appRoot}/services/TutorAssign`);
 const { constants } = require(`${appRoot}/lib/constants`);
+const Location = require('../models/Locations');
+const Subject = require('../models/Subjects');
 
 const assignTutor = async (req, res) => {
     try {
@@ -24,10 +26,24 @@ const assignTutor = async (req, res) => {
             } else {
                 const title = 'Notification'
                 const query = notification.queryData
-                const message = `Name: ${query.name}
-                                 Email: ${query.email}
-                                 Subject: ${query.subject}
-                                 Location: ${query.location}`
+                // const subjectdata = await Subject.find({ _id: { $in: notification.queryData.subject} });
+                let subjectIds = notification.subject
+                let data1 = await getAllSubject(subjectIds);
+                var arrOfSubject = [];
+                for (var value of data1) {
+                    arrOfSubject.push(value.subject);
+                }
+                // var newItems = data1.subject;
+                // arr.push(...newItems);
+                // console.log(arrOfSubject);
+
+                // console.log('===============>>>', data1);
+                // Contact MARCO👩‍🎓 for teaching MATH, JAVA,JAVASCRIPT 👩‍ within 12h⏰
+                // const message = `Name: ${query.name}
+                //                  Email: ${query.email}
+                //                  Subject: ${query.subject}
+                //                  Location: ${query.location}`
+                const message = `Contect: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰`
                 const tutordata = await User.findOne({ _id: req.body.tutorId });
                 const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
                 NotificationService.sendSMS(mobileNumber, title, message)
@@ -37,6 +53,13 @@ const assignTutor = async (req, res) => {
     } catch (error) {
         return utilServices.errorResponse(res, "Something went wrong.", 500);
     }
+}
+
+async function getAllSubject(subject) {
+    let subjectData = await TutorAssignServices.getSubjectData(subject);
+    return subjectData = await subjectData.map((subjectData) => {
+        return { _id: subjectData._id, subject: subjectData.subject }
+    });
 }
 
 

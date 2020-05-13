@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>convForm - example</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/jquery.convform.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="css/demo.css">
+</head>
+<body>
+	<section id="demo">
+	    <div class="vertical-align">
+	        <div class="container">
+	            <div class="row">
+	                <div class="col-sm-6 col-sm-offset-3 col-xs-offset-0">
+	                    <div class="card no-border">
+	                        <div id="chat" >
+	                            <form action="" method="GET" class="hidden">
+	                                <select data-conv-question="Hello! Welcome to Simon. May I help you?" name="first-question">
+	                                    <option value="yes">Yes</option>
+	                                    <option value="sure">Sure!</option>
+	                                </select>
+	                            </form>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</section>
+	<script type="text/javascript" src="js/jquery-1.12.3.min.js"></script>
+	<script type="text/javascript" src="js/autosize.min.js"></script>
+	<script type="text/javascript" src="js/jquery.convform.js"></script>
+
+	<script>
+		jQuery(function($){
+			var userData = [];
+			var newQuestion = '';
+			var count = 2;
+			var lastNext = 0;
+			var apiUrl ="https://tutorbackend.herokuapp.com/api/v1/question"
+			var convForm = $('#chat').convform({selectInputStyle: 'disable', eventList:{onInputSubmit: function(convState, ready) {
+					console.log('input is being submitted...');
+		        	get_question(convState, ready);
+		        	if (userData.hasOwnProperty('email') && userData.hasOwnProperty('subject') && userData.hasOwnProperty('location')) {
+		        		setTimeout(function() { assignTutor(convState, ready) }, 60000);
+				    }
+		    	}
+			}});
+
+			function assignTutor(convState, ready){
+				var assignTutorUrl = "https://tutorbackend.herokuapp.com/api/v1/getStudentTutor/"+userData['email'];
+				jQuery.ajax({url: assignTutorUrl, async: true, method: 'get', success: function(result){
+					var que = "There is no tutor available right now. Thank you!";
+					console.log(result.success);
+					if(result.success){
+						que = 'Tou have assign {tutor name} for your '+userData['subject']+' subject. Thank you!'
+					}
+					$('#messages').append('<div class="message to ready">'+que+'</div>').animate({scrollTop: $("#messages").offset().top+600},600);					
+				}});
+			}
+
+			function get_question(convState, ready){
+				if(convState.current.answer.value==='end') {
+		            convState.current.next = false;
+					setTimeout(ready, Math.random()*500+100);
+		        } else {
+					if(Array.isArray(convState.current.answer)){ 
+						var answer = convState.current.answer.join(', ');
+						userData[convState.current.input.name] = answer;
+					}
+					else{
+						var answer = convState.current.answer.text; 
+						userData[convState.current.input.name] = answer;
+					}
+					var queryString = '';
+					for (var key in userData){
+					    if (userData.hasOwnProperty(key)) {
+					        queryString += '&'+key+'='+userData[key];
+					    }
+					}   
+					jQuery.ajax({url: apiUrl+'?question='+count+queryString, async: false, method: 'get', success: function(result){
+						var qData = result.data.data;
+						var pattern = '';
+						for(var i = 0; i < qData.length; i++){
+							if(qData[i].title == 'email'){
+								pattern = "^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$";
+							}
+						    newQuestion = qData[i].question;
+						    count = qData[i].question_num;
+							var questionTitle = qData[i].title;
+							var newQuestion = newQuestion.replace("{name}", answer);
+
+							if(qData[i].no_answer == 1){
+								convState.current.next = convState.newState({
+									type: 'text',
+									noAnswer: true,
+									name: questionTitle,
+									questions: [newQuestion],
+								});
+								lastNext = 1;
+							}else{
+								if(lastNext == 1){
+									lastNext = 0;
+									if(qData[i].type == 'text'){
+										convState.current.next.next = convState.newState({
+											type: 'text',
+											name: questionTitle,
+											pattern: pattern,
+											questions: [newQuestion],
+										});
+									}else{
+										convState.current.next.next = convState.newState({
+											type: 'select',
+											name: questionTitle,
+											questions: [newQuestion],
+											answers: qData[i].options
+										});
+									}
+								}else{
+									if(qData[i].type == 'text'){
+										convState.current.next = convState.newState({
+											type: 'text',
+											pattern: pattern,
+											name: questionTitle,
+											questions: [newQuestion],
+										});
+
+									}else{
+										answersOption = qData[i].options;
+										convState.current.next = convState.newState({
+											type: 'select',
+											name: questionTitle,
+											questions: [newQuestion],
+											answers: answersOption
+										});
+									}
+								}
+								
+							}
+						}
+					}});
+					setTimeout(ready, Math.random()*500+100);
+		        }
+		        count++;
+			}
+		});
+	</script>
+</body>
+</html>

@@ -40,6 +40,12 @@ var corsOption = {
 app.get('/forgotpassword', function (req, res) {
     res.sendFile(__dirname + "/public/Reset/" + "index.html");
 })
+
+
+app.get('/chat', (req, res)=>{
+    res.sendFile(__dirname + "/public/chatbot/" + "index.html");
+})
+
 app.use(cors(corsOption));
 
 app.use(express.static(path.join(__dirname + '/')));
