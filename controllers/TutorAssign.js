@@ -26,6 +26,7 @@ const assignTutor = async (req, res) => {
             } else {
                 const title = 'Notification'
                 const query = notification.queryData
+                const studentmobile = notification.queryData.mobilenumber
                 // const subjectdata = await Subject.find({ _id: { $in: notification.queryData.subject} });
                 let subjectIds = notification.subject
                 let data1 = await getAllSubject(subjectIds);
@@ -33,17 +34,7 @@ const assignTutor = async (req, res) => {
                 for (var value of data1) {
                     arrOfSubject.push(value.subject);
                 }
-                // var newItems = data1.subject;
-                // arr.push(...newItems);
-                // console.log(arrOfSubject);
-
-                // console.log('===============>>>', data1);
-                // Contact MARCO👩‍🎓 for teaching MATH, JAVA,JAVASCRIPT 👩‍ within 12h⏰
-                // const message = `Name: ${query.name}
-                //                  Email: ${query.email}
-                //                  Subject: ${query.subject}
-                //                  Location: ${query.location}`
-                const message = `Contect: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰`
+                const message = `Contect: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ ${studentmobile}`;
                 const tutordata = await User.findOne({ _id: req.body.tutorId });
                 const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
                 NotificationService.sendSMS(mobileNumber, title, message)

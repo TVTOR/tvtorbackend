@@ -22,7 +22,7 @@ const createQuestion = async (req, res)=>{
 
 const getQuestion = async(req, res)=>{
     try {
-        if(req.query.name && req.query.email && req.query.location && req.query.subject){
+        if(req.query.name && req.query.email && req.query.mobilenumber && req.query.location && req.query.subject){
             questionService.createNotification(req.query)
         }
         const detail = {};
