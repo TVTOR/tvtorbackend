@@ -20,7 +20,9 @@ async function insertQuestions(params) {
 }
 
 const createNotification = async (query) => {
+  console.log('=====query==========', query);
   const tmIDs = await User.find({ location: { $in: query.location }, isDeleted: false, userType: 'tutormanager', status: true })
+   console.log('=====tmIDs======', tmIDs);
   for (let i = 0; i < tmIDs.length; i++) {
     var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
     if (devicedata && devicedata.deviceToken) {
@@ -36,6 +38,13 @@ const createNotification = async (query) => {
         message: message,
         queryData: query
       });
+      console.log('========NotificationData============', {
+        tmId: tmIDs[i]._id,
+        subject: query.subject,
+        location: query.location,
+        message: message,
+        queryData: query
+      })
       NotificationService.sendNotification(devicedata.deviceToken, title, message);
     }
   }
