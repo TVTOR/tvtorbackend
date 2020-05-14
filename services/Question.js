@@ -23,7 +23,7 @@ const createNotification = async (query) => {
   const tmIDs = await User.find({ location: { $in: query.location }, isDeleted: false, userType: 'tutormanager', status: true })
   for (let i = 0; i < tmIDs.length; i++) {
     var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
-    console.log('=======devicedata=========', devicedata);
+    console.log('=======devicedata====', devicedata);
     if (devicedata && devicedata.deviceToken) {
       const title = 'Notification'
       const message = `Name: ${query.name}
