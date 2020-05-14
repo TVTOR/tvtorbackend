@@ -37,7 +37,6 @@ const createNotification = async (query) => {
         message: message,
         queryData: query
       });
-      console.log('======NotificationData========', NotificationData)
       NotificationService.sendNotification(devicedata.deviceToken, title, message);
     }
   }
