@@ -4,7 +4,7 @@ const notificationModel = require(`${appRoot}/models/Notification`);
 
 async function insertNotification(params) {
 	var obj = {
-        managerId: params.managerId ? params.managerId : null,
+        tmId: params.tmId ? params.tmId : null,
         subject: params.subject ? params.subject : '',
         location: params.location ? params.location : '',
         message: params.message ? params.message : '',
@@ -14,7 +14,7 @@ async function insertNotification(params) {
 }
 
 async function getNotifications(managerId){
-    const notification = notificationModel.find({managerId: managerId});
+    const notification = notificationModel.find({tmId: managerId});
     return notification;
 }
 

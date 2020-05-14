@@ -44,12 +44,13 @@
 			var newQuestion = '';
 			var count = 2;
 			var lastNext = 0;
-			var apiUrl = "https://tutorbackend.herokuapp.com/api/v1/question"
+			var url = "http://localhost:5000/api/v1/question"
 			var convForm = $('#chat').convform({
 				selectInputStyle: 'disable', eventList: {
 					onInputSubmit: function (convState, ready) {
 						get_question(convState, ready);
 						if (userData.hasOwnProperty('email') && userData.hasOwnProperty('subject') && userData.hasOwnProperty('location')) {
+							console.log('=======userData==========', userData)
 							setTimeout(function () { assignTutor(convState, ready) }, 60000);
 						}
 					}
@@ -57,7 +58,7 @@
 			});
 
 			function assignTutor(convState, ready) {
-				var assignTutorUrl = "https://tutorbackend.herokuapp.com/api/v1/getStudentTutor/" + userData['email'];
+				var assignTutorUrl = "http://localhost:5000/api/v1/getStudentTutor/" + userData['email'];
 				jQuery.ajax({
 					url: assignTutorUrl, async: true, method: 'get', success: function (result) {
 						var que = "There is no tutor available right now. Thank you!";
@@ -89,7 +90,7 @@
 						}
 					}
 					jQuery.ajax({
-						url: apiUrl + '?question=' + count + queryString, async: false, method: 'get', success: function (result) {
+						url, data: { question: count }, async: false, method: 'post', success: function (result) {
 							var qData = result.data.data;
 							var pattern = '';
 							for (var i = 0; i < qData.length; i++) {

@@ -32,7 +32,7 @@ ConvState.prototype.newState = function(options) {
         required: true,
         questions: ['You forgot the question!'],
         type: 'text',
-        multiple: false,
+        multiple: true,
         selected: "",
         answers: []
     }, options);

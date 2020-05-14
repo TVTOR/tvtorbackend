@@ -9,7 +9,6 @@ const client = require('twilio')(accountSid, authToken);
 
 
 const sendNotification = async (deviceToken, title, body) => {
-    console.log('=====deviceToken=======body===', deviceToken, body);
     var message = {
         to: 'd1LqEJRLSPO26T4h4yKjci:APA91bGKLBYPUo5XJ_F_HZyxCi7_xPLVi8JfVxPVsIPh0WQajyNvy0QWrICafawVvlf7L3zFWbKlmrXwb6OXaF8ka5Gk9qn0of7jpAHzxotuLe94MAsIbBUJrFHctU0zJ_fpvk_UdHD0', // Multiple tokens in an array
         collapse_key: 'your_collapse_key',
@@ -17,13 +16,12 @@ const sendNotification = async (deviceToken, title, body) => {
             title: title,
             body: body
         },
-
         data: {
             my_key: 'my value',
             my_another_key: 'my another value'
         }
     };
-    console.log(message);
+    // console.log(message);
     // Send Notification
     fcm.send(message, function (err, response) {
         console.log(response);
@@ -39,7 +37,6 @@ const sendNotification = async (deviceToken, title, body) => {
 }
 
 async function sendSMS(mobile, title, body) {
-    console.log('===================', mobile)
     client.messages
         .create({
             body: body,

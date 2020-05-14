@@ -69,8 +69,8 @@ router.get('/location/:id', Location.getSingleLocation);
 router.post('/notification', Authorization.verifyToken, Notification.createNotification);
 router.get('/notification/:id', Authorization.verifyToken, Notification.getNotification);
 
-router.post('/question', Questions.createQuestion);
-router.get('/question', Questions.getQuestion);
+router.get('/question', Questions.createQuestion);
+router.post('/question', Questions.getQuestion);
 
 router.post('/assigntutor', TutorAssign.assignTutor);
 router.get('/sendNotificationToTutor/:id', TutorNotification.sendNotificationToTutor);
@@ -78,8 +78,5 @@ router.get('/getStudentTutor/:email', TutorAssign.getStudentTutor);
 
 
 router.get('/message', Message.sendMessage);
-
-
-
 
 module.exports = router;

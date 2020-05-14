@@ -11,7 +11,7 @@ const NotificationService = require('../services/Notification');
 const questionService = require('../services/Question');
 
 
-const createQuestion = async (req, res)=>{
+const createQuestion = async (req, res) => {
     try {
         const data = await questionService.insertQuestions(req.body);
         return utilServices.successResponse(res, constants.CREATE_QUESTIONS, 200, data);
@@ -20,58 +20,56 @@ const createQuestion = async (req, res)=>{
     }
 }
 
-const getQuestion = async(req, res)=>{
+const getQuestion = async (req, res) => {
     try {
-        if(req.query.name && req.query.email && req.query.mobilenumber && req.query.location && req.query.subject){
-            questionService.createNotification(req.query)
+        if (req.body.name && req.body.email && req.body.mobilenumber && req.body.location && req.body.subject) {
+            questionService.createNotification(req.body)
         }
         const detail = {};
         const dataArray = [];
-        let questionId = req.query.question;
-         const data = await Ouestions.findOne({question_num: questionId});
-         dataArray.push(data);
-         if(data.no_answer == 1 ){
-            questionId = parseInt(questionId)+1;
-           const data1 =  await Ouestions.findOne({question_num: questionId});
-           dataArray.push(data1);
-         }
-          detail.data = dataArray;
-          if(data.optionTable == "location" || detail.data.length == 2){
-             const locationdata = await Location.find({}, { location: 1, _id: 0 });
-             locationdata.forEach( (loc)=>{ 
+        let questionId = req.body.question;
+        const data = await Ouestions.findOne({ question_num: questionId });
+        dataArray.push(data);
+        if (data.no_answer == 1) {
+            questionId = parseInt(questionId) + 1;
+            const data1 = await Ouestions.findOne({ question_num: questionId });
+            dataArray.push(data1);
+        }
+        detail.data = dataArray;
+        if (data.optionTable == "location" || detail.data.length == 2) {
+            const locationdata = await Location.find({}, { location: 1, _id: 0 });
+            locationdata.forEach((loc) => {
                 const ldata = {};
                 ldata.text = loc.location
                 ldata.value = loc.location
-                if(detail.data.length == 2 && detail.data[1].optionTable == "location"){
+                if (detail.data.length == 2 && detail.data[1].optionTable == "location") {
                     detail.data[1].options.push(ldata);
-                }else if(data.optionTable == "location"){
+                } else if (data.optionTable == "location") {
                     detail.data[0].options.push(ldata);
                 }
-                
-             }) 
-          }
-          if(data.optionTable == "subject" || detail.data.length == 2 ){
-            const subjectdata = await Subject.find({}, { subject:1, _id: 0});
-            subjectdata.forEach( (sub)=>{ 
+            })
+        }
+        if (data.optionTable == "subject" || detail.data.length == 2) {
+            const subjectdata = await Subject.find({}, { subject: 1, _id: 0 });
+            subjectdata.forEach((sub) => {
                 const subData = {};
                 subData.text = sub.subject
                 subData.value = sub.subject
-                if(detail.data.length == 2 && detail.data[1].optionTable == "subject"){
+                if (detail.data.length == 2 && detail.data[1].optionTable == "subject") {
                     detail.data[1].options.push(subData);
-                }else if(data.optionTable == "subject"){
+                } else if (data.optionTable == "subject") {
                     detail.data[0].options.push(subData);
                 }
-            }) 
-         }
-
-        return utilServices.successResponse(res, "Questions created successfully.", 200, detail);
+            })
+        }
+        return utilServices.successResponse(res, "Set values for notification.", 200, detail);
     } catch (error) {
         return utilServices.errorResponse(res, "Something went wrong", 400);
     }
 }
 
 
-    
+
 module.exports = {
     createQuestion: createQuestion,
     getQuestion: getQuestion

@@ -20,7 +20,7 @@ async function insertQuestions(params) {
 }
 
 const createNotification = async (query) => {
-  const tmIDs = await User.find({ location: query.location, isDeleted: false, userType: 'tutormanager', status: true })
+  const tmIDs = await User.find({ location: { $in: query.location }, isDeleted: false, userType: 'tutormanager', status: true })
   for (let i = 0; i < tmIDs.length; i++) {
     var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
     if (devicedata && devicedata.deviceToken) {
@@ -29,13 +29,13 @@ const createNotification = async (query) => {
                        Email: ${query.email}
                        Subject: ${query.subject}
                        Location: ${query.location}`
-      await NotificationModel.create({
+      var NotificationData = await NotificationModel.create({
         tmId: tmIDs[i]._id,
         subject: query.subject,
         location: query.location,
         message: message,
         queryData: query
-      })
+      });
       NotificationService.sendNotification(devicedata.deviceToken, title, message);
     }
   }
