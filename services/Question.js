@@ -21,23 +21,20 @@ async function insertQuestions(params) {
 
 const createNotification = async (query) => {
   const tmIDs = await User.find({ location: { $in: query.location }, isDeleted: false, userType: 'tutormanager', status: true })
+  console.log('=======tmIDs========', tmIDs)
   for (let i = 0; i < tmIDs.length; i++) {
     var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
     console.log('=======devicedata====', devicedata);
     if (devicedata && devicedata.deviceToken) {
       const title = 'Notification'
-      const message = `Name: ${query.name}
-                       Email: ${query.email}
-                       Subject: ${query.subject}
-                       Location: ${query.location}`
-      var NotificationData = await NotificationModel.create({
+      const message = `Name: ${query.name} Email: ${query.email} Subject: ${query.subject} Location: ${query.location}`
+      await NotificationModel.create({
         tmId: tmIDs[i]._id,
         subject: query.subject,
         location: query.location,
         message: message,
         queryData: query
       });
-      console.log('======NotificationData==========', NotificationData);
       NotificationService.sendNotification(devicedata.deviceToken, title, message);
     }
   }
