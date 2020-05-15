@@ -26,7 +26,6 @@ ConvState.prototype.destroy = function(){
     return false;
 };
 ConvState.prototype.newState = function(options) {
-    // console.log('------options-----------', options)
     if(options.questions[0] == "Please, choose the subject in which you have a problem?"){
         var input = $.extend(true, {}, {
             name: '',
