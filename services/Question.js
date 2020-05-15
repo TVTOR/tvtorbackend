@@ -5,6 +5,8 @@ const Device = require(`${appRoot}/models/Device`);
 const NotificationService = require(`${appRoot}/services/SendNotification`);
 const User = require(`${appRoot}/models/User`);
 const NotificationModel = require('../models/Notification');
+const subjectModel = require(`${appRoot}/models/Subjects`);
+const locationModel = require(`${appRoot}/models/Locations`);
 
 async function insertQuestions(params) {
   var obj = {
@@ -20,18 +22,32 @@ async function insertQuestions(params) {
 }
 
 const createNotification = async (query) => {
-  const tmIDs = await User.find({ location: { $in: query.location }, isDeleted: false, userType: 'tutormanager', status: true })
-  console.log('=======tmIDs========', tmIDs)
+  const tmIDs = await User.find({ isDeleted: false, userType: 'tutormanager', status: true })
+  let data1 = await subjectModel.find({ _id: query.subject });
+  let data2 = await locationModel.find({ _id: query.location });
+  // let subjectData = await getSubjectData(subject);
+  let subjectArray = [];
+  await data1.map((subjectData) => {
+    subjectArray.push(subjectData.subject)
+  });
+  let locationArray = [];
+  await data2.map((locationData) => {
+    locationArray.push(locationData.location)
+  });
+  // // var arrOfSubject = [];
+  // for (var value of data1) {
+  //   subjectArray.push({subject: value.subject })
+  // }
   for (let i = 0; i < tmIDs.length; i++) {
     var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
-    console.log('=======devicedata====', devicedata);
+    // console.log('========devicedatadevicedata========', devicedata);
     if (devicedata && devicedata.deviceToken) {
       const title = 'Notification'
-      const message = `Name: ${query.name} Email: ${query.email} Subject: ${query.subject} Location: ${query.location}`
+      const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
       await NotificationModel.create({
         tmId: tmIDs[i]._id,
-        subject: query.subject,
-        location: query.location,
+        subject: subjectArray,
+        location: locationArray,
         message: message,
         queryData: query
       });
@@ -39,8 +55,6 @@ const createNotification = async (query) => {
     }
   }
 }
-
-
 
 module.exports = {
   insertQuestions,
