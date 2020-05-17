@@ -303,7 +303,7 @@ const updateUser = async function (req, res) {
       updateData.location = splitLocation;
       var getLocation = await Locations.find({ _id: { $in: splitLocation } })
       updateData.locationData = await getLocation.map((locationData) => {
-        return { _id: locationData._id, subject: locationData.location }
+        return { _id: locationData._id, location: locationData.location }
       })
     }
     if (req.body.subjects) {
@@ -334,7 +334,6 @@ const updateUser = async function (req, res) {
       return utilServices.successResponse(res, constants.UPDATE_DATA, 200, data1);
     }
   } catch (error) {
-
     return utilServices.successResponse(res, constants.DB_ERROR, 500);
   }
 }

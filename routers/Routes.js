@@ -75,6 +75,8 @@ router.post('/question', Questions.getQuestion);
 router.post('/assigntutor', TutorAssign.assignTutor);
 router.get('/sendNotificationToTutor/:id', TutorNotification.sendNotificationToTutor);
 router.get('/getStudentTutor/:email', TutorAssign.getStudentTutor);
+router.post('/getStudentTutor', TutorAssign.getAssignTutor);
+
 
 
 router.get('/message', Message.sendMessage);

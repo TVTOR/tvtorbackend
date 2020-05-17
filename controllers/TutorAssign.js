@@ -18,17 +18,23 @@ const assignTutor = async (req, res) => {
         obj.email = notification.queryData.email;
         obj.subject = notification.queryData.subject;
         obj.location = notification.queryData.location;
-        obj.tutorId = req.body.tutorId
+        obj.tutorId = req.body.tutorId;
         obj.notificationId = notification._id;
         await TutorAssign.create(obj, async (err, data) => {
             if (err) {
+                console.log('------25---------', err)
                 return utilServices.errorResponse(res, "Something went wrong.", 500);
             } else {
                 const title = 'Notification'
                 const query = notification.queryData
                 const studentmobile = notification.queryData.mobilenumber
-                // const subjectdata = await Subject.find({ _id: { $in: notification.queryData.subject} });
-                let subjectIds = notification.subject
+                
+                const subjectdata = await Subject.find({ subject: { $in: notification.subject} });
+                let subjectIds = [];
+                for(let i = 0; i< subjectdata.length; i++){
+                   subjectIds.push(subjectdata[i]._id);
+                }
+                // let subjectIds = notification.queryData.subject
                 let data1 = await getAllSubject(subjectIds);
                 var arrOfSubject = [];
                 for (var value of data1) {
@@ -42,6 +48,7 @@ const assignTutor = async (req, res) => {
             }
         })
     } catch (error) {
+        console.log('-----------------', error)
         return utilServices.errorResponse(res, "Something went wrong.", 500);
     }
 }
@@ -75,7 +82,29 @@ const getStudentTutor = async (req, res) => {
     }
 }
 
+const getAssignTutor = async(req, res)=>{
+    try {
+        let tutorassigndata = await TutorAssignServices.getAssignTutor(req.body);
+        console.log('=============', tutorassigndata);
+        if (!tutorassigndata) {
+            return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 400);
+        }
+        let tutorassigndataId = tutorassigndata.tutorId;
+        let tutordata = await TutorAssignServices.getTutorData(tutorassigndataId);
+        var data = JSON.parse(JSON.stringify(tutorassigndata));
+        data.tutor = {
+            name: tutordata.name ? tutordata.name : '',
+            surname: tutordata.surname ? tutordata.surname : ''
+        }
+        return utilServices.successResponse(res, constants.DATA_FOUND, 200, data);
+
+    } catch (error) {
+        return utilServices.successResponse(res, constants.DB_ERROR, 500);
+    }
+}
+
 module.exports = {
     assignTutor: assignTutor,
-    getStudentTutor: getStudentTutor
+    getStudentTutor: getStudentTutor,
+    getAssignTutor: getAssignTutor
 }

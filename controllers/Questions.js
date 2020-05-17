@@ -23,8 +23,10 @@ const createQuestion = async (req, res) => {
 const getQuestion = async (req, res) => {
     try {
         if (req.body.name && req.body.email && req.body.mobilenumber && req.body.location && req.body.subject) {
+           console.log('=========Notification Hit========');
             questionService.createNotification(req.body)
         }
+
         const detail = {};
         const dataArray = [];
         let questionId = req.body.question;

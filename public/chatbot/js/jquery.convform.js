@@ -312,11 +312,11 @@ ConvState.prototype.answerWith = function(answerText, answerObject) {
         var inputs = $(this).find('input, select, textarea').map(function(){
             var input = {};
             if($(this).attr('name'))
-                input['name'] = $(this).attr('name');
+            input['name'] = $(this).attr('name');
             if($(this).attr('data-no-answer'))
-                input['noAnswer'] = true;
+            input['noAnswer'] = true;
             if($(this).attr('required'))
-                input['required'] = true;
+            input['required'] = true;
             if($(this).attr('type'))
                 input['type'] = $(this).attr('type');
             input['questions'] = $(this).attr('data-conv-question').split("|");
@@ -523,7 +523,7 @@ ConvState.prototype.answerWith = function(answerText, answerObject) {
             $(inputForm).submit(function(e){
                 e.preventDefault();
                 var answer = $(this).find(parameters.inputIdHashTagName).val();
-                console.log("=========================================iNPUT Answer=========================");
+                // console.log("=========================================iNPUT Answer=========================");
                 $(this).find(parameters.inputIdHashTagName).val("");
                 if(state.current.input.type == 'select'){
                     if(!state.current.input.multiple){

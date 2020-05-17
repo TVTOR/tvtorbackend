@@ -15,12 +15,18 @@ async function getTutorData(tutorId){
     return tutordata;
 }
 async function getSubjectData(subject) {
-	var splitSubject = subject[0].split(',').map((elem) => mongoose.Types.ObjectId(elem))
+	var splitSubject = subject.map((elem) => mongoose.Types.ObjectId(elem))
 	return await subjectModel.find({ _id: { $in: splitSubject } });
+}
+
+async function getAssignTutor(deatils){
+   let assignData = await assignTutorModel.findOne({name: deatils.name, email: deatils.email, subject: deatils.subject, location: deatils.location});
+   return assignData;
 }
 
 module.exports = {
     getStudentTutorByEmail,
     getTutorData,
-    getSubjectData
+    getSubjectData,
+    getAssignTutor
 }
