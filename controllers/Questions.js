@@ -66,6 +66,7 @@ const getQuestion = async (req, res) => {
         }
         return utilServices.successResponse(res, "Set values for notification.", 200, detail);
     } catch (error) {
+        console.log('-----------------Notification Error===', error);
         return utilServices.errorResponse(res, "Something went wrong", 400);
     }
 }
