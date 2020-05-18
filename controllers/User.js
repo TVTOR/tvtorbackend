@@ -320,6 +320,9 @@ const updateUser = async function (req, res) {
     if (req.body.description) {
       updateData.description = req.body.description;
     }
+    if(req.body.mobileNumber){
+      updateData.mobileNumber = req.body.mobileNumber;
+    }
     if (req.file && req.file.path) {
       uploadImage.imageUpload(req.file, async function (err, data) {
         if (err) {

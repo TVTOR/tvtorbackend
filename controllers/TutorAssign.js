@@ -23,7 +23,6 @@ const assignTutor = async (req, res) => {
         obj.notificationId = notification._id;
         await TutorAssign.create(obj, async (err, data) => {
             if (err) {
-                console.log('------25---------', err)
                 return utilServices.errorResponse(res, "Something went wrong.", 500);
             } else {
                 const title = 'Notification'
@@ -43,6 +42,7 @@ const assignTutor = async (req, res) => {
                 }
                 const message = `Contect: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ ${studentmobile}`;
                 const tutordata = await User.findOne({ _id: req.body.tutorId });
+                console.log('=============Tutor Data-----------', tutordata);
                 const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
                 NotificationService.sendSMS(mobileNumber, title, message)
                 return utilServices.successResponse(res, "Created successfully.", 200, data);
