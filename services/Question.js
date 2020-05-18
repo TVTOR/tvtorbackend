@@ -23,12 +23,11 @@ async function insertQuestions(params) {
 
 const createNotification = async (query) => {
   try {
-    const tId = await getTutorId(query.subject);
+    // const subId = await getTutorId(query.subject);
     const lIds = await getLocationIds(query.location);
-    const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: tId }, isDeleted: false, userType: 'tutormanager', status: true })
-    console.log('=====tmIDstmIDs============', tmIDs);
+    const tmIDs = await User.find({ location: { $in: lIds }, isDeleted: false, userType: 'tutormanager', status: true })
     const subjectArray = (query.subject).split(',');
-    const locationArray = (query.location).split(',')
+    const locationArray = (query.location).split(',');
     // let data1 = await subjectModel.find({ _id:  query.subject });
     // let data2 = await locationModel.find({ _id: query.location });
     // let subjectData = await getSubjectData(subject);
@@ -46,7 +45,7 @@ const createNotification = async (query) => {
     // }
     for (let i = 0; i < tmIDs.length; i++) {
       var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
-      console.log('========devicedatadevicedata========', devicedata);
+      // console.log('========devicedatadevicedata========', devicedata);
       if (devicedata && devicedata.deviceToken) {
         const title = 'Notification'
         const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
