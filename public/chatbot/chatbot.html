@@ -44,7 +44,7 @@
 			var newQuestion = '';
 			var count = 2;
 			var lastNext = 0;
-			var url = "http://localhost/5000/api/v1/question"
+			var url = "https://tutorbackend.herokuapp.com/api/v1/question"
 			var convForm = $('#chat').convform({
 				selectInputStyle: 'disable', eventList: {
 					onInputSubmit: function (convState, ready) {
@@ -57,7 +57,7 @@
 			});
 
 			function assignTutor(convState, ready) {
-				var assignTutorUrl = "http://localhost/5000/api/v1/getStudentTutor";
+				var assignTutorUrl = "https://tutorbackend.herokuapp.com/api/v1/getStudentTutor";
 				jQuery.ajax({
 					url: assignTutorUrl, async: true, method: 'post', data: userData, success: function (result) {
 						console.log('-----------Result----------', result);
