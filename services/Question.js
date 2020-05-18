@@ -22,7 +22,9 @@ async function insertQuestions(params) {
 }
 
 const createNotification = async (query) => {
-  const tmIDs = await User.find({ isDeleted: false, userType: 'tutormanager', status: true })
+  const tId = await getTutorId(query.subject);
+  const lIds = await getLocationIds(query.location);
+  const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: tId }, isDeleted: false, userType: 'tutormanager', status: true })
   const subjectArray = (query.subject).split(',');
   const locationArray = (query.location).split(',')
   // let data1 = await subjectModel.find({ _id:  query.subject });
@@ -42,7 +44,7 @@ const createNotification = async (query) => {
   // }
   for (let i = 0; i < tmIDs.length; i++) {
     var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
-    console.log('========devicedatadevicedata========', devicedata);
+    // console.log('========devicedatadevicedata========', devicedata);
     if (devicedata && devicedata.deviceToken) {
       const title = 'Notification'
       const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
@@ -57,6 +59,34 @@ const createNotification = async (query) => {
     }
   }
 }
+
+async function getTutorId(subject) {
+  const sub = subject.split(',');
+  let data1 = await subjectModel.find({ subject: sub });
+  let subjectArray = [];
+  await data1.map((subjectData) => {
+    subjectArray.push(subjectData._id);
+  });
+  let userData = await User.find({ subjects: { $in: subjectArray }, isDeleted: false, userType: 'tutor', status: true });
+  let usersIds = [];
+  await userData.map((users) => {
+    usersIds.push(users.managerId);
+  });
+  return usersIds;
+}
+
+async function getLocationIds(location) {
+  const loc = location.split(',');
+  let data2 = await locationModel.find({ location: loc });
+  let locationArray = [];
+  await data2.map((locationData) => {
+    locationArray.push(locationData._id);
+  });
+  return locationArray;
+}
+
+
+
 
 module.exports = {
   insertQuestions,

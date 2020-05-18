@@ -13,6 +13,7 @@ const assignTutor = async (req, res) => {
     try {
         const notificationId = req.body.notificationId
         const notification = await Notification.findOne({ _id: notificationId });
+        console.log('=======notification data========', notification)
         const obj = {};
         obj.name = notification.queryData.name;
         obj.email = notification.queryData.email;

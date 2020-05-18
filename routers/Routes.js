@@ -12,6 +12,7 @@ const Questions = require('../controllers/Questions');
 const TutorAssign = require('../controllers/TutorAssign');
 const TutorNotification = require('../controllers/TutorNotification');
 const Message = require('../controllers/sendMessage');
+const Comments = require(`${appRoot}/controllers/Comment`);
 
 
 const storage = multer.diskStorage({
@@ -77,8 +78,9 @@ router.get('/sendNotificationToTutor/:id', TutorNotification.sendNotificationToT
 router.get('/getStudentTutor/:email', TutorAssign.getStudentTutor);
 router.post('/getStudentTutor', TutorAssign.getAssignTutor);
 
-
-
 router.get('/message', Message.sendMessage);
+
+router.post('/comments', Authorization.verifyToken, Comments.createComment);
+router.get('/comments', Authorization.verifyToken, Comments.getComments);
 
 module.exports = router;
