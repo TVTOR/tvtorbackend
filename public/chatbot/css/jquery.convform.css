@@ -214,6 +214,7 @@ div.conv-form-wrapper div.options {
     overflow-x: scroll;
     position: absolute;
     bottom: 100%;
+    height: 84px;
     width: 100%;
     transform: translateY(4px);
 }
