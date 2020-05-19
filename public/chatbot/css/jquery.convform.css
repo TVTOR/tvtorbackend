@@ -232,7 +232,7 @@ div.conv-form-wrapper div.options div.option {
     color: #06c5a6;
     cursor: pointer;
     border-radius: 20px;
-    font-size: 15px;
+    font-size: 13px;
 }
 div.conv-form-wrapper div.message {
     animation: slideTop 0.15s ease;
