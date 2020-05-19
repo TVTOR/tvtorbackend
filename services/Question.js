@@ -23,9 +23,10 @@ async function insertQuestions(params) {
 
 const createNotification = async (query) => {
   try {
-    // const subId = await getTutorId(query.subject);
+    const subtmId = await getTutorId(query.subject);
+    console.log('=====subId==========', subtmId)
     const lIds = await getLocationIds(query.location);
-    const tmIDs = await User.find({ location: { $in: lIds }, isDeleted: false, userType: 'tutormanager', status: true })
+    const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: subtmId }, isDeleted: false, userType: 'tutormanager', status: true })
     const subjectArray = (query.subject).split(',');
     const locationArray = (query.location).split(',');
     // let data1 = await subjectModel.find({ _id:  query.subject });
@@ -62,17 +63,21 @@ const createNotification = async (query) => {
   } catch (error) {
     console.log('==========Error------------', error);
   }
- 
+
 }
 
 async function getTutorId(subject) {
+  console.log('=================', subject);
   const sub = subject.split(',');
-  let data1 = await subjectModel.find({ subject: sub });
+  console.log('---------sub-------------', sub)
+  let data1 = await subjectModel.find({ subject: {$in: sub} });
   let subjectArray = [];
   await data1.map((subjectData) => {
     subjectArray.push(subjectData._id);
   });
-  let userData = await User.find({ subjects: { $in: subjectArray }, isDeleted: false, userType: 'tutor', status: true });
+  console.log('========subjectArray==========', subjectArray)
+  let userData = await User.find({ subjects: { $all: subjectArray }, isDeleted: false, userType: 'tutor', status: true });
+  console.log('==========userData============', userData);
   let usersIds = [];
   await userData.map((users) => {
     usersIds.push(users.managerId);
