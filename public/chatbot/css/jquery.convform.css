@@ -81,7 +81,7 @@
 }
 
 form.convFormDynamic {
-    width: calc(100% - 33px);
+    width: 100%;
     margin: 10px auto 15px;
     padding: 0 !important;
     position: relative;
@@ -94,13 +94,14 @@ form.convFormDynamic textarea.userInputDynamic {
     outline: none;
     font-size: 0.905rem;
     float: left;
-    width: calc(100% - 70px);
+    width: calc(100% - 89px);
     line-height: 1.3em;
     min-height: 1.7em;
     max-height: 10rem;
     display: block;
     max-width: 88%;
     margin-right: 2.5%;
+    resize: none !important;
 }
 
 
@@ -214,7 +215,7 @@ div.conv-form-wrapper div.options {
     position: absolute;
     bottom: 100%;
     width: 100%;
-    transform: translateY(-5px);
+    transform: translateY(4px);
 }
 div.conv-form-wrapper div.options:after {
     content: '';
@@ -222,15 +223,15 @@ div.conv-form-wrapper div.options:after {
     clear: both;
 }
 div.conv-form-wrapper div.options div.option {
-    padding: 7px 12px;
+    padding: 3px 12px;
     border: 1px solid rgba(6,153,184,0.3);
     display: inline-block;
-    margin: 5px;
+    margin: 3px 3px;
     background: #fff;
     color: #06c5a6;
     cursor: pointer;
     border-radius: 20px;
-    font-size: 0.9rem;
+    font-size: 15px;
 }
 div.conv-form-wrapper div.message {
     animation: slideTop 0.15s ease;
@@ -309,7 +310,7 @@ form.convFormDynamic button.submit {
     cursor: pointer;
     border-radius: 8px;
     font-size: 1.1rem;
-    width: 36px;
+    width: 55px;
     height: 35px;
     margin-top: 4px;
     background: #fff;
