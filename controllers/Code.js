@@ -12,6 +12,16 @@ const randomNumber = async(req, res)=>{
     }
  }
 
+ const deviceData = async (req, res)=>{
+     try {
+        const data = await codeService.insertDevice(req.body);
+        return utilServices.successResponse(res, constants.CREATE_DEVICES, 200, data);
+     } catch (error) {
+        return utilServices.errorResponse(res, constants.DB_ERROR, 500); 
+     }
+ }
+
 module.exports = {
-    randomNumber: randomNumber
+    randomNumber: randomNumber,
+    deviceData: deviceData
 }

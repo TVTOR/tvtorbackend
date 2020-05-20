@@ -41,7 +41,7 @@ let login = async (req, res) => {
         checkEmail.subjectData = await getAllSubject(checkEmail.subjects);
       }
       const responseData = response(checkEmail, secretToken);
-      await userService.insertDevice(req.body, checkEmail.userType, checkEmail._id);
+      // await userService.insertDevice(req.body, checkEmail.userType, checkEmail._id);
       return utilServices.successResponse(res, constants.LOGIN_SUCCESS, 201, responseData);
     }
   } catch (err) {

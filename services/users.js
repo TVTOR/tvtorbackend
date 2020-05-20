@@ -69,19 +69,19 @@ async function insertSession(id, userType, token) {
 	return await userSessionModel.create(userData);
 }
 
-async function insertDevice(params, userType, id) {
-	const data = {
-		deviceId: params.deviceId,
-		deviceType: params.deviceType,
-		deviceToken: params.deviceToken,
-	}
-	if (userType == 'tutormanager') {
-		data.tmId = id
-	} else if (userType == 'tutor') {
-		data.tutorId = id
-	}
-	return await deviceModel.create(data);
-}
+// async function insertDevice(params, userType, id) {
+// 	const data = {
+// 		deviceId: params.deviceId,
+// 		deviceType: params.deviceType,
+// 		deviceToken: params.deviceToken,
+// 	}
+// 	if (userType == 'tutormanager') {
+// 		data.tmId = id
+// 	} else if (userType == 'tutor') {
+// 		data.tutorId = id
+// 	}
+// 	return await deviceModel.create(data);
+// }
 
 async function getUsersList() {
 	const data = await usersModel.find({});
@@ -162,7 +162,6 @@ module.exports = {
 	getLocationData,
 	getSubjectData,
 	insertSession,
-	insertDevice,
 	getUsersList,
 	removeSession,
 	getSingleUser,
