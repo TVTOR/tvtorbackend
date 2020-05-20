@@ -76,7 +76,7 @@ async function getTutorId(subject) {
     subjectArray.push(subjectData._id);
   });
   console.log('========subjectArray==========', subjectArray)
-  let userData = await User.find({ subjects: { $all: subjectArray }, isDeleted: false, userType: 'tutor', status: true });
+  let userData = await User.find({ subjects: { $in: subjectArray }, isDeleted: false, userType: 'tutor', status: true });
   console.log('==========userData============', userData);
   let usersIds = [];
   await userData.map((users) => {
