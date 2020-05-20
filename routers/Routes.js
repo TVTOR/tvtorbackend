@@ -16,16 +16,16 @@ const Comments = require(`${appRoot}/controllers/Comment`);
 
 
 const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
+    destination: function (req, file, cb) {
         cb(undefined, './public/images');
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         cb(undefined, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 });
 const upload = multer({
     storage: storage,
-    fileFilter: function(req, file, callback, res) {
+    fileFilter: function (req, file, callback, res) {
         var ext = path.extname(file.originalname);
         if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
             return callback(new Error('Only images are allowed'))
@@ -48,7 +48,7 @@ router.delete('/user/logout/:id', Authorization.verifyToken, User.logout);
 router.get('/user/:id', Authorization.verifyToken, User.getUser);
 router.delete('/user/:id', Authorization.verifyToken, User.deleteUser);
 router.put('/user/:id', Authorization.verifyToken, upload.single('image'), User.updateUser);
-router.get('/managers',Authorization.verifyToken, User.getAllTM);
+router.get('/managers', Authorization.verifyToken, User.getAllTM);
 router.get('/tutors', Authorization.verifyToken, User.getAllTutors);
 router.put('/changeuserstatus/:id', Authorization.verifyToken, User.changeUserStatus);
 router.put('/userdelete/:id', Authorization.verifyToken, User.changeUserDelete);
@@ -67,6 +67,7 @@ router.get('/location', Location.getAllLocations);
 router.put('/location/:id', Location.updateLocations);
 router.delete('/location/:id', Location.deleteLocations);
 router.get('/location/:id', Location.getSingleLocation);
+router.get('/getTutorsLocation', Location.getTutorsLocation);
 
 router.post('/notification', Authorization.verifyToken, Notification.createNotification);
 router.get('/notification/:id', Authorization.verifyToken, Notification.getNotification);

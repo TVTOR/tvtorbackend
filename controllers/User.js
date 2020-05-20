@@ -460,7 +460,7 @@ const changeUserStatus = async function (req, res) {
 const changeUserDelete = async function (req, res) {
   try {
     var userId = req.params.id;
-    var statuschange = false
+    var statuschange = true
     await userService.declineTutorManagers(userId, statuschange)
     return utilServices.successResponse(res, constants.DECLINE_TM, 200);
   } catch (error) {

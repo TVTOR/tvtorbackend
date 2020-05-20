@@ -88,10 +88,32 @@ const getAllLocations = async function (req, res){
     }
   }
 
+  const getTutorsLocation = async function(req, res){
+    try {
+      var data = await locationService.getLocationOfTutors();
+      let data1 = []
+      await data.map((locationdata)=>{
+        data1.push(locationdata.location);
+      })
+      var merged = [].concat.apply([], data1);
+      console.log('=====data1==========', merged);
+      const locationData = await locationService.getSingleLocationOfTutor(merged);
+      console.log('=======locationData===========', locationData)
+      if (!data > 0) {
+        return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 400);
+      }
+      return utilServices.successResponse(res, constants.DATA_FOUND, 200, locationData);
+    } catch (error) {
+      console.log('====================', error);
+      return utilServices.successResponse(res, constants.DB_ERROR, 500);
+    }
+  }
+
 module.exports = {
     createLocations: createLocations,
     getAllLocations: getAllLocations,
     deleteLocations: deleteLocations,
     updateLocations: updateLocations,
-    getSingleLocation: getSingleLocation
+    getSingleLocation: getSingleLocation,
+    getTutorsLocation: getTutorsLocation
 }

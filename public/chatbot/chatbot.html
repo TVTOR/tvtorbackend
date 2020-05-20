@@ -40,15 +40,18 @@
 
 	<script>
 		jQuery(function ($) {
+			const baseUrl = 'https://tutorbackend.herokuapp.com/api/v1';
+			// const baseUrl = 'http://localhost:5000/api/v1';
 			var userData = {};
 			var newQuestion = '';
 			var count = 2;
 			var lastNext = 0;
-			var url = "https://tutorbackend.herokuapp.com/api/v1/question"
+			var url = `${baseUrl}/question`
 			var convForm = $('#chat').convform({
 				selectInputStyle: 'disable', eventList: {
 					onInputSubmit: function (convState, ready) {
 						get_question(convState, ready);
+						console.log('=========convState============', convState);
 						if (userData.hasOwnProperty('email') && userData.hasOwnProperty('subject') && userData.hasOwnProperty('location')) {
 							setTimeout(function () { assignTutor(convState, ready) }, 60000);
 						}
@@ -57,7 +60,7 @@
 			});
 
 			function assignTutor(convState, ready) {
-				var assignTutorUrl = "https://tutorbackend.herokuapp.com/api/v1/getStudentTutor";
+				var assignTutorUrl = `${baseUrl}/getStudentTutor`;
 				jQuery.ajax({
 					url: assignTutorUrl, async: true, method: 'post', data: userData, success: function (result) {
 						console.log('-----------Result----------', result);
@@ -140,8 +143,6 @@
 
 										} else {
 											answersOption = qData[i].options;
-											console.log('=========Last============');
-											console.log('-------answersOption----------', answersOption);
 											convState.current.next = convState.newState({
 												type: 'select',
 												name: questionTitle,
@@ -149,18 +150,7 @@
 												answers: answersOption
 											});
 										}
-
 									}
-									// 	console.log('----------gdgdgdgdgd-----------',qData, i);
-									// 	if (qData[i].title == 'tutor') {
-									// 		console.log('--------if-------------');
-									// 		convState.current.next = convState.newState({
-									// 			type: 'text',
-									// 			pattern: pattern,
-									// 			name: questionTitle,
-									// 			questions: [newQuestion],
-									// 		});
-									// 	}
 								}
 							}
 						}

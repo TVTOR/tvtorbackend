@@ -132,7 +132,7 @@ async function acceptTutorManagers(userId, statuschange){
 }
 
 async function declineTutorManagers(userId, statuschange){
-   const user = await usersModel.updateOne({_id: userId}, { status: statuschange });
+   const user = await usersModel.updateOne({_id: userId}, { isDeleted: statuschange });
    return user;
 }
 async function getAllTutorsOfManagersList(search, sort, order, perpage, skip){
