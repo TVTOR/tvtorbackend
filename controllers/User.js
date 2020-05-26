@@ -118,6 +118,7 @@ const register = async (req, res) => {
       }
     }
   } catch (err) {
+    console.log('Eofoforororoor', err);
     return utilServices.errorResponse(res, constants.DB_ERROR, 401);
   }
 };
@@ -254,7 +255,7 @@ const getUser = async function (req, res) {
     let location = await getLocation(data.location);
     let subject = await getSubject(data.subjects);
     let allLocationList = await getAllLocationList();
-    data.locationList = allLocationList  ;
+    data.locationList = allLocationList;
     data.locationData = location;
     data.subjectData = subject;
     return utilServices.successResponse(res, constants.DATA_FOUND, 200, data);
@@ -263,7 +264,7 @@ const getUser = async function (req, res) {
   }
 }
 
-async function getAllLocationList(){
+async function getAllLocationList() {
   const loactionList = await Locations.find({});
   return locationData = await loactionList.map((locationData) => {
     return { _id: locationData._id, location: locationData.location }
@@ -320,7 +321,7 @@ const updateUser = async function (req, res) {
     if (req.body.description) {
       updateData.description = req.body.description;
     }
-    if(req.body.mobileNumber){
+    if (req.body.mobileNumber) {
       updateData.mobileNumber = req.body.mobileNumber;
     }
     if (req.file && req.file.path) {
@@ -493,13 +494,19 @@ const getAllTutorsOfManager = async function (req, res) {
     search.isDeleted = false;
     search.managerId = mongoose.Types.ObjectId(tmId);
     const total = await userService.countTutorManager(search);
-    const data = await userService.getAllTutorsOfManagersList(search, sort, order, perpage, skip)
+    var data = await userService.getAllTutorsOfManagersList(search, sort, order, perpage, skip)
+    data = JSON.parse(JSON.stringify(data));
+    for (let i = 0; i < data.length; i++) {
+      var commentdata = await userService.getComment(data[i]._id);
+      data[i].comment = commentdata.comment;
+    }
     if (!data.length > 0) {
       return utilServices.successResponse(res, constants.DATA_NOT_FOUND, 404);
     }
     return utilServices.successResponse(res, constants.DATA_FOUND, 200, { data: data, total: total });
   }
   catch (error) {
+    console.log('================', error);
     return utilServices.successResponse(res, constants.DB_ERROR, 500);
   }
 

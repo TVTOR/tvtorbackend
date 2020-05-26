@@ -67,7 +67,7 @@ router.get('/location', Location.getAllLocations);
 router.put('/location/:id', Location.updateLocations);
 router.delete('/location/:id', Location.deleteLocations);
 router.get('/location/:id', Location.getSingleLocation);
-router.get('/getTutorsLocation', Location.getTutorsLocation);
+router.post('/getTutorsLocation', Location.getTutorsLocation);
 
 router.post('/notification', Authorization.verifyToken, Notification.createNotification);
 router.get('/notification/:id', Authorization.verifyToken, Notification.getNotification);

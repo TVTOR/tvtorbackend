@@ -45,17 +45,39 @@ async function locationUpdate(updatedata) {
     return await updatedata.save();
 }
 
-async function getLocationOfTutors() {
-   let data = await userModel.find({userType: "tutor"});
-   return data;
+async function getLocationOfTutors(locationIds) {
+
+    let data = await userModel.find({ location: { $in: locationIds }, userType: "tutor" });
+    return data;
 }
 
-async function getSingleLocationOfTutor(locationId){
-   console.log('================locationId=============', locationId);
-   let locationdata = await locationModel.find({_id: {$in: locationId}});
-   console.log('----------locationdata--------------', locationdata);
-   return locationdata;
+async function insertLocationCheck(params) {
+    var obj = {
+        location: params.location ? params.location : '',
+    };
+    return await obj;
 }
+async function getlocations(locationId) {
+    let locationdata = await locationModel.find({ location: { $in: locationId } });
+    return locationdata;
+}
+
+async function getSingleLocationOfTutor(locationId) {
+    console.log('================locationId=============', locationId);
+    let locationdata = await locationModel.find({ _id: { $in: locationId } });
+    console.log('----------locationdata--------------', locationdata);
+    return locationdata;
+}
+
+async function getLocationIds(locations) {
+    let locationdata = await locationModel.find({ location: { $in: locations } });
+    const locIds = [];
+    for (let i = 0; i < locationdata.length; i++) {
+        locIds.push(locationdata[i]._id);
+    }
+    return locIds;
+}
+
 
 module.exports = {
     checkLocation,
@@ -66,5 +88,8 @@ module.exports = {
     getSingleLocation,
     locationUpdate,
     getLocationOfTutors,
-    getSingleLocationOfTutor
+    getSingleLocationOfTutor,
+    insertLocationCheck,
+    getlocations,
+    getLocationIds
 }

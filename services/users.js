@@ -7,6 +7,7 @@ var userSessionModel = require(`${appRoot}/models/Session`);
 const locationModel = require(`${appRoot}/models/Locations`);
 const deviceModel = require(`${appRoot}/models/Device`);
 const userSesseion = require(`${appRoot}/models/Session`);
+const commentModel = require(`${appRoot}/models/Comment`);
 
 var mongoose = require('mongoose');
 
@@ -98,59 +99,66 @@ async function getSingleUser(userId) {
 	return user;
 }
 
-async function userDelete(userId){
-	const user = await usersModel.findByIdAndDelete({_id: userId});
+async function userDelete(userId) {
+	const user = await usersModel.findByIdAndDelete({ _id: userId });
 	return user;
 }
 
-async function getTutorManagersList(search, sort, order, perpage, skip){
+async function getTutorManagersList(search, sort, order, perpage, skip) {
 	const user = await usersModel.find(search)
-	.collation({ 'locale': 'en' })
-	.sort({ [sort]: parseInt(order) })
-	.skip(skip)
-	.limit(perpage);
+		.collation({ 'locale': 'en' })
+		.sort({ [sort]: parseInt(order) })
+		.skip(skip)
+		.limit(perpage);
 	return user;
 }
 
-async function countTutorManager(search){
+async function countTutorManager(search) {
 	const total = await usersModel.count(search);
-	return total; 
+	return total;
 }
 
-async function getAllTutorManagers(search, sort, order, perpage, skip){
+async function getAllTutorManagers(search, sort, order, perpage, skip) {
 	const user = await usersModel.find(search)
-	.collation({ 'locale': 'en' })
-	.sort({ [sort]: parseInt(order) })
-	.skip(skip)
-	.limit(perpage);
+		.collation({ 'locale': 'en' })
+		.sort({ [sort]: parseInt(order) })
+		.skip(skip)
+		.limit(perpage);
 	return user;
 }
 
-async function acceptTutorManagers(userId, statuschange){
-   const user = await usersModel.updateOne({_id: userId}, { status: statuschange });
-   return user;
-}
-
-async function declineTutorManagers(userId, statuschange){
-   const user = await usersModel.updateOne({_id: userId}, { isDeleted: statuschange });
-   return user;
-}
-async function getAllTutorsOfManagersList(search, sort, order, perpage, skip){
-	const user = await usersModel.find(search)
-	.collation({ 'locale': 'en' })
-	.sort({ [sort]: parseInt(order) })
-	.skip(skip)
-	.limit(perpage);
+async function acceptTutorManagers(userId, statuschange) {
+	const user = await usersModel.updateOne({ _id: userId }, { status: statuschange });
 	return user;
 }
 
-async function checkUser(userId){
-   const user = await usersModel.findById(userId);
-   return user;
+async function declineTutorManagers(userId, statuschange) {
+	const user = await usersModel.updateOne({ _id: userId }, { isDeleted: statuschange });
+	return user;
+}
+async function getAllTutorsOfManagersList(search, sort, order, perpage, skip) {
+	const user = await usersModel.find(search)
+		.collation({ 'locale': 'en' })
+		.sort({ [sort]: parseInt(order) })
+		.skip(skip)
+		.limit(perpage);
+	return user;
 }
 
-async function userUpdate(updatedata){
+async function checkUser(userId) {
+	const user = await usersModel.findById(userId);
+	return user;
+}
+
+async function userUpdate(updatedata) {
 	return await updatedata.save();
+}
+
+async function getComment(tutorId) {
+	let comment = await commentModel.findOne({ tutorId: tutorId });
+	// console.log('======={ tutorId: tutorId }=========', { tutorId: tutorId });
+	// console.log('============comment--------------', comment);
+	return comment;
 }
 
 module.exports = {
@@ -173,5 +181,6 @@ module.exports = {
 	declineTutorManagers,
 	getAllTutorsOfManagersList,
 	checkUser,
-	userUpdate
+	userUpdate,
+	getComment
 }

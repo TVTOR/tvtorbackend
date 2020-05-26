@@ -51,7 +51,11 @@
 				selectInputStyle: 'disable', eventList: {
 					onInputSubmit: function (convState, ready) {
 						get_question(convState, ready);
-						console.log('=========convState============', convState);
+						// console.log('=========userData============', userData);
+						// console.log('========userData.hasOwnProperty(=============', userData.hasOwnProperty('subject'))
+						// if(userData.hasOwnProperty('location')){
+						// 	setTimeout(function () { locationCheck(convState, ready) }, 3000);
+						// }
 						if (userData.hasOwnProperty('email') && userData.hasOwnProperty('subject') && userData.hasOwnProperty('location')) {
 							setTimeout(function () { assignTutor(convState, ready) }, 60000);
 						}
@@ -59,11 +63,27 @@
 				}
 			});
 
-			function assignTutor(convState, ready) {
+			function locationCheck(){
+				// console.log('==========convState=============', convState);
+				var checkLocationUrl = `${baseUrl}/getTutorsLocation`;
+				jQuery.ajax({
+					url: checkLocationUrl, async: true, method: 'post', data: userData, success: function(result){
+						if(result.statusCode == 404){
+							var que = "There is no tutor are available on this location";
+							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
+						    return false;
+						} else {
+							return true;
+						}
+					}
+				})
+			}
+
+		function assignTutor(convState, ready) {
 				var assignTutorUrl = `${baseUrl}/getStudentTutor`;
 				jQuery.ajax({
 					url: assignTutorUrl, async: true, method: 'post', data: userData, success: function (result) {
-						console.log('-----------Result----------', result);
+						// console.log('-----------Result----------', result);
 						var que = "There is no tutor available right now. Thank you!";
 						if (result.success) {
 							const name = result.data.tutor.name;
@@ -94,7 +114,11 @@
 						}
 					}
 					jQuery.ajax({
+					
 						url, data: { question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name }, async: false, method: 'post', success: function (result) {
+							// if(userData.location){
+							//  locationCheck()
+							// }
 							var qData = result.data.data;
 							var pattern = '';
 							for (var i = 0; i < qData.length; i++) {

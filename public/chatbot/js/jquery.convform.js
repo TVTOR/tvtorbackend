@@ -26,33 +26,45 @@ ConvState.prototype.destroy = function(){
     return false;
 };
 ConvState.prototype.newState = function(options) {
-    if(options.questions[0] == "Please, choose the subject in which you have a problem?"){
-        var input = $.extend(true, {}, {
-            name: '',
-            noAnswer: false,
-            required: true,
-            questions: ['You forgot the question!'],
-            type: 'text',
-            multiple: true,
-            selected: "",
-            answers: []
-        }, options);
-        input.element = $('<input type="text" name="'+input.name+'"/>');
-        return new SingleConvState(input);
-    } else {
-        var input = $.extend(true, {}, {
-            name: '',
-            noAnswer: false,
-            required: true,
-            questions: ['You forgot the question!'],
-            type: 'text',
-            multiple: false,
-            selected: "",
-            answers: []
-        }, options);
-        input.element = $('<input type="text" name="'+input.name+'"/>');
-        return new SingleConvState(input);
-    }
+    // if(options.questions[0] == "Please, choose the subject in which you have a problem?"){
+    //     var input = $.extend(true, {}, {
+    //         name: '',
+    //         noAnswer: false,
+    //         required: true,
+    //         questions: ['You forgot the question!'],
+    //         type: 'text',
+    //         multiple: true,
+    //         selected: "",
+    //         answers: []
+    //     }, options);
+    //     input.element = $('<input type="text" name="'+input.name+'"/>');
+    //     return new SingleConvState(input);
+    // } else {
+    //     var input = $.extend(true, {}, {
+    //         name: '',
+    //         noAnswer: false,
+    //         required: true,
+    //         questions: ['You forgot the question!'],
+    //         type: 'text',
+    //         multiple: false,
+    //         selected: "",
+    //         answers: []
+    //     }, options);
+    //     input.element = $('<input type="text" name="'+input.name+'"/>');
+    //     return new SingleConvState(input);
+    // }
+    var input = $.extend(true, {}, {
+        name: '',
+        noAnswer: false,
+        required: true,
+        questions: ['You forgot the question!'],
+        type: 'text',
+        multiple: true,
+        selected: "",
+        answers: []
+    }, options);
+    input.element = $('<input type="text" name="'+input.name+'"/>');
+    return new SingleConvState(input);
    
 };
 ConvState.prototype.next = function(){
