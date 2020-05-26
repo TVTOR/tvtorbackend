@@ -26,9 +26,28 @@ async function getManagerId(managerId){
     let managerdata = await userModel.findOne({_id: managerId, userType: 'tutormanager'});
     return managerdata; 
 }
+
+async function getComment(tutorId, managerId){
+    let commentdata = await commentModel.findOne({tutorId: tutorId, managerId: managerId});
+    return commentdata;
+}
+
+
+async function getCommentById(commentId){
+    let commentdata = await commentModel.findOne({_id: commentId});
+    return commentdata;
+}
+
+async function getCommentId(updatedata){
+    return await updatedata.save();
+}
+
 module.exports = {
     insertComment,
     getComments,
     getTutorId,
-    getManagerId
+    getManagerId,
+    getComment,
+    getCommentId,
+    getCommentById
 }

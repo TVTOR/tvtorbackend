@@ -156,8 +156,6 @@ async function userUpdate(updatedata) {
 
 async function getComment(tutorId) {
 	let comment = await commentModel.findOne({ tutorId: tutorId });
-	// console.log('======={ tutorId: tutorId }=========', { tutorId: tutorId });
-	// console.log('============comment--------------', comment);
 	return comment;
 }
 
