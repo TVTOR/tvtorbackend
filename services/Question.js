@@ -24,9 +24,10 @@ async function insertQuestions(params) {
 const createNotification = async (query) => {
   try {
     const subtmId = await getTutorId(query.subject);
-    console.log('=====subId==========', subtmId)
+    // console.log('=====subId==========', subtmId);
     const lIds = await getLocationIds(query.location);
     const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: subtmId }, isDeleted: false, userType: 'tutormanager', status: true })
+    console.log('=========tmIDs============', tmIDs[0]._id);
     const subjectArray = (query.subject).split(',');
     const locationArray = (query.location).split(',');
     // let data1 = await subjectModel.find({ _id:  query.subject });
@@ -45,8 +46,8 @@ const createNotification = async (query) => {
     //   subjectArray.push({subject: value.subject })
     // }
     for (let i = 0; i < tmIDs.length; i++) {
+      console.log('-----{ tmId: (tmIDs[i]._id) }----------', { tmId: (tmIDs[i]._id) })
       var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
-      // console.log('========devicedatadevicedata========', devicedata);
       if (devicedata && devicedata.deviceToken) {
         const title = 'Notification'
         const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
@@ -60,6 +61,7 @@ const createNotification = async (query) => {
         NotificationService.sendNotification(devicedata.deviceToken, title, message);
       }
     }
+    console.log('========devicedatadevicedata========', devicedata);
   } catch (error) {
     console.log('==========Error------------', error);
   }
@@ -76,8 +78,8 @@ async function getTutorId(subject) {
     subjectArray.push(subjectData._id);
   });
   console.log('========subjectArray==========', subjectArray)
-  let userData = await User.find({ subjects: { $in: subjectArray }, isDeleted: false, userType: 'tutor', status: true });
-  console.log('==========userData============', userData);
+  let userData = await User.find({ subjects: { $in: subjectArray }, isDeleted: false, userType: 'tutor'});
+  // console.log('==========userData============', userData);
   let usersIds = [];
   await userData.map((users) => {
     usersIds.push(users.managerId);
