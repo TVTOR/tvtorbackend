@@ -498,8 +498,11 @@ const getAllTutorsOfManager = async function (req, res) {
     data = JSON.parse(JSON.stringify(data));
     for (let i = 0; i < data.length; i++) {
       var commentdata = await userService.getComment(data[i]._id);
-      data[i].comment = commentdata.comment;
+      data[i].comment = commentdata ? commentdata.comment : null;
     }
+    //  if(!comment){
+    //   return utilServices.successResponse(res, constants.DATA_FOUND, 200, { data: data, total: total });
+    //  }
     if (!data.length > 0) {
       return utilServices.successResponse(res, constants.DATA_NOT_FOUND, 404);
     }
