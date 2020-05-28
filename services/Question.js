@@ -59,6 +59,17 @@ const createNotification = async (query) => {
           queryData: query
         });
         NotificationService.sendNotification(devicedata.deviceToken, title, message);
+      } else {
+        const title = 'Notification'
+        const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
+        await NotificationModel.create({
+          tmId: tmIDs[i]._id,
+          subject: subjectArray,
+          location: locationArray,
+          message: message,
+          queryData: query
+        });
+        // NotificationService.sendNotification(devicedata.deviceToken, title, message);
       }
     }
     console.log('========devicedatadevicedata========', devicedata);
