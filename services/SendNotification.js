@@ -1,5 +1,5 @@
 var FCM = require('fcm-node');
-var serverKey = 'AAAABsP6cpA:APA91bFECwaBl8OvwcJPFTAYh_aBl9ntoaUtrPIuSKUo4Uc9Vgf-DpE702wF228VyVVxWPBnhmcIZ_pKjij_qYavmPPUhMFGsHPfVqBZzaLj2zYZJD2-T4zfQUQLZqRe2mYtDBswOu_S'; //put your server key here
+var serverKey = 'AAAADcqhd6c:APA91bG1ErDbgDJTjoUCrYbltjTz40zo-VyMf5a-jVEIK2Ko1tMNrfvVTlG78KbpNCNncbZu8vXPezpK7Yt6NQdJLQgc1DqVjKxVWSNDeYofVrJ0PQE68BtV1_0R1QCDIMxam6ad455B'; //put your server key here
 var fcm = new FCM(serverKey);
 
 
@@ -9,8 +9,10 @@ const client = require('twilio')(accountSid, authToken);
 
 
 const sendNotification = async (deviceToken, title, body) => {
+    console.log('------------deviceToken--------------', deviceToken);
     var message = {
-        to: 'd1LqEJRLSPO26T4h4yKjci:APA91bGKLBYPUo5XJ_F_HZyxCi7_xPLVi8JfVxPVsIPh0WQajyNvy0QWrICafawVvlf7L3zFWbKlmrXwb6OXaF8ka5Gk9qn0of7jpAHzxotuLe94MAsIbBUJrFHctU0zJ_fpvk_UdHD0', // Multiple tokens in an array
+        // to: 'dxFrJGtXRoiQzoXYsJ8QZg:APA91bF7qJxRlVbKxvb84J0GFgbDDpNRgtJj4uBllJMEFBZdV7lRvHzY_XaBa-uE-ij_52vVh9A4vyhXRvoctTe4cymZXya05a69vvfVkDuDU1yLOtchn7zySo0y_4aPwbMuRqUo1S8K', // Multiple tokens in an array
+        to: deviceToken,
         collapse_key: 'your_collapse_key',
         notification: {
             title: title,
@@ -21,7 +23,7 @@ const sendNotification = async (deviceToken, title, body) => {
             my_another_key: 'my another value'
         }
     };
-    // console.log(message);
+    console.log(message);
     // Send Notification
     fcm.send(message, function (err, response) {
         console.log(response);
@@ -40,7 +42,7 @@ async function sendSMS(mobile, title, body) {
     client.messages
         .create({
             body: body,
-            title: 'This student assign for totor',
+            title: 'This student assign for tutor',
             from: '+12057514564',
             to: '+91' + mobile
         })

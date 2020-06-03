@@ -24,6 +24,9 @@ let login = async (req, res) => {
     if (!checkEmail) {
       return utilServices.errorResponse(res, constants.INCORRECT_EMAIL, 401);
     }
+    if(checkEmail.status === false && checkEmail.userType === 'tutormanager'){
+      return utilServices.errorResponse(res, constants.VERIFY_STATUS, 401);
+    }
     const encryptedPassword = authHelper.validatePassword(req.body.password, checkEmail.password);
     if (!encryptedPassword) {
       return utilServices.errorResponse(res, constants.LOGIN_INCORRECT_PASSWORD, 401);
@@ -495,14 +498,15 @@ const getAllTutorsOfManager = async function (req, res) {
     search.managerId = mongoose.Types.ObjectId(tmId);
     const total = await userService.countTutorManager(search);
     var data = await userService.getAllTutorsOfManagersList(search, sort, order, perpage, skip)
+    // console.log('=======data========', data);
+  
     data = JSON.parse(JSON.stringify(data));
     for (let i = 0; i < data.length; i++) {
+      var subjects = await getAllSubject(data[i].subjects);
+      data[i].subjectData = subjects;
       var commentdata = await userService.getComment(data[i]._id);
       data[i].comment = commentdata ? commentdata.comment : null;
     }
-    //  if(!comment){
-    //   return utilServices.successResponse(res, constants.DATA_FOUND, 200, { data: data, total: total });
-    //  }
     if (!data.length > 0) {
       return utilServices.successResponse(res, constants.DATA_NOT_FOUND, 404);
     }

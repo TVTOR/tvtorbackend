@@ -142,7 +142,8 @@ async function getAllTutorsOfManagersList(search, sort, order, perpage, skip) {
 		.sort({ [sort]: parseInt(order) })
 		.skip(skip)
 		.limit(perpage);
-	return user;
+console.log('===============user=====', user);
+		return user;
 }
 
 async function checkUser(userId) {

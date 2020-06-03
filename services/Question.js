@@ -80,7 +80,7 @@ const createNotification = async (query) => {
 }
 
 async function getTutorId(subject) {
-  console.log('=================', subject);
+  // console.log('=================', subject);
   const sub = subject.split(',');
   console.log('---------sub-------------', sub)
   let data1 = await subjectModel.find({ subject: {$in: sub} });

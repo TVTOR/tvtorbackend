@@ -43,6 +43,7 @@ const assignTutor = async (req, res) => {
                 const message = `Contect: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ ${studentmobile}`;
                 const tutordata = await User.findOne({ _id: req.body.tutorId });
                 console.log('=============Tutor Data-----------', tutordata);
+                console.log('=============tutordata.mobileNumber-----------', tutordata.mobileNumber);
                 const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
                 NotificationService.sendSMS(mobileNumber, title, message)
                 return utilServices.successResponse(res, "Created successfully.", 200, data);
