@@ -151,7 +151,7 @@ const forgotPassword = async (req, res) => {
             to: req.body.email,
             subject: 'Link to reset password.',
             text: 'IMS',
-            html: '<h1>Change your password</h1><a href ="' + config.API_URL + '/forgotpassword?id=' + data._id + '">Please click here to change your password</a></b>'
+            html: '<h1>Change your password</h1><a href ="' + config.API_URL + 'forgotpassword?id=' + data._id + '">Please click here to change your password</a></b>'
           };
           transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
