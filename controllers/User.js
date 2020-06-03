@@ -141,13 +141,13 @@ const forgotPassword = async (req, res) => {
             port: 587,
             secure: false, // true for 465, false for other ports
             auth: {
-              user: 'sunilskv37@gmail.com', // generated ethereal user
-              pass: '9696533366@#123' // generated ethereal password
+              user: 'sunil.ongraph@gmail.com', // generated ethereal user
+              pass: '9696533366' // generated ethereal password
             }
           });
 
           var mailOptions = {
-            from: 'sunilskv37@gmail.com',
+            from: 'sunil.ongraph@gmail.com',
             to: req.body.email,
             subject: 'Link to reset password.',
             text: 'IMS',
@@ -503,6 +503,7 @@ const getAllTutorsOfManager = async function (req, res) {
     data = JSON.parse(JSON.stringify(data));
     for (let i = 0; i < data.length; i++) {
       var subjects = await getAllSubject(data[i].subjects);
+      console.log('----subjects---------', subjects);
       data[i].subjectData = subjects;
       var commentdata = await userService.getComment(data[i]._id);
       data[i].comment = commentdata ? commentdata.comment : null;
