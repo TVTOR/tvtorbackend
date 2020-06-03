@@ -98,7 +98,7 @@
                     document.getElementById("demo").innerHTML = res.message;
                 }
             };
-            var apiUrl = dataUrl[0] + '/api/v1/updatepassword/';
+            var apiUrl = dataUrl[0] + 'api/v1/updatepassword/';
             xhttp.open("PUT", apiUrl + data.token, true);
             xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhttp.send("&password=" + data.password);
