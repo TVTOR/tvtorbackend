@@ -498,8 +498,6 @@ const getAllTutorsOfManager = async function (req, res) {
     search.managerId = mongoose.Types.ObjectId(tmId);
     const total = await userService.countTutorManager(search);
     var data = await userService.getAllTutorsOfManagersList(search, sort, order, perpage, skip)
-    // console.log('=======data========', data);
-  
     data = JSON.parse(JSON.stringify(data));
     for (let i = 0; i < data.length; i++) {
       var subjects = await getAllSubject(data[i].subjects);
@@ -514,7 +512,7 @@ const getAllTutorsOfManager = async function (req, res) {
     return utilServices.successResponse(res, constants.DATA_FOUND, 200, { data: data, total: total });
   }
   catch (error) {
-    console.log('================', error);
+    console.log('========error========', error);
     return utilServices.successResponse(res, constants.DB_ERROR, 500);
   }
 
