@@ -502,7 +502,7 @@ const getAllTutorsOfManager = async function (req, res) {
     for (let i = 0; i < data.length; i++) {
       var subjects = await getAllSubject(data[i].subjects);
       console.log('----subjects---------', subjects);
-      data[i].subjectData = subjects;
+      data[i].subjectData = subjects ? subjects: null;
       var commentdata = await userService.getComment(data[i]._id);
       data[i].comment = commentdata ? commentdata.comment : null;
     }
