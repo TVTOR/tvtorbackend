@@ -57,7 +57,12 @@ async function getLocationData(location) {
 }
 
 async function getSubjectData(subject) {
-	var splitSubject = subject.map((elem) => mongoose.Types.ObjectId(elem))
+	console.log('==========getSubjectData===========', subject);
+	if(subject && subject.length){
+		var splitSubject = subject.map((elem) => mongoose.Types.ObjectId(elem))
+	} else {
+		var splitSubject = [];
+	}
 	return await subjectModel.find({ _id: { $in: splitSubject } });
 }
 
