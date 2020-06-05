@@ -46,7 +46,7 @@ const assignTutor = async (req, res) => {
                 console.log('=============tutordata.mobileNumber-----------', tutordata.mobileNumber);
                 const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
                 NotificationService.sendSMS(mobileNumber, title, message)
-                return utilServices.successResponse(res, "Created successfully.", 200, data);
+                return utilServices.successResponse(res, "Assign Tutor Successfully", 200, data);
             }
         })
     } catch (error) {
