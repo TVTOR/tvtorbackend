@@ -40,8 +40,8 @@
 
 	<script>
 		jQuery(function ($) {
-			const baseUrl = 'https://tutorbackend.herokuapp.com/api/v1';
-			// const baseUrl = 'http://localhost:5000/api/v1';
+			// const baseUrl = 'https://tutorbackend.herokuapp.com/api/v1';
+			const baseUrl = 'http://localhost:5000/api/v1';
 			var userData = {};
 			var newQuestion = '';
 			var count = 2;
@@ -83,7 +83,7 @@
 				var assignTutorUrl = `${baseUrl}/getStudentTutor`;
 				jQuery.ajax({
 					url: assignTutorUrl, async: true, method: 'post', data: userData, success: function (result) {
-						// console.log('-----------Result----------', result);
+						console.log('-----------Result----------', result);
 						var que = "There is no tutor available right now. Thank you!";
 						if (result.success) {
 							const name = result.data.tutor.name;

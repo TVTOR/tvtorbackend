@@ -165,7 +165,7 @@ div.conv-form-wrapper:before {
 }
 @media (max-width: 767px) {
     div.conv-form-wrapper div.wrapper-messages, div.conv-form-wrapper div#messages {
-        max-height: 74vh !important;
+        max-height: 76vh !important;
     }
     div#messages {
         margin-bottom: 45px !important; 
@@ -180,7 +180,7 @@ div.conv-form-wrapper div.wrapper-messages::-webkit-scrollbar, div#feed ul::-web
     /* optional: just make scrollbar invisible */
 }
 div#messages {
-    margin-bottom: 45px !important; 
+    margin-bottom: 62px !important; 
 }
 input[type="text"].userInputDynamic.error {
     color: #ac0000 !important;
@@ -402,4 +402,7 @@ span.clear {
         box-shadow: 0 -2em;
         height: 5em;
     }
+}
+.wrapper-messages {
+    margin-bottom: 0px !important;
 }
