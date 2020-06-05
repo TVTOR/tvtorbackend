@@ -27,7 +27,7 @@ const createNotification = async (query) => {
     // console.log('=====subId==========', subtmId);
     const lIds = await getLocationIds(query.location);
     const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: subtmId }, isDeleted: false, userType: 'tutormanager', status: true })
-    console.log('=========tmIDs============', tmIDs[0]._id);
+    console.log('=========tmIDs============', tmIDs);
     const subjectArray = (query.subject).split(',');
     const locationArray = (query.location).split(',');
     // let data1 = await subjectModel.find({ _id:  query.subject });
