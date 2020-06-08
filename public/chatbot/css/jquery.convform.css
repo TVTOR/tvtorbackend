@@ -165,10 +165,19 @@ div.conv-form-wrapper:before {
 }
 @media (max-width: 767px) {
     div.conv-form-wrapper div.wrapper-messages, div.conv-form-wrapper div#messages {
-        max-height: 76vh !important;
+        max-height: 80vh !important;
     }
     div#messages {
         margin-bottom: 45px !important; 
+    }
+    div.conv-form-wrapper div.options {
+        height: 61px !important;
+    }
+    form.convFormDynamic {
+        margin: 9px auto 0px;
+    }
+    div#messages {
+        margin-bottom: 32px !important;
     }
 }
 
