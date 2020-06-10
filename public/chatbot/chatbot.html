@@ -17,6 +17,9 @@
 		<div class="vertical-align">
 			<div class="container">
 				<div class="row">
+					<!-- <img src="/public/chatbot/chat_logo.png" id="logo_image" height="40px"
+					width="40px" style="display: none;">
+					<img src="/public/chatbot/chat-cross.png" id="logo_close_image" height="40px" width="40px"> -->
 					<div class="col-sm-6 col-sm-offset-3 col-xs-offset-0">
 						<div class="card no-border">
 							<div id="chat">
@@ -38,7 +41,24 @@
 	<script type="text/javascript" src="js/autosize.min.js"></script>
 	<script type="text/javascript" src="js/jquery.convform.js"></script>
 
+
+
 	<script>
+		// // $(document).on('click', "#logo_close_image", function () {
+		// // 	// $("#logo_close_image").hide();
+		// // 	$(".chat-widget-wrap").hide();
+		// // 	$("#logo_image").show();
+		// // });
+		// $('#logo_close_image').on('click', function () {
+		// 	$("#chat").css("display", "none");
+		// 	$("#logo_image").show();
+		// 	$('#logo_close_image').hide();
+		// });
+		// $('#logo_image').on('click', function () {
+		// 	$("#chat").css("display", "block");
+		// 	$("#logo_image").hide();
+		// 	$('#logo_close_image').show();
+		// });
 		jQuery(function ($) {
 			const baseUrl = 'https://tutorbackend.herokuapp.com/api/v1';
 			// const baseUrl = 'http://localhost:5000/api/v1';
@@ -63,15 +83,15 @@
 				}
 			});
 
-			function locationCheck(){
+			function locationCheck() {
 				// console.log('==========convState=============', convState);
 				var checkLocationUrl = `${baseUrl}/getTutorsLocation`;
 				jQuery.ajax({
-					url: checkLocationUrl, async: true, method: 'post', data: userData, success: function(result){
-						if(result.statusCode == 404){
+					url: checkLocationUrl, async: true, method: 'post', data: userData, success: function (result) {
+						if (result.statusCode == 404) {
 							var que = "There is no tutor are available on this location";
 							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
-						    return false;
+							return false;
 						} else {
 							return true;
 						}
@@ -79,7 +99,7 @@
 				})
 			}
 
-		function assignTutor(convState, ready) {
+			function assignTutor(convState, ready) {
 				var assignTutorUrl = `${baseUrl}/getStudentTutor`;
 				jQuery.ajax({
 					url: assignTutorUrl, async: true, method: 'post', data: userData, success: function (result) {
@@ -114,7 +134,7 @@
 						}
 					}
 					jQuery.ajax({
-					
+
 						url, data: { question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name }, async: false, method: 'post', success: function (result) {
 							// if(userData.location){
 							//  locationCheck()

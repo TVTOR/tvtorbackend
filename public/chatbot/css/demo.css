@@ -27,3 +27,9 @@ section#demo {
 #convForm{
 	width: 100%;
 }
+#logo_close_image{
+	position: absolute;
+	right: 20px;
+	top: 18px;
+	z-index: 9;
+}

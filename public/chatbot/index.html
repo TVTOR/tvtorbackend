@@ -18,14 +18,17 @@
 <body>
 	<div class="chat-icon" id="chat-icon" style="cursor: pointer;">
 	    <a id="open_widget" style="cursor: pointer;">
-            <img src="/public/chatbot/chat_logo.png" id="logo_image" height="40px"
+            <img src="/public/chatbot/chat_logo.png" id="logo_image-index" height="40px"
                 width="40px">
-            <img src="/public/chatbot/chat-cross.png" id="logo_close_image" height="40px"
-                width="40px" style="display:none">
+            <!-- <img src="/public/chatbot/chat-cross.png" id="logo_close_image" height="40px"
+                width="40px" style="display:none"> -->
         </a>
 	</div>
 	<section class="chat-widget-wrap chat_one" id="chat_wrap" style="display: none;">
 		<div id="chat-widget-container">
+            <!-- <img src="/public/chatbot/chat-cross.png" id="logo_close_image" height="40px"
+                    width="40px" style="display:none"> -->
+                    <img src="/public/chatbot/chat_corss.svg" id="logo_close_image" style="display:none">
 			<iframe src="/public/chatbot/chatbot.html" id="chat-widget" allowtransparency="true" allowfullscreen="true"></iframe>
 		</div>
 		
@@ -82,19 +85,22 @@
     #chat-widget-container {
     height: 90% !important;
    }
+   #logo_close_image{
+	
+	top: 25px;
+	
+  }
 }
 </style>
 <script type="text/javascript">
-$(document).on('click', "#open_widget", function () {
-    var x = document.getElementById("chat_wrap");
-    if (x.style.display === "none") {
+    $('#logo_image-index').on('click', function () {
         $(".chat-widget-wrap").show();
-        $("#logo_close_image").show();
-        $("#logo_image").hide();
-    } else {
-        $("#logo_image").show();
-        $("#logo_close_image").hide();
+        $("#logo_image-index").hide();
+        $('#logo_close_image').show();
+    });
+    $(document).on('click', '#logo_close_image', function () {
         $(".chat-widget-wrap").hide();
-    }
-});
+        $('#logo_close_image').hide();
+        $("#logo_image-index").show();
+    });
 </script>
