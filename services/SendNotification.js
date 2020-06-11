@@ -10,7 +10,7 @@ const authToken = '467b418c1f708f0cc4cb89260e2837e1';
 const client = require('twilio')(accountSid, authToken);
 
 
-const sendNotification = async (deviceToken, title, body) => {
+const sendNotification = async (deviceToken, title, body, notdata) => {
     console.log('------------deviceToken--------------', deviceToken);
     var message = {
         // to: 'dxFrJGtXRoiQzoXYsJ8QZg:APA91bF7qJxRlVbKxvb84J0GFgbDDpNRgtJj4uBllJMEFBZdV7lRvHzY_XaBa-uE-ij_52vVh9A4vyhXRvoctTe4cymZXya05a69vvfVkDuDU1yLOtchn7zySo0y_4aPwbMuRqUo1S8K', // Multiple tokens in an array
@@ -21,8 +21,8 @@ const sendNotification = async (deviceToken, title, body) => {
             body: body
         },
         data: {
-            my_key: 'my value',
-            my_another_key: 'my another value'
+            click_action: 'FLUTTER_NOTIFICATION_CLICK',
+            notificationId: notdata._id
         }
     };
     console.log(message);

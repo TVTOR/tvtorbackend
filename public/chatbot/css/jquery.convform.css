@@ -170,9 +170,8 @@ div.conv-form-wrapper:before {
     div#messages {
         margin-bottom: 45px !important; 
     }
-    div.conv-form-wrapper div.options {
-        height: 61px !important;
-    }
+   
+
     form.convFormDynamic {
         margin: 9px auto 0px;
     }
@@ -223,7 +222,7 @@ div.conv-form-wrapper div.options {
     overflow-x: scroll;
     position: absolute;
     bottom: 100%;
-    height: 84px;
+    height: 76px;
     width: 100%;
     transform: translateY(4px);
 }

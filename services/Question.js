@@ -27,7 +27,7 @@ const createNotification = async (query) => {
     // console.log('=====subId==========', subtmId);
     const lIds = await getLocationIds(query.location);
     const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: subtmId }, isDeleted: false, userType: 'tutormanager', status: true })
-    console.log('=========tmIDs============', tmIDs);
+    // console.log('=========tmIDs============', tmIDs);
     const subjectArray = (query.subject).split(',');
     const locationArray = (query.location).split(',');
     // let data1 = await subjectModel.find({ _id:  query.subject });
@@ -46,33 +46,42 @@ const createNotification = async (query) => {
     //   subjectArray.push({subject: value.subject })
     // }
     for (let i = 0; i < tmIDs.length; i++) {
-      console.log('-----{ tmId: (tmIDs[i]._id) }----------', { tmId: (tmIDs[i]._id) })
+      // console.log('-----{ tmId: (tmIDs[i]._id) }----------', { tmId: (tmIDs[i]._id) })
       var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
+      // const click_action = "FLUTTER_NOTIFICATION_CLICK";
+      // let fluterData = {
+      //   click_action:"FLUTTER_NOTIFICATION_CLICK",
+      // }
       if (devicedata && devicedata.deviceToken) {
         const title = 'Notification'
         const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
-        await NotificationModel.create({
+     var notdata =    await NotificationModel.create({
           tmId: tmIDs[i]._id,
           subject: subjectArray,
           location: locationArray,
           message: message,
-          queryData: query
+          queryData: query,
+          // data: fluterData
         });
-        NotificationService.sendNotification(devicedata.deviceToken, title, message);
+        NotificationService.sendNotification(devicedata.deviceToken, title, message, notdata);
       } else {
         const title = 'Notification'
+       
         const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
-        await NotificationModel.create({
+       let not = await NotificationModel.create({
           tmId: tmIDs[i]._id,
           subject: subjectArray,
           location: locationArray,
           message: message,
-          queryData: query
+          queryData: query,
+          data: fluterData
         });
+        console.log('---------Main Hu Naa............');
+        console.log('=======not==========',not)
         // NotificationService.sendNotification(devicedata.deviceToken, title, message);
       }
     }
-    console.log('========devicedatadevicedata========', devicedata);
+    // console.log('========devicedatadevicedata========', devicedata);
   } catch (error) {
     console.log('==========Error------------', error);
   }
