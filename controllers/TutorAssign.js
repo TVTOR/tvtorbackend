@@ -27,7 +27,7 @@ const assignTutor = async (req, res) => {
         
         console.log('===========Data============', data);
         if (data && data.length) {
-            return utilServices.errorResponse(res, "This tutor has been assigned already.", 500);
+            return utilServices.errorResponse(res, "Request has been expired.", 500);
         }
         await TutorAssign.create(obj, async (err, data) => {
             if (err) {
