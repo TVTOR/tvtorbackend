@@ -21,7 +21,7 @@ const assignTutor = async (req, res) => {
         obj.location = notification.queryData.location;
         obj.tutorId = req.body.tutorId;
         obj.notificationId = notification._id;
-        const data = await TutorAssignServices.getAssignTutorStatus(req.body.tutorId, req.body.notificationId);
+        const data = await TutorAssignServices.getAssignTutorStatus(req.body.notificationId);
         console.log('===========Data============', data);
         // const emailCheck = data;
         

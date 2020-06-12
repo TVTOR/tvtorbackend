@@ -31,9 +31,9 @@ async function alreadyAssigned(notificationId, statuschange) {
     return user;
 }
 
-async function getAssignTutorStatus(tutorId, notificationId) {
-    console.log('=====notificationId======notificationId===========',tutorId, notificationId)
-    let assignData = await assignTutorModel.find({ tutorId: { $in: tutorId }, notificationId: mongoose.Types.ObjectId(notificationId) });
+async function getAssignTutorStatus(notificationId) {
+    console.log('=====notificationId======notificationId===========',notificationId)
+    let assignData = await assignTutorModel.find({notificationId: notificationId });
     return assignData;
 }
 
