@@ -21,9 +21,10 @@ const assignTutor = async (req, res) => {
         obj.location = notification.queryData.location;
         obj.tutorId = req.body.tutorId;
         obj.notificationId = notification._id;
-        const data = await TutorAssignServices.getAssignTutorStatus(req.body.tutorId);
+        const data = await TutorAssignServices.getAssignTutorStatus(req.body.tutorId, req.body.notificationId);
         console.log('===========Data============', data);
         // const emailCheck = data;
+        
         console.log('===========Data============', data);
         if (data && data.length) {
             return utilServices.errorResponse(res, "This tutor has been assigned already.", 500);
