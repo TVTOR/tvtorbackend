@@ -8,7 +8,8 @@ const TutorAssign = new Schema({
       location: { type: Array },
       tutorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
       is_active: { type: Boolean, default: true },
+      status: { type: Boolean, default: false },
       notificationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }
-}, {timestamps: true});
+}, { timestamps: true });
 
 module.exports = mongoose.model('TutorAssign', TutorAssign);

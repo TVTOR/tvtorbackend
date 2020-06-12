@@ -59,7 +59,7 @@
 						// 	setTimeout(function () { locationCheck(convState, ready) }, 3000);
 						// }
 						if (userData.hasOwnProperty('email') && userData.hasOwnProperty('subject') && userData.hasOwnProperty('location')) {
-							setTimeout(function () { assignTutor(convState, ready) }, 60000);
+							setTimeout(function () { assignTutor(convState, ready) }, 15000);
 						}
 					}
 				}
@@ -89,7 +89,10 @@
 						var que = "There is no tutor available right now. Thank you!";
 						if (result.success) {
 							const name = result.data.tutor.name;
-							que = 'Tou have assign ' + name + ' for your ' + userData['subject'] + ' subject. Thank you!'
+							const surname = result.data.tutor.surname;
+							const email = result.data.tutor.email;
+							const mobileNumber = result.data.tutor.mobileNumber;
+							que = 'We have assigned ' + name + ' ' + surname + ' for your ' + userData['subject'] + ' subject and his email ' + email + ' and contact number is ' + mobileNumber + '. Thank you!'
 						}
 						$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
 					}

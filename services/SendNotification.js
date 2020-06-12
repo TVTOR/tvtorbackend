@@ -41,7 +41,23 @@ const sendNotification = async (deviceToken, title, body, notdata) => {
 }
 
 async function sendSMS(mobile, title, body) {
-    console.log('=====mobile=======', mobile)
+    // console.log('=====mobile=======', mobile);
+    client.messages
+        .create({
+            body: body,
+            title: 'This student assign for tutor',
+            // from: '+12057514564',
+            from: '+12054309667',
+            to: '+91' + mobile
+        })
+        .then((message) => {
+            console.log(message.sid)
+            return true
+        });
+}
+
+async function sendSMStoStudent(mobile, title, body) {
+    console.log('=====mobile=======', mobile);
     client.messages
         .create({
             body: body,
@@ -60,5 +76,6 @@ async function sendSMS(mobile, title, body) {
 
 module.exports = {
     sendNotification: sendNotification,
-    sendSMS: sendSMS
+    sendSMS: sendSMS,
+    sendSMStoStudent: sendSMStoStudent
 }      

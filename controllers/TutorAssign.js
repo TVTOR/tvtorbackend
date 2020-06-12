@@ -1,19 +1,19 @@
-var TutorAssign = require('../models/TutorAssign');
-var Notification = require('../models/Notification');
-var utilServices = require('../services/Util');
-const User = require('../models/User');
-const NotificationService = require('../services/SendNotification');
-var utilServices = require('../services/Util');
+const TutorAssign = require(`${appRoot}/models/TutorAssign`)
+const Notification = require(`${appRoot}/models/Notification`);
+const User = require(`${appRoot}/models/User`);
+const NotificationService = require(`${appRoot}/services/SendNotification`);
+const utilServices = require(`${appRoot}/services/Util`);
 const TutorAssignServices = require(`${appRoot}/services/TutorAssign`);
 const { constants } = require(`${appRoot}/lib/constants`);
-const Location = require('../models/Locations');
-const Subject = require('../models/Subjects');
+const Subject = require(`${appRoot}/models/Subjects`);
+let mongoose = require('mongoose');
+
 
 const assignTutor = async (req, res) => {
     try {
         const notificationId = req.body.notificationId
         const notification = await Notification.findOne({ _id: notificationId });
-        console.log('=======notification data========', notification)
+        // console.log('=======notification data========', notification)
         const obj = {};
         obj.name = notification.queryData.name;
         obj.email = notification.queryData.email;
@@ -21,18 +21,26 @@ const assignTutor = async (req, res) => {
         obj.location = notification.queryData.location;
         obj.tutorId = req.body.tutorId;
         obj.notificationId = notification._id;
+        const data = await TutorAssignServices.getAssignTutorStatus(req.body.tutorId);
+        console.log('===========Data============', data);
+        // const emailCheck = data;
+        console.log('===========Data============', data);
+        if (data && data.length) {
+            return utilServices.errorResponse(res, "This tutor has been assigned already.", 500);
+        }
         await TutorAssign.create(obj, async (err, data) => {
             if (err) {
                 return utilServices.errorResponse(res, "Something went wrong.", 500);
             } else {
+
                 const title = 'Notification'
                 const query = notification.queryData
                 const studentmobile = notification.queryData.mobilenumber
-                
-                const subjectdata = await Subject.find({ subject: { $in: notification.subject} });
+
+                const subjectdata = await Subject.find({ subject: { $in: notification.subject } });
                 let subjectIds = [];
-                for(let i = 0; i< subjectdata.length; i++){
-                   subjectIds.push(subjectdata[i]._id);
+                for (let i = 0; i < subjectdata.length; i++) {
+                    subjectIds.push(subjectdata[i]._id);
                 }
                 // let subjectIds = notification.queryData.subject
                 let data1 = await getAllSubject(subjectIds);
@@ -40,12 +48,20 @@ const assignTutor = async (req, res) => {
                 for (var value of data1) {
                     arrOfSubject.push(value.subject);
                 }
-                const message = `Contect: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ ${studentmobile}`;
+
+                const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ ${studentmobile}`;
                 const tutordata = await User.findOne({ _id: req.body.tutorId });
-                console.log('=============Tutor Data-----------', tutordata);
-                console.log('=============tutordata.mobileNumber-----------', tutordata.mobileNumber);
                 const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
-                NotificationService.sendSMS(mobileNumber, title, message)
+                const studentMobileNumber = notification.queryData.mobilenumber;
+                console.log('=======tutordata=======', tutordata);
+                const tutorName = tutordata.name;
+                const tutorSurName = tutordata.surname;
+                if (studentMobileNumber && notification.queryData) {
+                    const message = `Contact: ${tutorName} ${tutorSurName} for study ${arrOfSubject} and his contact number is ${mobileNumber}`;
+                    NotificationService.sendSMS(studentMobileNumber, title, message);
+                }
+                NotificationService.sendSMS(mobileNumber, title, message);
+
                 return utilServices.successResponse(res, "Assign Tutor Successfully", 200, data);
             }
         })
@@ -84,7 +100,7 @@ const getStudentTutor = async (req, res) => {
     }
 }
 
-const getAssignTutor = async(req, res)=>{
+const getAssignTutor = async (req, res) => {
     try {
         let tutorassigndata = await TutorAssignServices.getAssignTutor(req.body);
         console.log('=============', tutorassigndata);
@@ -96,8 +112,11 @@ const getAssignTutor = async(req, res)=>{
         var data = JSON.parse(JSON.stringify(tutorassigndata));
         data.tutor = {
             name: tutordata.name ? tutordata.name : '',
-            surname: tutordata.surname ? tutordata.surname : ''
+            surname: tutordata.surname ? tutordata.surname : '',
+            email: tutordata.email ? tutordata.email : '',
+            mobileNumber: tutordata.mobileNumber ? tutordata.mobileNumber : ''
         }
+        // data.tutor = tutordata
         return utilServices.successResponse(res, constants.DATA_FOUND, 200, data);
 
     } catch (error) {
