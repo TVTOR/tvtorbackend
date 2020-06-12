@@ -14,7 +14,7 @@ const sendNotification = async (deviceToken, title, body, notdata) => {
     console.log('------------deviceToken--------------', deviceToken);
     var message = {
         // to: 'dxFrJGtXRoiQzoXYsJ8QZg:APA91bF7qJxRlVbKxvb84J0GFgbDDpNRgtJj4uBllJMEFBZdV7lRvHzY_XaBa-uE-ij_52vVh9A4vyhXRvoctTe4cymZXya05a69vvfVkDuDU1yLOtchn7zySo0y_4aPwbMuRqUo1S8K', // Multiple tokens in an array
-        registration_ids: deviceToken,
+        to: deviceToken,
         collapse_key: 'your_collapse_key',
         notification: {
             title: title,
