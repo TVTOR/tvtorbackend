@@ -48,7 +48,7 @@ async function sendSMS(mobile, title, body) {
             title: 'This student assign for tutor',
             // from: '+12057514564',
             from: '+12054309667',
-            to: '+91' + mobile
+            to: '+39' + mobile
         })
         .then((message) => {
             console.log(message.sid)
@@ -64,7 +64,7 @@ async function sendSMStoStudent(mobile, title, body) {
             title: 'This student assign for tutor',
             // from: '+12057514564',
             from: '+12054309667',
-            to: '+91' + mobile
+            to: '+39' + mobile
         })
         .then((message) => {
             console.log(message.sid)
