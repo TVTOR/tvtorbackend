@@ -24,7 +24,10 @@ let login = async (req, res) => {
     if (!checkEmail) {
       return utilServices.errorResponse(res, constants.INCORRECT_EMAIL, 401);
     }
-    if(checkEmail.status === false && checkEmail.userType === 'tutormanager'){
+    if (checkEmail.loginStatus) {
+      return utilServices.errorResponse(res, 'User already logged in another device.', 401);
+    }
+    if (checkEmail.status === false && checkEmail.userType === 'tutormanager') {
       return utilServices.errorResponse(res, constants.VERIFY_STATUS, 401);
     }
     const encryptedPassword = authHelper.validatePassword(req.body.password, checkEmail.password);
@@ -44,10 +47,13 @@ let login = async (req, res) => {
         checkEmail.subjectData = await getAllSubject(checkEmail.subjects);
       }
       const responseData = response(checkEmail, secretToken);
-      // await userService.insertDevice(req.body, checkEmail.userType, checkEmail._id);
+      let email = req.body.email
+      const loginStatus = true;
+      await userService.statusForLogin(email, loginStatus);
       return utilServices.successResponse(res, constants.LOGIN_SUCCESS, 201, responseData);
     }
   } catch (err) {
+    console.log('====================', err);
     return utilServices.errorResponse(res, constants.DB_ERROR, 400);
   }
 };
@@ -240,6 +246,8 @@ const getUsers = async (req, res) => {
 const logout = async function (req, res) {
   try {
     var userId = req.params.id;
+    const loginStatus = false;
+    await userService.statusForLogout(userId, loginStatus);
     await userService.removeSession(userId);
     return utilServices.successResponse(res, constants.LOGOUT, 200);
   } catch (error) {
@@ -502,7 +510,7 @@ const getAllTutorsOfManager = async function (req, res) {
     for (let i = 0; i < data.length; i++) {
       var subjects = await getAllSubject(data[i].subjects);
       console.log('----subjects---------', subjects);
-      data[i].subjectData = subjects ? subjects: null;
+      data[i].subjectData = subjects ? subjects : null;
       var commentdata = await userService.getComment(data[i]._id);
       data[i].comment = commentdata ? commentdata.comment : null;
     }
@@ -529,6 +537,7 @@ function response(data, token) {
     locationData: data.locationData,
     code: data.code,
     managerId: data.managerId,
+    loginStatus: data.loginStatus,
     userType: data.userType,
     token: token
   }

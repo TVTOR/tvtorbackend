@@ -15,6 +15,7 @@ const randomNumber = async(req, res)=>{
  const deviceData = async (req, res)=>{
      try {
         const data = await codeService.insertDevice(req.body);
+        console.log('------------------data----------------', data)
         return utilServices.successResponse(res, constants.CREATE_DEVICES, 200, data);
      } catch (error) {
         return utilServices.errorResponse(res, constants.DB_ERROR, 500); 

@@ -14,6 +14,7 @@ const sendNotification = async (deviceToken, title, body, notdata) => {
     console.log('------------deviceToken--------------', deviceToken);
     var message = {
         // to: 'dxFrJGtXRoiQzoXYsJ8QZg:APA91bF7qJxRlVbKxvb84J0GFgbDDpNRgtJj4uBllJMEFBZdV7lRvHzY_XaBa-uE-ij_52vVh9A4vyhXRvoctTe4cymZXya05a69vvfVkDuDU1yLOtchn7zySo0y_4aPwbMuRqUo1S8K', // Multiple tokens in an array
+        // registration_ids: [deviceToken],
         to: deviceToken,
         collapse_key: 'your_collapse_key',
         notification: {
@@ -48,7 +49,7 @@ async function sendSMS(mobile, title, body) {
             title: 'This student assign for tutor',
             // from: '+12057514564',
             from: '+12054309667',
-            to: '+39' + mobile
+            to: '+91' + mobile
         })
         .then((message) => {
             console.log(message.sid)
@@ -64,7 +65,7 @@ async function sendSMStoStudent(mobile, title, body) {
             title: 'This student assign for tutor',
             // from: '+12057514564',
             from: '+12054309667',
-            to: '+39' + mobile
+            to: '+91' + mobile
         })
         .then((message) => {
             console.log(message.sid)

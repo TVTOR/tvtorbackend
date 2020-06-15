@@ -19,6 +19,7 @@ var user = new Schema({
     subjectId: { type: Array },
     subjectData: { type: Array },
     locationData: { type: Array },
+    loginStatus: {type: Boolean, default: false},
     managerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     userType: { type: String, enum: ['tutormanager', 'admin','tutor'], default:'tutormanager' }
 }, { timestamps: true })

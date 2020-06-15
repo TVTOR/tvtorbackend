@@ -58,7 +58,7 @@ async function getLocationData(location) {
 
 async function getSubjectData(subject) {
 	console.log('==========getSubjectData===========', subject);
-	if(subject && subject.length){
+	if (subject && subject.length) {
 		var splitSubject = subject.map((elem) => mongoose.Types.ObjectId(elem))
 	} else {
 		var splitSubject = [];
@@ -127,13 +127,30 @@ async function declineTutorManagers(userId, statuschange) {
 	const user = await usersModel.updateOne({ _id: userId }, { isDeleted: statuschange });
 	return user;
 }
+
+async function statusForLogin(email, loginStatus) {
+	console.log('========Sttsus============', email, loginStatus);
+	const user = await usersModel.updateOne({ email: email }, { loginStatus: loginStatus });
+	console.log('========Sttsus============', user)
+	return user;
+}
+
+
+async function statusForLogout(userId, loginStatus) {
+	let id = mongoose.Types.ObjectId(userId);
+	console.log('========Sttsus============', id, loginStatus);
+	const user = await usersModel.updateOne({ _id: id }, { loginStatus: loginStatus });
+	// console.log('========Sttsus============', user);
+	return user;
+}
+
 async function getAllTutorsOfManagersList(search, sort, order, perpage, skip) {
 	const user = await usersModel.find(search)
 		.collation({ 'locale': 'en' })
 		.sort({ [sort]: parseInt(order) })
 		.skip(skip)
 		.limit(perpage);
-		return user;
+	return user;
 }
 
 async function checkUser(userId) {
@@ -149,6 +166,12 @@ async function getComment(tutorId) {
 	let comment = await commentModel.findOne({ tutorId: tutorId });
 	return comment;
 }
+
+async function getToken(token) {
+	const userSesseionData = await userSesseion.findOne({ token: token });
+	return userSesseionData;
+}
+
 
 module.exports = {
 	validEmail,
@@ -171,5 +194,8 @@ module.exports = {
 	getAllTutorsOfManagersList,
 	checkUser,
 	userUpdate,
-	getComment
+	getComment,
+	getToken,
+	statusForLogin,
+	statusForLogout
 }

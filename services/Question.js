@@ -48,10 +48,6 @@ const createNotification = async (query) => {
     for (let i = 0; i < tmIDs.length; i++) {
       // console.log('-----{ tmId: (tmIDs[i]._id) }----------', { tmId: (tmIDs[i]._id) })
       var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
-      // const click_action = "FLUTTER_NOTIFICATION_CLICK";
-      // let fluterData = {
-      //   click_action:"FLUTTER_NOTIFICATION_CLICK",
-      // }
       if (devicedata && devicedata.deviceToken) {
         const title = 'Notification'
         const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
@@ -74,7 +70,7 @@ const createNotification = async (query) => {
           location: locationArray,
           message: message,
           queryData: query,
-          data: fluterData
+          // data: fluterData
         });
         console.log('---------Main Hu Naa............');
         console.log('=======not==========',not)
