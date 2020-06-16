@@ -92,7 +92,7 @@
 							const surname = result.data.tutor.surname;
 							const email = result.data.tutor.email;
 							const mobileNumber = result.data.tutor.mobileNumber;
-							que = 'We have assigned ' + name + ' ' + surname + ' for your ' + userData['subject'] + ' subject and his email ' + email + ' and contact number is ' + mobileNumber + '. Thank you!'
+							que = 'We have assigned ' + name + ' ' + surname + ' for your ' + userData['subject'] + ' subject and his email id is ' + email + ' and contact number is ' + mobileNumber + '. Thank you!'
 						}
 						$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
 					}
