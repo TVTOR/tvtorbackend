@@ -25,14 +25,12 @@ async function getAssignTutor(deatils) {
 }
 
 async function alreadyAssigned(notificationId, statuschange) {
-    console.log('=======notificationId==============', notificationId, statuschange)
+    console.log('==============', statuschange);
     const user = await assignTutorModel.updateOne({ notificationId: notificationId }, { status: true });
-    console.log('==========user================', user);
     return user;
 }
 
 async function getAssignTutorStatus(notificationId) {
-    console.log('=====notificationId======notificationId===========',notificationId)
     let assignData = await assignTutorModel.find({notificationId: notificationId });
     return assignData;
 }

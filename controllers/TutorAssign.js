@@ -6,8 +6,6 @@ const utilServices = require(`${appRoot}/services/Util`);
 const TutorAssignServices = require(`${appRoot}/services/TutorAssign`);
 const { constants } = require(`${appRoot}/lib/constants`);
 const Subject = require(`${appRoot}/models/Subjects`);
-let mongoose = require('mongoose');
-
 
 const assignTutor = async (req, res) => {
     try {
@@ -22,10 +20,6 @@ const assignTutor = async (req, res) => {
         obj.tutorId = req.body.tutorId;
         obj.notificationId = notification._id;
         const data = await TutorAssignServices.getAssignTutorStatus(req.body.notificationId);
-        console.log('===========Data============', data);
-        // const emailCheck = data;
-        
-        console.log('===========Data============', data);
         if (data && data.length) {
             return utilServices.errorResponse(res, "Request has been expired.", 500);
         }
@@ -33,7 +27,6 @@ const assignTutor = async (req, res) => {
             if (err) {
                 return utilServices.errorResponse(res, "Something went wrong.", 500);
             } else {
-
                 const title = 'Notification'
                 const query = notification.queryData
                 const studentmobile = notification.queryData.mobilenumber
