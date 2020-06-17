@@ -19,6 +19,11 @@ const assignTutor = async (req, res) => {
         obj.location = notification.queryData.location;
         obj.tutorId = req.body.tutorId;
         obj.notificationId = notification._id;
+        const notificationemail = notification.queryData.email 
+        const tutorassigndata = await TutorAssign.find({ email: notificationemail });
+        if(tutorassigndata && tutorassigndata.length){
+            return utilServices.errorResponse(res, "This tutor already has been assigned by some one.", 500);
+        }
         const data = await TutorAssignServices.getAssignTutorStatus(req.body.notificationId);
         if (data && data.length) {
             return utilServices.errorResponse(res, "Request has been expired.", 500);
@@ -42,7 +47,7 @@ const assignTutor = async (req, res) => {
                 for (var value of data1) {
                     arrOfSubject.push(value.subject);
                 }
-        
+
                 const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ ${studentmobile} and his email id is ${query.email}`;
                 const tutordata = await User.findOne({ _id: req.body.tutorId });
                 const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
