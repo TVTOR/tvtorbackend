@@ -7,9 +7,10 @@ const { constants } = require(`${appRoot}/lib/constants`);
 
 const assignTutor = async (req, res) => {
     try {
+        console.log('==============assignTutor========================')
         const notificationId = req.body.notificationId
         const notification = await TutorAssignServices.getNotificationData(notificationId);
-        console.log('=======notification data========', notification)
+        // console.log('=======notification data========', notification)
         const obj = {};
         obj.name = notification.queryData.name;
         obj.email = notification.queryData.email;
@@ -24,10 +25,8 @@ const assignTutor = async (req, res) => {
         }
         console.log('-------Notification Time----------', notification.createdAt.valueOf())
         let curruntTime = new Date().getTime();
-        console.log('===========curruntTime=======', curruntTime);
         let timedata = curruntTime - notification.createdAt.valueOf();
-        console.log('==================', timedata);
-        if(timedata> 60000){
+        if (timedata > 60000) {
             return utilServices.errorResponse(res, constants.TIME_SESSION, 500);
         }
         const tutorassigndata = await TutorAssignServices.tutorAssign(notificationemail);
@@ -108,6 +107,24 @@ const getStudentTutor = async (req, res) => {
     }
 }
 
+
+
+const checkTutorAssignOrNot = async (req, res) => {
+    try {
+        const emailId = req.params.email;
+        console.log('================', req.params);
+        // , createdAt:{$lt: Date.now()
+        var now = new Date();
+        now.setMinutes(now.getMinutes() - 1); // timestamp
+        now = new Date(now); // Date object
+        console.log(now);
+        var data = await TutorAssign.findOne({ email: emailId, createdAt: { $gt: now } })
+        return utilServices.successResponse(res, constants.DATA_FOUND, 200, data);
+    } catch (error) {
+        return utilServices.successResponse(res, constants.DB_ERROR, 500);
+    }
+}
+
 const getAssignTutor = async (req, res) => {
     try {
         let tutorassigndata = await TutorAssignServices.getAssignTutor(req.body);
@@ -135,5 +152,6 @@ const getAssignTutor = async (req, res) => {
 module.exports = {
     assignTutor: assignTutor,
     getStudentTutor: getStudentTutor,
-    getAssignTutor: getAssignTutor
+    getAssignTutor: getAssignTutor,
+    checkTutorAssignOrNot: checkTutorAssignOrNot
 }

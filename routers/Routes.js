@@ -80,6 +80,8 @@ router.get('/sendNotificationToTutor/:id', TutorNotification.sendNotificationToT
 router.get('/getStudentTutor/:email', TutorAssign.getStudentTutor);
 router.post('/getStudentTutor', TutorAssign.getAssignTutor);
 
+router.get('/checkTutorAssignOrNot/:email', TutorAssign.checkTutorAssignOrNot);
+
 router.get('/message', Message.sendMessage);
 
 router.post('/comments', Authorization.verifyToken, Comments.createComment);

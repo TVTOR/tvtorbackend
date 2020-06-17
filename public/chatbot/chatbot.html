@@ -45,6 +45,8 @@
 			const baseUrl = 'https://tutorbackend.herokuapp.com/api/v1';
 			// const baseUrl = 'http://localhost:5000/api/v1';
 			var userData = {};
+			var isAssignTutor = true;
+			var setIntervalTime;
 			var newQuestion = '';
 			var count = 2;
 			var lastNext = 0;
@@ -59,15 +61,21 @@
 						// 	setTimeout(function () { locationCheck(convState, ready) }, 3000);
 						// }
 						if (userData.hasOwnProperty('email') && userData.hasOwnProperty('subject') && userData.hasOwnProperty('location')) {
-							setTimeout(function () { assignTutor(convState, ready) }, 15000);
-							// assignTutor(convState, ready);
+							setIntervalTime = setInterval(() => {
+								checkTutorAssignOrNot(convState, ready);
+							}, 2000);
+							setTimeout(function () { 
+								clearInterval(setIntervalTime);
+								if(isAssignTutor){
+									assignTutor(convState, ready); 
+								}
+							}, 60000);
 						}
 					}
 				}
 			});
 
 			function locationCheck() {
-				// console.log('==========convState=============', convState);
 				var checkLocationUrl = `${baseUrl}/getTutorsLocation`;
 				jQuery.ajax({
 					url: checkLocationUrl, async: true, method: 'post', data: userData, success: function (result) {
@@ -82,11 +90,26 @@
 				})
 			}
 
+
+			function checkTutorAssignOrNot(convState, ready) {
+				var checkLocationUrl = `${baseUrl}/checkTutorAssignOrNot/${userData.email}`;
+				jQuery.ajax({
+					url: checkLocationUrl, async: true, method: 'get', data: userData, success: function (result) {
+					   if(result.data && isAssignTutor){
+						assignTutor(convState, ready);
+					   }
+					}
+				})
+			}
+
+
+
 			function assignTutor(convState, ready) {
 				var assignTutorUrl = `${baseUrl}/getStudentTutor`;
 				jQuery.ajax({
 					url: assignTutorUrl, async: true, method: 'post', data: userData, success: function (result) {
-						console.log('-----------Result----------', result);
+						isAssignTutor = false;
+						clearInterval(setIntervalTime);
 						var que = "There is no tutor available right now. Thank you!";
 						if (result.success) {
 							const name = result.data.tutor.name;
