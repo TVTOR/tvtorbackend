@@ -3,6 +3,8 @@
 const assignTutorModel = require(`${appRoot}/models/TutorAssign`);
 const userModel = require(`${appRoot}/models/User`);
 const subjectModel = require(`${appRoot}/models/Subjects`);
+const notificationModel = require(`${appRoot}/models/Notification`);
+const tutorAssignModel = require(`${appRoot}/models/TutorAssign`);
 let mongoose = require('mongoose');
 
 async function getStudentTutorByEmail(emailId) {
@@ -31,9 +33,30 @@ async function alreadyAssigned(notificationId, statuschange) {
 }
 
 async function getAssignTutorStatus(notificationId) {
-    let assignData = await assignTutorModel.find({notificationId: notificationId });
+    let assignData = await assignTutorModel.find({ notificationId: notificationId });
     return assignData;
 }
+
+async function getNotificationData(notificationId) {
+    let notificationData = await notificationModel.findOne({ _id: notificationId });
+    return notificationData
+}
+
+async function tutorAssign(notificationemail) {
+    let tutorAssignData = await tutorAssignModel.find({ email: notificationemail });
+    return tutorAssignData
+}
+
+async function getSubjectfromNotification(notsubject) {
+    let subjectData = await subjectModel.find({ subject: { $in: notsubject } });
+    return subjectData
+}
+
+async function getTutor(tutorId) {
+    let tutorData = await userModel.findOne({ _id: tutorId });
+    return tutorData
+}
+
 
 module.exports = {
     getStudentTutorByEmail,
@@ -41,5 +64,9 @@ module.exports = {
     getSubjectData,
     getAssignTutor,
     alreadyAssigned,
-    getAssignTutorStatus
+    getAssignTutorStatus,
+    getNotificationData,
+    tutorAssign,
+    getSubjectfromNotification,
+    getTutor
 }
