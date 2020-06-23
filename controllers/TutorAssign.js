@@ -53,7 +53,7 @@ const assignTutor = async (req, res) => {
                     arrOfSubject.push(value.subject);
                 }
 
-                const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ ${studentmobile} and his email id is ${query.email}`;
+                const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ ${studentmobile} and his email id is ${query.email}.`;
                 const id = req.body.tutorId
                 const tutordata = await TutorAssignServices.getTutor(id);
                 const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
@@ -63,7 +63,7 @@ const assignTutor = async (req, res) => {
                 const tutorSurName = tutordata.surname;
                 const tutorEmail = tutordata.email;
                 if (studentMobileNumber && notification.queryData) {
-                    const message = `Contact: ${tutorName} ${tutorSurName} for study ${arrOfSubject} and his contact number is ${mobileNumber} and his email id is ${tutorEmail}`;
+                    const message = `Contact: ${tutorName} ${tutorSurName} for study ${arrOfSubject} and his email id is ${tutorEmail}.`;
                     NotificationService.sendSMS(studentMobileNumber, title, message);
                 }
                 NotificationService.sendSMS(mobileNumber, title, message);
