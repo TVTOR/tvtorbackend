@@ -60,6 +60,7 @@ const createNotification = async (query) => {
           // data: fluterData
         });
         let devicetype = devicedata.deviceType
+        console.log('--------------DEVICE TYPE----------', devicetype);
         NotificationService.sendNotification(devicedata.deviceToken, title, message, notdata, devicetype);
       } else {
         const title = 'Notification'
