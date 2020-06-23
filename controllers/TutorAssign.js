@@ -63,7 +63,8 @@ const assignTutor = async (req, res) => {
                 const tutorSurName = tutordata.surname;
                 const tutorEmail = tutordata.email;
                 if (studentMobileNumber && notification.queryData) {
-                    const message = `Contact: ${tutorName} ${tutorSurName} for study ${arrOfSubject} and his email id is ${tutorEmail}.`;
+                    const message = `Your ${arrOfSubject} Tutor ${tutorName} ${tutorSurName} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber} or ${tutorEmail}.`;
+                    // Your Math Tutor Madhur will contact you in the next 12h. You can Contact him/her before that time at T.NUMBER or EMAIL
                     NotificationService.sendSMS(studentMobileNumber, title, message);
                 }
                 NotificationService.sendSMS(mobileNumber, title, message);

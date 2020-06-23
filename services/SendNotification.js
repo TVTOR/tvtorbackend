@@ -12,7 +12,7 @@ const client = require('twilio')(accountSid, authToken);
 
 const sendNotification = async (deviceToken, title, body, notdata, devicetype) => {
     console.log('------------deviceToken--------------', devicetype);
-    if(devicetype === "Android"){
+    if (devicetype === "Android") {
         var message = {
             // to: 'dxFrJGtXRoiQzoXYsJ8QZg:APA91bF7qJxRlVbKxvb84J0GFgbDDpNRgtJj4uBllJMEFBZdV7lRvHzY_XaBa-uE-ij_52vVh9A4vyhXRvoctTe4cymZXya05a69vvfVkDuDU1yLOtchn7zySo0y_4aPwbMuRqUo1S8K', // Multiple tokens in an array
             // registration_ids: [deviceToken],
@@ -27,16 +27,12 @@ const sendNotification = async (deviceToken, title, body, notdata, devicetype) =
                 notificationId: notdata._id
             }
         };
-    } else {
+    } else if (devicetype === "Ios") {
         var message = {
             // to: 'dxFrJGtXRoiQzoXYsJ8QZg:APA91bF7qJxRlVbKxvb84J0GFgbDDpNRgtJj4uBllJMEFBZdV7lRvHzY_XaBa-uE-ij_52vVh9A4vyhXRvoctTe4cymZXya05a69vvfVkDuDU1yLOtchn7zySo0y_4aPwbMuRqUo1S8K', // Multiple tokens in an array
             // registration_ids: [deviceToken],
             to: deviceToken,
             collapse_key: 'your_collapse_key',
-            notification: {
-                title: title,
-                body: body
-            },
             alert: {
                 title: title,
                 body: body
@@ -47,7 +43,7 @@ const sendNotification = async (deviceToken, title, body, notdata, devicetype) =
             }
         };
     }
-   
+
     console.log(message);
     // Send Notification
     fcm.send(message, function (err, response) {
