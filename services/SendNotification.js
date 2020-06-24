@@ -12,7 +12,7 @@ const client = require('twilio')(accountSid, authToken);
 
 const sendNotification = async (deviceToken, title, body, notdata, devicetype) => {
    
-    if(devicetype === "Android"){
+    // if(devicetype === "Android"){
         var message = {
             // to: 'dxFrJGtXRoiQzoXYsJ8QZg:APA91bF7qJxRlVbKxvb84J0GFgbDDpNRgtJj4uBllJMEFBZdV7lRvHzY_XaBa-uE-ij_52vVh9A4vyhXRvoctTe4cymZXya05a69vvfVkDuDU1yLOtchn7zySo0y_4aPwbMuRqUo1S8K', // Multiple tokens in an array
             // registration_ids: [deviceToken],
@@ -27,21 +27,22 @@ const sendNotification = async (deviceToken, title, body, notdata, devicetype) =
                 notificationId: notdata._id
             }
         };
-    } else if(devicetype === "Ios") {
-        console.log('------------deviceToken--------------', devicetype);
-        var message = {
-            to: deviceToken,
-            collapse_key: 'your_collapse_key',
-            alert: {
-                title: title,
-                body: body
-            },
-            data: {
-                click_action: 'FLUTTER_NOTIFICATION_CLICK',
-                notificationId: notdata._id
-            }
-        };
-    }
+    // } 
+    // else if(devicetype === "Ios") {
+    //     console.log('------------deviceToken--------------', devicetype);
+    //     var message = {
+    //         to: deviceToken,
+    //         collapse_key: 'your_collapse_key',
+    //         alert: {
+    //             title: title,
+    //             body: body
+    //         },
+    //         data: {
+    //             click_action: 'FLUTTER_NOTIFICATION_CLICK',
+    //             notificationId: notdata._id
+    //         }
+    //     };
+    // }
    
     console.log(message);
     // Send Notification
