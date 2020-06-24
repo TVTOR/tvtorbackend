@@ -7,10 +7,8 @@ const { constants } = require(`${appRoot}/lib/constants`);
 
 const assignTutor = async (req, res) => {
     try {
-        console.log('==============assignTutor========================')
         const notificationId = req.body.notificationId
         const notification = await TutorAssignServices.getNotificationData(notificationId);
-        // console.log('=======notification data========', notification)
         const obj = {};
         obj.name = notification.queryData.name;
         obj.email = notification.queryData.email;
@@ -23,7 +21,6 @@ const assignTutor = async (req, res) => {
         if (data && data.length) {
             return utilServices.errorResponse(res, constants.REQUEST_EXPIRED, 500);
         }
-        console.log('-------Notification Time----------', notification.createdAt.valueOf())
         let curruntTime = new Date().getTime();
         let timedata = curruntTime - notification.createdAt.valueOf();
         if (timedata > 60000) {
@@ -113,7 +110,6 @@ const getStudentTutor = async (req, res) => {
 const checkTutorAssignOrNot = async (req, res) => {
     try {
         const emailId = req.params.email;
-        console.log('================', req.params);
         // , createdAt:{$lt: Date.now()
         var now = new Date();
         now.setMinutes(now.getMinutes() - 1); // timestamp
@@ -129,7 +125,6 @@ const checkTutorAssignOrNot = async (req, res) => {
 const getAssignTutor = async (req, res) => {
     try {
         let tutorassigndata = await TutorAssignServices.getAssignTutor(req.body);
-        console.log('=============', tutorassigndata);
         if (!tutorassigndata) {
             return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 400);
         }

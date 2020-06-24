@@ -62,23 +62,24 @@ const createNotification = async (query) => {
         let devicetype = devicedata.deviceType
         console.log('--------------DEVICE TYPE----------', devicetype);
         NotificationService.sendNotification(devicedata.deviceToken, title, message, notdata, devicetype);
-      } else {
-        const title = 'Notification'
+      // } else {
+      //   const title = 'Notification'
        
-        const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
-       let not = await NotificationModel.create({
-          tmId: tmIDs[i]._id,
-          subject: subjectArray,
-          location: locationArray,
-          message: message,
-          queryData: query,
-          // data: fluterData
-        });
-        console.log('---------Main Hu Naa............');
-        console.log('=======not==========',not)
-        // NotificationService.sendNotification(devicedata.deviceToken, title, message);
-      }
+      //   const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
+      //  let not = await NotificationModel.create({
+      //     tmId: tmIDs[i]._id,
+      //     subject: subjectArray,
+      //     location: locationArray,
+      //     message: message,
+      //     queryData: query,
+      //     // data: fluterData
+      //   });
+      //   console.log('---------Main Hu Naa............');
+      //   console.log('=======not==========',not)
+      //   // NotificationService.sendNotification(devicedata.deviceToken, title, message);
+      // }
     }
+  }
     // console.log('========devicedatadevicedata========', devicedata);
   } catch (error) {
     console.log('==========Error------------', error);
