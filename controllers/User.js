@@ -1,19 +1,18 @@
-var User = require('../models/User');
-var jwt = require('jsonwebtoken');
-var config = require('../config/config');
+const User = require(`${appRoot}/models/User`);
+const config = require(`${appRoot}/config/config`);
+const utilServices = require(`${appRoot}/services/Util`);
+const Code = require(`${appRoot}/models/Code`);
+const uploadImage = require(`${appRoot}/services/imageUpload`);
+const Device = require(`${appRoot}/models/Device`);
+const Subjects = require(`${appRoot}/models/Subjects`);
+const userService = require(`${appRoot}/services/users`);
+const Locations = require(`${appRoot}/models/Locations`);
+const authHelper = require(`${appRoot}/helper/auth`);
+const { constants } = require(`${appRoot}/lib/constants`);
+var mongoose = require('mongoose');
 var nodemailer = require('nodemailer');
 var bcrypt = require('bcryptjs');
-var utilServices = require('../services/Util');
-var userSession = require('../models/Session');
-var Code = require('../models/Code');
-const uploadImage = require('../services/imageUpload');
-var Device = require('../models/Device');
-var Subjects = require('../models/Subjects');
-var mongoose = require('mongoose');
-const userService = require('../services/users');
-var Locations = require('../models/Locations');
-const authHelper = require('../helper/auth');
-const { constants } = require(`${appRoot}/lib/constants`);
+
 
 let login = async (req, res) => {
   try {
@@ -53,7 +52,6 @@ let login = async (req, res) => {
       return utilServices.successResponse(res, constants.LOGIN_SUCCESS, 201, responseData);
     }
   } catch (err) {
-    console.log('====================', err);
     return utilServices.errorResponse(res, constants.DB_ERROR, 400);
   }
 };
@@ -127,7 +125,6 @@ const register = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log('Eofoforororoor', err);
     return utilServices.errorResponse(res, constants.DB_ERROR, 401);
   }
 };
@@ -520,7 +517,6 @@ const getAllTutorsOfManager = async function (req, res) {
     return utilServices.successResponse(res, constants.DATA_FOUND, 200, { data: data, total: total });
   }
   catch (error) {
-    console.log('========error========', error);
     return utilServices.successResponse(res, constants.DB_ERROR, 500);
   }
 

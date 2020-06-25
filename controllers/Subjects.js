@@ -1,7 +1,6 @@
-var Subjects = require('../models/Subjects');
-var utilServices = require('../services/Util');
+var utilServices = require(`${appRoot}/services/Util`);
 const { constants } = require(`${appRoot}/lib/constants`);
-const subjectService = require('../services/Subject');
+const subjectService = require(`${appRoot}/services/Subject`);
 
 
 const createSubjects = async function(req, res){

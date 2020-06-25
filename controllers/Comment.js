@@ -20,7 +20,6 @@ const createComment = async function (req, res) {
       return utilServices.successResponse(res, constants.UPDATE_DATA, 200, data);
     }
   } catch (error) {
-    console.log('-----------', error);
     return utilServices.successResponse(res, constants.DB_ERROR, 500);
   }
 }

@@ -1,14 +1,9 @@
-var Ouestions = require('../models/Question');
-var utilServices = require('../services/Util');
-var Location = require('../models/Locations');
-var Subject = require('../models/Subjects');
-var User = require('../models/User');
-var Device = require('../models/Device');
-var NotificationModel = require('../models/Notification');
-var NotificationServise = require('../services/SendNotification');
+var Ouestions = require(`${appRoot}/models/Question`);
+var utilServices = require(`${appRoot}/services/Util`);
+var Location = require(`${appRoot}/models/Locations`);
+var Subject = require(`${appRoot}/models/Subjects`);
 const { constants } = require(`${appRoot}/lib/constants`);
-const NotificationService = require('../services/Notification');
-const questionService = require('../services/Question');
+const questionService = require(`${appRoot}/services/Question`);
 
 
 const createQuestion = async (req, res) => {

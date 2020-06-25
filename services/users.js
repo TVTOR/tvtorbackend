@@ -57,7 +57,6 @@ async function getLocationData(location) {
 }
 
 async function getSubjectData(subject) {
-	console.log('==========getSubjectData===========', subject);
 	if (subject && subject.length) {
 		var splitSubject = subject.map((elem) => mongoose.Types.ObjectId(elem))
 	} else {
@@ -129,18 +128,14 @@ async function declineTutorManagers(userId, statuschange) {
 }
 
 async function statusForLogin(email, loginStatus) {
-	console.log('========Sttsus============', email, loginStatus);
 	const user = await usersModel.updateOne({ email: email }, { loginStatus: loginStatus });
-	console.log('========Sttsus============', user)
 	return user;
 }
 
 
 async function statusForLogout(userId, loginStatus) {
 	let id = mongoose.Types.ObjectId(userId);
-	console.log('========Sttsus============', id, loginStatus);
 	const user = await usersModel.updateOne({ _id: id }, { loginStatus: loginStatus });
-	// console.log('========Sttsus============', user);
 	return user;
 }
 

@@ -1,7 +1,6 @@
-var Locations = require('../models/Locations');
-var utilServices = require('../services/Util');
+var utilServices = require(`${appRoot}/services/Util`);
 const { constants } = require(`${appRoot}/lib/constants`);
-const locationService = require('../services/Location');
+const locationService = require(`${appRoot}/services/Location`);
 
 const createLocations = async function (req, res) {
   try {
@@ -93,9 +92,7 @@ const getTutorsLocation = async function (req, res) {
 
     const location = req.body.location;
     const locations = location.split(',');
-    console.log('---------locations----------', locations);
     const locationIds = await locationService.getLocationIds(locations);
-    console.log('===========locationIds------------', locationIds);
     if(locationIds.length == 0){
       return utilServices.successResponse(res, constants.DATA_FOUND, 404);
     }
@@ -107,7 +104,6 @@ const getTutorsLocation = async function (req, res) {
       return utilServices.successResponse(res, constants.DATA_NOT_FOUND, 404);
     }
   } catch (error) {
-    console.log('====================', error);
     return utilServices.successResponse(res, constants.DB_ERROR, 500);
   }
 }

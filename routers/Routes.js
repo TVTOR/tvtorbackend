@@ -1,17 +1,15 @@
-var express = require('express');
-var router = express.Router();
-var User = require('../controllers/User');
-var Code = require('../controllers/Code');
-var Authorization = require('../services/Auth');
-var Subject = require('../controllers/Subjects');
-var Location = require('../controllers/Locations');
 const multer = require("multer");
 var path = require('path');
-const Notification = require('../controllers/Notification');
-const Questions = require('../controllers/Questions');
-const TutorAssign = require('../controllers/TutorAssign');
-const TutorNotification = require('../controllers/TutorNotification');
-const Message = require('../controllers/sendMessage');
+var express = require('express');
+var router = express.Router();
+var User = require(`${appRoot}/controllers/User`);
+var Code = require(`${appRoot}/controllers/Code`);
+var Authorization = require(`${appRoot}/services/Auth`);
+var Subject = require(`${appRoot}/controllers/Subjects`);
+var Location = require(`${appRoot}/controllers/Locations`);
+const Notification = require(`${appRoot}/controllers/Notification`);
+const Questions = require(`${appRoot}/controllers/Questions`);
+const TutorAssign = require(`${appRoot}/controllers/TutorAssign`);
 const Comments = require(`${appRoot}/controllers/Comment`);
 
 
@@ -76,13 +74,10 @@ router.get('/question', Questions.createQuestion);
 router.post('/question', Questions.getQuestion);
 
 router.post('/assigntutor', TutorAssign.assignTutor);
-router.get('/sendNotificationToTutor/:id', TutorNotification.sendNotificationToTutor);
 router.get('/getStudentTutor/:email', TutorAssign.getStudentTutor);
 router.post('/getStudentTutor', TutorAssign.getAssignTutor);
 
 router.get('/checkTutorAssignOrNot/:email', TutorAssign.checkTutorAssignOrNot);
-
-router.get('/message', Message.sendMessage);
 
 router.post('/comments', Authorization.verifyToken, Comments.createComment);
 router.get('/comments', Authorization.verifyToken, Comments.getComments);

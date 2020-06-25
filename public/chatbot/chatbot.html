@@ -55,11 +55,6 @@
 				selectInputStyle: 'disable', eventList: {
 					onInputSubmit: function (convState, ready) {
 						get_question(convState, ready);
-						// console.log('=========userData============', userData);
-						// console.log('========userData.hasOwnProperty(=============', userData.hasOwnProperty('subject'))
-						// if(userData.hasOwnProperty('location')){
-						// 	setTimeout(function () { locationCheck(convState, ready) }, 3000);
-						// }
 						if (userData.hasOwnProperty('email') && userData.hasOwnProperty('subject') && userData.hasOwnProperty('location')) {
 							setIntervalTime = setInterval(() => {
 								checkTutorAssignOrNot(convState, ready);

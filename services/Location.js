@@ -12,8 +12,7 @@ async function checkLocation(location) {
 
 async function insertLocation(params) {
     var obj = {
-        location: params.location ? params.location : '',
-        managerId: params.managerId ? params.managerId : null,
+        location: params.location ? params.location : ''
     };
     return await locationModel.create(obj);
 }
@@ -63,9 +62,7 @@ async function getlocations(locationId) {
 }
 
 async function getSingleLocationOfTutor(locationId) {
-    console.log('================locationId=============', locationId);
     let locationdata = await locationModel.find({ _id: { $in: locationId } });
-    console.log('----------locationdata--------------', locationdata);
     return locationdata;
 }
 

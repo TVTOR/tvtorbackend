@@ -43,7 +43,6 @@ const assignTutor = async (req, res) => {
                 for (let i = 0; i < subjectdata.length; i++) {
                     subjectIds.push(subjectdata[i]._id);
                 }
-                // let subjectIds = notification.queryData.subject
                 let data1 = await getAllSubject(subjectIds);
                 var arrOfSubject = [];
                 for (var value of data1) {
@@ -55,23 +54,18 @@ const assignTutor = async (req, res) => {
                 const tutordata = await TutorAssignServices.getTutor(id);
                 const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
                 const studentMobileNumber = notification.queryData.mobilenumber;
-                console.log('=======tutordata=======', tutordata);
                 const tutorName = tutordata.name;
                 const tutorSurName = tutordata.surname;
                 const tutorEmail = tutordata.email;
                 if (studentMobileNumber && notification.queryData) {
                     const message = `Your ${arrOfSubject} Tutor ${tutorName} ${tutorSurName} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber} or ${tutorEmail}.`;
-                    // Your Math Tutor Madhur will contact you in the next 12h. You can Contact him/her before that time at T.NUMBER or EMAIL
                     NotificationService.sendSMS(studentMobileNumber, title, message);
                 }
                 NotificationService.sendSMS(mobileNumber, title, message);
-
-                // $gt: new Date(ISODate().getTime() - 1000  60  1)
                 return utilServices.successResponse(res, constants.ASSIGN_TUTOR, 200, data);
             }
         })
     } catch (error) {
-        console.log('-----------------', error)
         return utilServices.errorResponse(res, constants.DB_ERROR, 500);
     }
 }
@@ -110,7 +104,6 @@ const getStudentTutor = async (req, res) => {
 const checkTutorAssignOrNot = async (req, res) => {
     try {
         const emailId = req.params.email;
-        // , createdAt:{$lt: Date.now()
         var now = new Date();
         now.setMinutes(now.getMinutes() - 1); // timestamp
         now = new Date(now); // Date object
@@ -137,7 +130,6 @@ const getAssignTutor = async (req, res) => {
             email: tutordata.email ? tutordata.email : '',
             mobileNumber: tutordata.mobileNumber ? tutordata.mobileNumber : ''
         }
-        // data.tutor = tutordata
         return utilServices.successResponse(res, constants.DATA_FOUND, 200, data);
 
     } catch (error) {

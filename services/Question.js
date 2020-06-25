@@ -24,81 +24,39 @@ async function insertQuestions(params) {
 const createNotification = async (query) => {
   try {
     const subtmId = await getTutorId(query.subject);
-    // console.log('=====subId==========', subtmId);
     const lIds = await getLocationIds(query.location);
     const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: subtmId }, isDeleted: false, userType: 'tutormanager', status: true })
-    // console.log('=========tmIDs============', tmIDs);
     const subjectArray = (query.subject).split(',');
     const locationArray = (query.location).split(',');
-    // let data1 = await subjectModel.find({ _id:  query.subject });
-    // let data2 = await locationModel.find({ _id: query.location });
-    // let subjectData = await getSubjectData(subject);
-    // let subjectArray = [];
-    // await data1.map((subjectData) => {
-    //   subjectArray.push(subjectData.subject)
-    // });
-    // let locationArray = [];
-    // await data2.map((locationData) => {
-    //   locationArray.push(locationData.location)
-    // });
-    // // var arrOfSubject = [];
-    // for (var value of data1) {
-    //   subjectArray.push({subject: value.subject })
-    // }
     for (let i = 0; i < tmIDs.length; i++) {
-      // console.log('-----{ tmId: (tmIDs[i]._id) }----------', { tmId: (tmIDs[i]._id) })
       var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
       if (devicedata && devicedata.deviceToken) {
         const title = 'Notification'
         const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
-     var notdata =    await NotificationModel.create({
+        var notdata = await NotificationModel.create({
           tmId: tmIDs[i]._id,
           subject: subjectArray,
           location: locationArray,
           message: message,
           queryData: query,
-          // data: fluterData
         });
-        let devicetype = devicedata.deviceType
-        console.log('--------------DEVICE TYPE----------', devicetype);
-        NotificationService.sendNotification(devicedata.deviceToken, title, message, notdata, devicetype);
-      // } else {
-      //   const title = 'Notification'
-       
-      //   const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
-      //  let not = await NotificationModel.create({
-      //     tmId: tmIDs[i]._id,
-      //     subject: subjectArray,
-      //     location: locationArray,
-      //     message: message,
-      //     queryData: query,
-      //     // data: fluterData
-      //   });
-      //   console.log('---------Main Hu Naa............');
-      //   console.log('=======not==========',not)
-      //   // NotificationService.sendNotification(devicedata.deviceToken, title, message);
-      // }
+        NotificationService.sendNotification(devicedata.deviceToken, title, message, notdata);
+      }
     }
-  }
-    // console.log('========devicedatadevicedata========', devicedata);
   } catch (error) {
-    console.log('==========Error------------', error);
+    console.log('Error', error);
   }
 
 }
 
 async function getTutorId(subject) {
-  // console.log('=================', subject);
   const sub = subject.split(',');
-  console.log('---------sub-------------', sub)
-  let data1 = await subjectModel.find({ subject: {$in: sub} });
+  let data1 = await subjectModel.find({ subject: { $in: sub } });
   let subjectArray = [];
   await data1.map((subjectData) => {
     subjectArray.push(subjectData._id);
   });
-  console.log('========subjectArray==========', subjectArray)
-  let userData = await User.find({ subjects: { $in: subjectArray }, isDeleted: false, userType: 'tutor'});
-  // console.log('==========userData============', userData);
+  let userData = await User.find({ subjects: { $in: subjectArray }, isDeleted: false, userType: 'tutor' });
   let usersIds = [];
   await userData.map((users) => {
     usersIds.push(users.managerId);
@@ -115,9 +73,6 @@ async function getLocationIds(location) {
   });
   return locationArray;
 }
-
-
-
 
 module.exports = {
   insertQuestions,

@@ -12,15 +12,6 @@ async function insertCode(params) {
 	return await codeModel.create(obj);
 }
 
-// async function insertDeviceCode(params) {
-// 	var obj = {
-// 		deviceId: params.deviceId ? params.deviceId : '214525563263',
-// 		deviceType: params.deviceType ? params.deviceType : 'android',
-// 		deviceToken: params.deviceToken ? params.deviceToken : 'dgcgschdscjdkskj',
-// 		tmId: params.tmId ? params.tmId : null
-// 	}
-// 	return await deviceModel.create(obj);
-// }
 
 async function insertDevice(params) {
 	const data = {

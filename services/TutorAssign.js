@@ -27,7 +27,6 @@ async function getAssignTutor(deatils) {
 }
 
 async function alreadyAssigned(notificationId, statuschange) {
-    console.log('==============', statuschange);
     const user = await assignTutorModel.updateOne({ notificationId: notificationId }, { status: true });
     return user;
 }

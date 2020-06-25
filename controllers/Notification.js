@@ -1,7 +1,6 @@
-var Notification = require('../models/Notification');
-var utilServices = require('../services/Util');
+var utilServices = require(`${appRoot}/services/Util`);
+const notificationService = require(`${appRoot}/services/Notification`);
 const { constants } = require(`${appRoot}/lib/constants`);
-const notificationService = require('../services/Notification');
 
 const createNotification = async function (req, res) {
     try {

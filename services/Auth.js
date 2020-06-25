@@ -1,8 +1,7 @@
-var User = require('../models/User');
-var config = require('../config/config');
+var config = require(`${appRoot}/config/config`);
 var jwt = require('jsonwebtoken');
 var utilServices = require('./Util');
-var userSession = require('../models/Session');
+var userSession = require(`${appRoot}/models/Session`);
 
 const verifyToken = async(req, res, next)=>{
     try {
