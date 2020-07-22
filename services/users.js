@@ -94,6 +94,17 @@ async function userDelete(userId) {
 	return user;
 }
 
+async function deleteTM(userId) {
+	const user = await usersModel.findByIdAndDelete({ _id: userId });
+	return user;
+}
+
+async function deleteTMandTutors(userId) {
+	let id = mongoose.Types.ObjectId(userId);
+	const user = await usersModel.deleteMany({ managerId: id });
+	return user;
+}
+
 async function getTutorManagersList(search, sort, order, perpage, skip) {
 	const user = await usersModel.find(search)
 		.collation({ 'locale': 'en' })
@@ -192,5 +203,7 @@ module.exports = {
 	getComment,
 	getToken,
 	statusForLogin,
-	statusForLogout
+	statusForLogout,
+	deleteTM,
+	deleteTMandTutors
 }

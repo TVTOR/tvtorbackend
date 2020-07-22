@@ -519,8 +519,24 @@ const getAllTutorsOfManager = async function (req, res) {
   catch (error) {
     return utilServices.successResponse(res, constants.DB_ERROR, 500);
   }
-
 }
+
+const deleteTMandTutors= async function (req, res) {
+  try {
+    const userId = req.params.id;
+    const tmdata = await userService.userDelete(userId);
+   const tutordata = await userService.deleteTMandTutors(userId);
+    if (!tmdata && !tutordata) {
+      return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 400);
+    }
+    return utilServices.successResponse(res, constants.DATA_DELETE, 200);
+  } catch (error) {
+    return utilServices.successResponse(res, constants.DB_ERROR, 500);
+  }
+}
+
+
+
 function response(data, token) {
   return responseData = {
     _id: data._id,
@@ -538,6 +554,9 @@ function response(data, token) {
     token: token
   }
 }
+
+
+
 
 
 
@@ -559,5 +578,6 @@ module.exports = {
   getAllTManager: getAllTManager,
   getAllTutorsOfManager: getAllTutorsOfManager,
   getAllSubject: getAllSubject,
-  getAllLocation: getAllLocation
+  getAllLocation: getAllLocation,
+  deleteTMandTutors:deleteTMandTutors
 }
