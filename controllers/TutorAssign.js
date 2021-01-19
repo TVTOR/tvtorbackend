@@ -83,11 +83,13 @@ const getStudentTutor = async (req, res) => {
     try {
         const emailId = req.params.email;
         let tutorassigndata = await TutorAssignServices.getStudentTutorByEmail(emailId)
+        console.log('=======get tutor assigned data by email=====', tutorassigndata)
         if (!tutorassigndata) {
             return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 400);
         }
         let tutorassigndataId = tutorassigndata.tutorId;
         let tutordata = await TutorAssignServices.getTutorData(tutorassigndataId);
+        console.log('=======tutordata=====', tutordata)
         var data = JSON.parse(JSON.stringify(tutorassigndata));
         data.tutor = {
             name: tutordata.name ? tutordata.name : '',
@@ -117,18 +119,23 @@ const checkTutorAssignOrNot = async (req, res) => {
 
 const getAssignTutor = async (req, res) => {
     try {
+        // console.log('======req.body==========', req.body)
         let tutorassigndata = await TutorAssignServices.getAssignTutor(req.body);
+        // console.log('======tutorassigndata==========', tutorassigndata)
         if (!tutorassigndata) {
             return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 400);
         }
         let tutorassigndataId = tutorassigndata.tutorId;
         let tutordata = await TutorAssignServices.getTutorData(tutorassigndataId);
+        console.log('=====tutordata===========', tutordata)
         var data = JSON.parse(JSON.stringify(tutorassigndata));
+        // console.log('======data==========', data)
         data.tutor = {
             name: tutordata.name ? tutordata.name : '',
             surname: tutordata.surname ? tutordata.surname : '',
             email: tutordata.email ? tutordata.email : '',
-            mobileNumber: tutordata.mobileNumber ? tutordata.mobileNumber : ''
+            mobileNumber: tutordata.mobileNumber ? tutordata.mobileNumber : '',
+            imageUrl: tutordata.imageUrl ? tutordata.imageUrl : '',
         }
         return utilServices.successResponse(res, constants.DATA_FOUND, 200, data);
 

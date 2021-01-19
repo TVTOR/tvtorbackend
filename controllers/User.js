@@ -96,9 +96,11 @@ const register = async (req, res) => {
           await userService.updateCode(req.body.code);
           if (req.body.location) {
             data.locationData = await getAllLocation(req.body.location);
+            console.log('======data.locationData========', data.locationData)
           }
           if (req.body.subjects) {
             data.subjectData = await getAllSubject(req.body.subjects);
+            console.log('======data.subjectData========', data.subjectData)
           }
           const secretToken = await authHelper.generateJWToken(data);
           res.header('access-token', secretToken);
@@ -297,7 +299,9 @@ async function getSubject(subject) {
 const updateUser = async function (req, res) {
   try {
     var userId = req.params.id;
+    console.log('==========userId=========', userId)
     const updateData = await userService.checkUser(userId)
+    console.log('==========update data=========', updateData)
     if (!updateData) {
       return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 404);
     }
@@ -333,6 +337,7 @@ const updateUser = async function (req, res) {
       updateData.mobileNumber = req.body.mobileNumber;
     }
     if (req.file && req.file.path) {
+      console.log('=========req.file=======', req.file)
       uploadImage.imageUpload(req.file, async function (err, data) {
         if (err) {
           return utilServices.errorResponse(res, constants.DB_ERROR, 500);

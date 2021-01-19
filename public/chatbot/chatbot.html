@@ -59,10 +59,10 @@
 							setIntervalTime = setInterval(() => {
 								checkTutorAssignOrNot(convState, ready);
 							}, 2000);
-							setTimeout(function () { 
+							setTimeout(function () {
 								clearInterval(setIntervalTime);
-								if(isAssignTutor){
-									assignTutor(convState, ready); 
+								if (isAssignTutor) {
+									assignTutor(convState, ready);
 								}
 							}, 60000);
 						}
@@ -90,9 +90,9 @@
 				var checkLocationUrl = `${baseUrl}/checkTutorAssignOrNot/${userData.email}`;
 				jQuery.ajax({
 					url: checkLocationUrl, async: true, method: 'get', data: userData, success: function (result) {
-					   if(result.data && isAssignTutor){
-						assignTutor(convState, ready);
-					   }
+						if (result.data && isAssignTutor) {
+							assignTutor(convState, ready);
+						}
 					}
 				})
 			}
@@ -106,13 +106,23 @@
 						isAssignTutor = false;
 						clearInterval(setIntervalTime);
 						var que = "There is no tutor available right now. Thank you!";
+						let image
+						let name
+						let surname
 						if (result.success) {
-							const name = result.data.tutor.name;
-							const surname = result.data.tutor.surname;
+							console.log('========result.data.tutor=======', result.data.tutor)
+							name = result.data.tutor.name;
+							surname = result.data.tutor.surname;
 							const email = result.data.tutor.email;
 							const mobileNumber = result.data.tutor.mobileNumber;
+							const profileImage = result.data.tutor.imageUrl;
+							console.log('=========before image src=======', profileImage)
+							image = profileImage
+							console.log('=========image src=======', image)
 							que = 'We have assigned ' + name + ' ' + surname + ' for your ' + userData['subject'] + ' subject and his email id is ' + email + ' and contact number is ' + mobileNumber + '. Thank you!'
 						}
+						// <img src="{{amenity.amenityLogo}}" alt="" width="50" height="50">
+						$('#messages').append('<div class="message to ready"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + name +" " +surname + '</figcaption></div>').animate({ scrollTop: $("#messages").offset().top + 200 }, 200);
 						$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
 					}
 				});
