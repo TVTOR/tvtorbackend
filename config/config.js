@@ -22,5 +22,7 @@ module.exports = {
     mongoUri: config.MONGODB_URI,
 	jwtSecret: config.JWT_SECRET,
 	API_URL: config.API_URL,
+	EMAIL: config.EMAIL,
+	PASSWORD: config.PASSWORD,
     secret: process.env.NODE_ENV === 'production' ? process.env.SECRET : 'secret'
 };

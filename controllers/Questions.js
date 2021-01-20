@@ -4,6 +4,7 @@ var Location = require(`${appRoot}/models/Locations`);
 var Subject = require(`${appRoot}/models/Subjects`);
 const { constants } = require(`${appRoot}/lib/constants`);
 const questionService = require(`${appRoot}/services/Question`);
+const mailer = require('../helper/mail');
 
 
 const createQuestion = async (req, res) => {
@@ -17,8 +18,11 @@ const createQuestion = async (req, res) => {
 
 const getQuestion = async (req, res) => {
     try {
-        if (req.body.name && req.body.email && req.body.mobilenumber && req.body.location && req.body.subject) {
-           console.log('=========Notification Hit========');
+        // console.log('=========req.body===in getQuestion=======', req.body)
+        // console.log('=========req.body in question controller==========', req.body.website)
+        if (req.body.name && req.body.email && req.body.mobilenumber && req.body.location && req.body.subject && req.body.website && req.body.age) {
+            console.log('=========in if conditions=======', )
+            await mailer.sendMailFromChatBot(req.body)
             questionService.createNotification(req.body)
         }
 

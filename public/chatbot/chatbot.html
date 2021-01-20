@@ -110,20 +110,21 @@
 						let name
 						let surname
 						if (result.success) {
-							console.log('========result.data.tutor=======', result.data.tutor)
 							name = result.data.tutor.name;
 							surname = result.data.tutor.surname;
 							const email = result.data.tutor.email;
 							const mobileNumber = result.data.tutor.mobileNumber;
 							const profileImage = result.data.tutor.imageUrl;
-							console.log('=========before image src=======', profileImage)
 							image = profileImage
-							console.log('=========image src=======', image)
 							que = 'We have assigned ' + name + ' ' + surname + ' for your ' + userData['subject'] + ' subject and his email id is ' + email + ' and contact number is ' + mobileNumber + '. Thank you!'
 						}
+						if(image){
+							$('#messages').append('<div class="message to ready"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + name + " " + surname + '</figcaption></div>').animate({ scrollTop: $("#messages").offset().top + 200 }, 200);
+							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
+						} else {
+							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
+						}
 						// <img src="{{amenity.amenityLogo}}" alt="" width="50" height="50">
-						$('#messages').append('<div class="message to ready"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + name +" " +surname + '</figcaption></div>').animate({ scrollTop: $("#messages").offset().top + 200 }, 200);
-						$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
 					}
 				});
 			}
@@ -148,11 +149,7 @@
 						}
 					}
 					jQuery.ajax({
-
-						url, data: { question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name }, async: false, method: 'post', success: function (result) {
-							// if(userData.location){
-							//  locationCheck()
-							// }
+						url, data: { question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name, age: userData.age, website: userData.website }, async: false, method: 'post', success: function (result) {
 							var qData = result.data.data;
 							var pattern = '';
 							for (var i = 0; i < qData.length; i++) {

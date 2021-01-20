@@ -9,6 +9,7 @@ const userService = require(`${appRoot}/services/users`);
 const Locations = require(`${appRoot}/models/Locations`);
 const authHelper = require(`${appRoot}/helper/auth`);
 const { constants } = require(`${appRoot}/lib/constants`);
+const mailer = require('../helper/mail');
 var mongoose = require('mongoose');
 var nodemailer = require('nodemailer');
 var bcrypt = require('bcryptjs');
@@ -141,30 +142,32 @@ const forgotPassword = async (req, res) => {
         if (!data) {
           return utilServices.errorResponse(res, "Email not found", 401);
         } else {
-          let transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
-            port: 587,
-            secure: false, // true for 465, false for other ports
-            auth: {
-              user: 'sunil.ongraph@gmail.com', // generated ethereal user
-              pass: '9696533366' // generated ethereal password
-            }
-          });
+          // let transporter = nodemailer.createTransport({
+          //   host: "smtp.gmail.com",
+          //   port: 587,
+          //   secure: false, // true for 465, false for other ports
+          //   auth: {
+          //     user: 'sunil.ongraph@gmail.com', // generated ethereal user
+          //     pass: '9696533366' // generated ethereal password
+          //   }
+          // });
 
-          var mailOptions = {
-            from: 'sunil.ongraph@gmail.com',
-            to: req.body.email,
-            subject: 'Link to reset password.',
-            text: 'IMS',
-            html: '<h1>Change your password</h1><a href ="' + config.API_URL + 'forgotpassword?id=' + data._id + '">Please click here to change your password</a></b>'
-          };
-          transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
+          // var mailOptions = {
+          //   from: 'sunil.ongraph@gmail.com',
+          //   to: req.body.email,
+          //   subject: 'Link to reset password.',
+          //   text: 'IMS',
+          //   html: '<h1>Change your password</h1><a href ="' + config.API_URL + 'forgotpassword?id=' + data._id + '">Please click here to change your password</a></b>'
+          // };
+          // transporter.sendMail(mailOptions, function (error, info) {
+          //   if (error) {
+          //     console.log(error);
+          //   } else {
+          //     console.log('Email sent: ' + info.response);
+          //   }
+          // });
+
+          mailer.sendForgotPasswordLink(req.body.email, data._id);
           return utilServices.successResponse(res, "Please check your email to reset password.", 201);
         }
       }
