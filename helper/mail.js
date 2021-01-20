@@ -16,7 +16,7 @@ async function sendMailFromChatBot(data) {
     const studentInfoTemplate = studentDetailsTemplate(data.name, data.email, data.mobilenumber, data.location, data.website);
     const mailoptions = {
         from: config.EMAIL_ID,
-        to: "sunilskv36@gmail.com",
+        to: "simone.tagliapietra.job@gmail.com",
         subject: 'Student Informations',
         // html: '<h1>Student details</h1>Student details</b>'
         html: studentInfoTemplate
