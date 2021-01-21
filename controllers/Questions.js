@@ -18,7 +18,7 @@ const createQuestion = async (req, res) => {
 
 const getQuestion = async (req, res) => {
     try {
-        console.log('=========req.body===in getQuestion=======', req.body)
+        // console.log('=========req.body===in getQuestion=======', req.body)
         // console.log('=========req.body in question controller==========', req.body.website)
         if (req.body.name && req.body.email && req.body.mobilenumber && req.body.location && req.body.subject && req.body.website && req.body.age) {
             console.log('=========notification=======' )

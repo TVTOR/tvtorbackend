@@ -23,9 +23,11 @@ const deviceData = async (req, res) => {
                 deviceData.deviceToken = req.body.deviceToken;
             }
           let updatedData = await codeService.deviceTokenUpdate(deviceData)
+          console.log('========update device token ===========', updatedData)
             return utilServices.successResponse(res, constants.UPDATE_DATA, 200, updatedData);
         } else {
             const data = await codeService.insertDevice(req.body);
+            console.log('========first time create device token===========', updatedData)
             return utilServices.successResponse(res, constants.CREATE_DEVICES, 200, data);
         }
     } catch (error) {
