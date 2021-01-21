@@ -23,7 +23,18 @@ async function insertDevice(params) {
 	return await deviceModel.create(data);
 }
 
+async function checkDeviceId(deviceId) {
+	const device = await deviceModel.findOne({ deviceId: deviceId });
+	return device;
+}
+
+async function deviceTokenUpdate(updatedata) {
+	return await updatedata.save();
+}
+
 module.exports = {
 	insertCode,
-	insertDevice
+	insertDevice,
+	checkDeviceId,
+	deviceTokenUpdate
 }

@@ -53,6 +53,7 @@ router.put('/userdelete/:id', Authorization.verifyToken, User.changeUserDelete);
 router.get('/getallTManager', Authorization.verifyToken, User.getAllTManager);
 router.get('/getAllTutorsOfManager/:id', Authorization.verifyToken, User.getAllTutorsOfManager);
 router.post('/fcmdevices', Authorization.verifyToken, Code.deviceData);
+router.put('/fcmdevice/:id', Authorization.verifyToken, Code.updateDeviceToken);
 router.delete('/delete-tutormanager/:id',  User.deleteTMandTutors);
 
 router.post('/subject', Subject.createSubjects);
