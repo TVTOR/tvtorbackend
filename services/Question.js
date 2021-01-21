@@ -40,6 +40,7 @@ const createNotification = async (query) => {
           message: message,
           queryData: query,
         });
+        console.log('=====notdata==========', notdata)
         NotificationService.sendNotification(devicedata.deviceToken, title, message, notdata);
       }
     }
