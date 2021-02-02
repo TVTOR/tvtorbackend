@@ -4,6 +4,7 @@ var Location = require(`${appRoot}/models/Locations`);
 var Subject = require(`${appRoot}/models/Subjects`);
 const { constants } = require(`${appRoot}/lib/constants`);
 const questionService = require(`${appRoot}/services/Question`);
+// const { parse } = require('dotenv/types');
 const mailer = require('../helper/mail');
 
 
@@ -32,8 +33,9 @@ const getQuestion = async (req, res) => {
 
         const detail = {};
         const dataArray = [];
-        let questionId = req.body.question;
+        let questionId = parseInt(req.body.question);
         const data = await Ouestions.findOne({ question_num: questionId,  languageCode:languageCode});
+        console.log('=======data==========', data)
         dataArray.push(data);
         if (data.no_answer == 1) {
             questionId = parseInt(questionId) + 1;
