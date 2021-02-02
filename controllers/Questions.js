@@ -34,6 +34,7 @@ const getQuestion = async (req, res) => {
         const detail = {};
         const dataArray = [];
         let questionId = parseInt(req.body.question);
+        console.log('=====Question id===========', questionId)
         const data = await Ouestions.findOne({ question_num: questionId,  languageCode:languageCode});
         console.log('=======data==========', data)
         dataArray.push(data);
