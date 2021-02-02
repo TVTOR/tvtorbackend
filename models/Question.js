@@ -8,7 +8,8 @@ var Questions = new Schema({
     type: { type: String },
     title: { type: String },
     optionTable: { type: String },
-    question_num: { type: Number }
+    question_num: { type: Number },
+    languageCode: { type: String }
 }, { timestamps: true })
 
 module.exports = mongoose.model('Questions', Questions);

@@ -13,6 +13,10 @@
 </head>
 
 <body>
+	<select name="" id="languageChange">
+		<option value="en">English</option>
+		<option value="it">Italic</option>
+	</select>
 	<section id="demo">
 		<div class="vertical-align">
 			<div class="container">
@@ -20,11 +24,18 @@
 					<div class="col-sm-6 col-sm-offset-3 col-xs-offset-0">
 						<div class="card no-border">
 							<div id="chat">
-								<form action="" method="GET" class="hidden">
-									<select data-conv-question="Hello! Welcome to Simon. May I help you?"
+								<form action="" id="form-english" method="GET" class="hidden">
+									<select id="question-data-en"
+										data-conv-question="Hello! Welcome to Simon. May I help you?"
 										name="first-question">
 										<option value="yes">Yes</option>
 										<option value="sure">Sure!</option>
+									</select>
+									<select id="question-data-it" style="display: none;"
+										data-conv-question="Ciao, benvenuto su TVTOR, posso aiutarti a trovare un tutor?"
+										name="first-question">
+										<option value="si">si</option>
+										<option value="sure">certo!</option>
 									</select>
 								</form>
 							</div>
@@ -41,6 +52,52 @@
 
 
 	<script>
+		$('#languageChange').on('change', function () {
+			if ($('#languageChange').val() == 'it') {
+				// $("#question-data-it").show();
+				$('.message:first-child').html('')
+				// $("#question-data-en").hide();
+				$('.message:first-child').html('Ciao, benvenuto su TVTOR, posso aiutarti a trovare un tutor?')
+				$("#convForm .option:first-child").html('si')
+				$("#convForm .option:nth-child(2)").html('certo')
+
+
+				// $(".message:nth-child(2)").html('si')
+				$("#convForm .option:first-child").text('si')
+				$("#convForm .option:nth-child(2)").text('certo')
+
+				$("#convForm .option:first-child").val('si')
+				$("#convForm .option:nth-child(2)").val('certo')
+				if ($("#userInput").attr("placeholder") == "Select an option") {
+					$("#userInput").attr("placeholder", "seleziona un'opzione");
+				} else {
+					alert('=====change italic======')
+					$("textarea#userInput").attr("placeholder", "digita qui");
+
+				}
+				// $("#userInput").attr("placeholder", "seleziona un'opzione");
+				// $("#userInput").attr("placeholder", "digita qui");
+				$(".submit").html('invia');
+
+			} else {
+				// $("#question-data-it").show();
+				$('.message:first-child').html('')
+				// $("#question-data-en").hide();
+				$('.message:first-child').html('Hello! Welcome to Simon. May I help you?')
+				$("#convForm .option:first-child").html('Yes')
+				$("#convForm .option:nth-child(2)").html('Sure')
+				$(".option:first-child").html('Yes')
+				$(".option:nth-child(2)").html('Sure')
+				if ($("#userInput").attr("placeholder") == "Select an option") {
+					$("#userInput").attr("placeholder", "Select an option");
+				} else {
+					// alert('====type here====')
+					$("textarea#userInput").attr("placeholder", "Type here");
+
+				}
+				$(".submit").html('Send');
+			}
+		});
 		jQuery(function ($) {
 			const baseUrl = 'https://tutorbackend.herokuapp.com/api/v1';
 			// const baseUrl = 'http://localhost:5000/api/v1';
@@ -54,8 +111,11 @@
 			var convForm = $('#chat').convform({
 				selectInputStyle: 'disable', eventList: {
 					onInputSubmit: function (convState, ready) {
+						console.log('=====get_question= start=========', count)
 						get_question(convState, ready);
+						console.log('=====get_question= end=========', count)
 						if (userData.hasOwnProperty('email') && userData.hasOwnProperty('subject') && userData.hasOwnProperty('location')) {
+
 							setIntervalTime = setInterval(() => {
 								checkTutorAssignOrNot(convState, ready);
 							}, 2000);
@@ -63,6 +123,7 @@
 								clearInterval(setIntervalTime);
 								if (isAssignTutor) {
 									assignTutor(convState, ready);
+									// get_question(convState, ready);
 								}
 							}, 60000);
 						}
@@ -102,7 +163,12 @@
 					url: assignTutorUrl, async: true, method: 'post', data: userData, success: function (result) {
 						isAssignTutor = false;
 						clearInterval(setIntervalTime);
-						var que = "There is no tutor available right now. Thank you!";
+						var que
+						if ($('#languageChange').val() == 'en') {
+							que = "There is no tutor available right now. Thank you!";
+						} else if ($('#languageChange').val() == 'it') {
+							que = "Non ci sono tutor disponibili al momento.";
+						}
 						let image
 						let name
 						let surname
@@ -113,20 +179,36 @@
 							const mobileNumber = result.data.tutor.mobileNumber;
 							const profileImage = result.data.tutor.imageUrl;
 							image = profileImage
-							que = 'We have assigned ' + name + ' ' + surname + ' for your ' + userData['subject'] + ' subject and his email id is ' + email + ' and contact number is ' + mobileNumber + '. Thank you!'
+							if ($('#languageChange').val() == 'en') {
+								que = 'We have assigned ' + name + ' ' + surname + ' for your ' + userData['subject'] + ' subject and his email id is ' + email + ' and contact number is ' + mobileNumber + '. Thank you!'
+							} else if ($('#languageChange').val() == 'it') {
+								que = 'Ti abbiamo assegnato ' + name + ' ' + surname + ' per ' + userData['subject'] + ' email ' + email + ' I suoi contatti sono: ' + mobileNumber + '.'
+
+							}
 						}
-						if(image){
+						if (image) {
 							$('#messages').append('<div class="message to ready"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + name + " " + surname + '</figcaption></div>').animate({ scrollTop: $("#messages").offset().top + 200 }, 200);
 							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
+
+							get_question(convState, ready);
+
+							// $('#messages').append('<div class="message to ready">You tell us phone number will be encrypted and send to the tutor</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
+							// userInput
+							// $('userInput').removeAttr('disabled');
 						} else {
 							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
+							// $('#messages').append('<div class="message to ready">heoohfdhdh</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
 						}
+						// get_question(convState, ready, 1);
+						// console.log('=======data========', data)
 						// <img src="{{amenity.amenityLogo}}" alt="" width="50" height="50">
 					}
 				});
 			}
 
 			function get_question(convState, ready) {
+				console.log('=====get_question=start in =========', count)
+				// console.log('======in get question function -------', b)
 				if (convState.current.answer.value === 'end') {
 					convState.current.next = false;
 					setTimeout(ready, Math.random() * 500 + 100);
@@ -140,15 +222,56 @@
 						userData[convState.current.input.name] = answer;
 					}
 					var queryString = '';
+					// console.log('========userData======', userData)
 					for (var key in userData) {
 						if (userData.hasOwnProperty(key)) {
+							// console.log('========key======', userData)
 							queryString += '&' + key + '=' + userData[key];
 						}
 					}
+					// $(".messages .message:first-child").text('si')
+					console.log('-----------------------', $('#languageChange :selected').val())
+					console.log('========url========', url, $('#languageChange').val())
 					jQuery.ajax({
-						url, data: { question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name, age: userData.age, website: userData.website }, async: false, method: 'post', success: function (result) {
+						url, data: { language: $('#languageChange').val(), question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name, age: userData.age, website: userData.website }, async: false, method: 'post', success: function (result) {
 							var qData = result.data.data;
+							console.log('=============qData in chatbot===',qData, qData.type, qData.languageCode)
+							if (qData[0].type == "select" && qData[0].languageCode == "it") {
+								setTimeout(function () {
+									// alert('it select qui')
+									$("#userInput").attr("placeholder", "seleziona un'opzione");
+								}, 2000);
+							}
+							else if (qData[0].type == "select" && qData[0].languageCode == "en") {
+								setTimeout(function () {
+									// alert('en select qui')
+									$("#userInput").attr("placeholder", "Select an option");
+								}, 2000);
+
+							}
+							else if (qData[0].type == "text" && qData[0].languageCode == "en") {
+								setTimeout(function () {
+									// alert('en text qui')
+									$("#userInput").attr("placeholder", "Type Here");
+								}, 5);
+
+							}
+							else if (qData[0].type == "text" && qData[0].languageCode == "it") {
+								// alert('it text qui')
+								setTimeout(function () {
+									$("#userInput").attr("placeholder", "digita qui");
+								}, 5);
+							} else if (qData[0].title == "contacting_tutor" && qData[0].languageCode == "it"){
+								setTimeout(function () {
+									$("#userInput").attr("placeholder", "seleziona un'opzione");
+								}, 2000);
+							}
+
 							var pattern = '';
+							// if(count == 10){
+							// 	$('#messages').append('<div class="message to ready">'+qData[0].question+'</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
+							// }
+							console.log('======qData.length;=========', qData, count)
 							for (var i = 0; i < qData.length; i++) {
 								if (qData[i].title == 'email') {
 									pattern = "^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$";
@@ -167,6 +290,7 @@
 									});
 									lastNext = 1;
 								} else {
+									// console.log('====last next========', lastNext, b, count)
 									if (lastNext == 1) {
 										lastNext = 0;
 										if (qData[i].type == 'text') {
@@ -177,6 +301,12 @@
 												questions: [newQuestion],
 											});
 										} else {
+											console.log('==== select next========', lastNext, count, {
+												type: 'select',
+												name: questionTitle,
+												questions: [newQuestion],
+												answers: qData[i].options
+											})
 											convState.current.next.next = convState.newState({
 												type: 'select',
 												name: questionTitle,
@@ -186,6 +316,12 @@
 										}
 									} else {
 										if (qData[i].type == 'text') {
+											console.log('==== hdshdhfdhlast next========', lastNext, count, {
+												type: 'text',
+												pattern: pattern,
+												name: questionTitle,
+												questions: [newQuestion],
+											})
 											convState.current.next = convState.newState({
 												type: 'text',
 												pattern: pattern,
@@ -210,6 +346,7 @@
 					setTimeout(ready, Math.random() * 500 + 500);
 				}
 				count++;
+				console.log('=====get_question=end in =========', count)
 			}
 		});
 	</script>

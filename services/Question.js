@@ -16,7 +16,8 @@ async function insertQuestions(params) {
     type: params.type ? params.type : '',
     title: params.title ? params.title : '',
     question_num: params.question_num ? params.question_num : '',
-    optionTable: params.optionTable ? params.optionTable : ''
+    optionTable: params.optionTable ? params.optionTable : '',
+    languageCode: params.languageCode ? params.languageCode : '',
   };
   return await questionModel.create(obj);
 }
