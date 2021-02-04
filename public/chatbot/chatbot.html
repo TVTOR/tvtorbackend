@@ -114,7 +114,7 @@
 						console.log('=====get_question= start=========', count)
 						get_question(convState, ready);
 						console.log('=====get_question= end=========', count)
-						if (userData.hasOwnProperty('email') && userData.hasOwnProperty('subject') && userData.hasOwnProperty('location')) {
+						if (userData.hasOwnProperty('subject') && userData.hasOwnProperty('location')) {
 
 							setIntervalTime = setInterval(() => {
 								checkTutorAssignOrNot(convState, ready);
@@ -222,7 +222,17 @@
 						userData[convState.current.input.name] = answer;
 					}
 					var queryString = '';
-					// console.log('========userData======', userData)
+					console.log('========userData======', userData)
+					// mobilenumber: "67676767"
+					// name: "df"
+					// subject: "Java"
+					// website: "fggf"
+					if (userData.age && userData.name && userData.subject && userData.website) {
+						var d = new Date();
+						var n = d.getTime();
+						var name = userData.name.replace(/\s/g, '')
+						userData.email = n + name + "@gmail.com"
+					}
 					for (var key in userData) {
 						if (userData.hasOwnProperty(key)) {
 							// console.log('========key======', userData)
@@ -235,7 +245,7 @@
 					jQuery.ajax({
 						url, data: { language: $('#languageChange').val(), question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name, age: userData.age, website: userData.website }, async: false, method: 'post', success: function (result) {
 							var qData = result.data.data;
-							console.log('=============qData in chatbot===',qData, qData.type, qData.languageCode)
+							console.log('=============qData in chatbot===', qData, qData.type, qData.languageCode)
 							if (qData[0].type == "select" && qData[0].languageCode == "it") {
 								setTimeout(function () {
 									// alert('it select qui')
@@ -261,7 +271,7 @@
 								setTimeout(function () {
 									$("#userInput").attr("placeholder", "digita qui");
 								}, 5);
-							} else if (qData[0].title == "contacting_tutor" && qData[0].languageCode == "it"){
+							} else if (qData[0].title == "contacting_tutor" && qData[0].languageCode == "it") {
 								setTimeout(function () {
 									$("#userInput").attr("placeholder", "seleziona un'opzione");
 								}, 2000);
