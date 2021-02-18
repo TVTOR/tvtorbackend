@@ -25,10 +25,14 @@ const getQuestion = async (req, res) => {
         const languageCode = req.body.language? req.body.language: 'en'
         // console.log('=========req.body===in getQuestion=======', req.body)
         // console.log('=========req.body in question controller==========', req.body.website)
-        if (req.body.name && req.body.location && req.body.subject && req.body.mobilenumber && req.body.website && req.body.age) {
+        if (req.body.name && req.body.location && req.body.subject && req.body.mobilenumber && req.body.website && req.body.age && req.body.notificationId == "") {
             console.log('=========notification=======' )
             await mailer.sendMailFromChatBot(req.body)
             questionService.createNotification(req.body)
+        }
+        if(req.body.mobilenumber && req.body.notificationId != ""){
+            console.log("===mobilenumber===", req.body.mobilenumber, "====notificationId=====", req.body.notificationId)
+            questionService.updateNotification(req.body.mobilenumber, req.body.notificationId)
         }
 
         const detail = {};

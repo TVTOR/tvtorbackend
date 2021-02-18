@@ -135,6 +135,22 @@ ConvState.prototype.printQuestion = function () {
                 this.parameters.eventList.onSubmitForm(this);
             }
         }
+        if(question == 'Tutor assign for you he will contact with you as soon as possible.'){
+            $(this.wrapper).find('#' + this.parameters.inputIdName).prop('disabled', true);
+        }
+        if(question == 'Il tutor assegnato per te si metterà in contatto con te il prima possibile'){
+            $(this.wrapper).find('#' + this.parameters.inputIdName).prop('disabled', true);
+        }
+        if(question == 'Please enter your phone number??'){
+            $(this.wrapper).find('#messages').append('<div class="message to ready">'+question+'</div>');
+            $(this.wrapper).find('#' + this.parameters.inputIdName).prop('disabled', false);
+            // $(this.wrapper).find(this.parameters.inputIdHashTagName).focus();
+        }
+        if(question == 'Digita il tuo numero di telefono?'){
+            $(this.wrapper).find('#messages').append('<div class="message to ready">'+question+'</div>');
+            $(this.wrapper).find('#' + this.parameters.inputIdName).prop('disabled', false);
+            // $(this.wrapper).find(this.parameters.inputIdHashTagName).focus();
+        }
         $(this.wrapper).find(this.parameters.inputIdHashTagName).focus();
     }.bind(this), 500);
 };

@@ -51,6 +51,19 @@ const createNotification = async (query) => {
   }
 
 }
+const updateNotification = async (mobilenumber, notificationId) => {
+  try {
+    let queryData = {
+      mobilenumber: mobilenumber
+    }
+    const user =  await NotificationModel.update({ _id: notificationId }, {$set:{'queryData.mobilenumber':mobilenumber}});
+    console.log("=============usrerrrrrrrrrrrr=========", user)
+    return user;
+  } catch (error) {
+    console.log('Error', error);
+  }
+
+}
 
 async function getTutorId(subject) {
   const sub = subject.split(',');
@@ -79,5 +92,6 @@ async function getLocationIds(location) {
 
 module.exports = {
   insertQuestions,
-  createNotification
+  createNotification,
+  updateNotification
 }

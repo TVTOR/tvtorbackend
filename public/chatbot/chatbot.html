@@ -99,14 +99,16 @@
 			}
 		});
 		jQuery(function ($) {
-			const baseUrl = 'https://tutorbackend.herokuapp.com/api/v1';
-			// const baseUrl = 'http://localhost:5000/api/v1';
+			console.log("=========iiiiiiiiiiiiiiiiiist timeeeeeee==========")
+			// const baseUrl = 'https://tutorbackend.herokuapp.com/api/v1';
+			const baseUrl = 'http://localhost:5000/api/v1';
 			var userData = {};
 			var isAssignTutor = true;
 			var setIntervalTime;
 			var newQuestion = '';
 			var count = 2;
 			var lastNext = 0;
+			let notificationId = ""
 			var url = `${baseUrl}/question`
 			var convForm = $('#chat').convform({
 				selectInputStyle: 'disable', eventList: {
@@ -178,6 +180,7 @@
 							const email = result.data.tutor.email;
 							const mobileNumber = result.data.tutor.mobileNumber;
 							const profileImage = result.data.tutor.imageUrl;
+							notificationId = result.data.notificationId;
 							image = profileImage
 							if ($('#languageChange').val() == 'en') {
 								que = 'We have assigned ' + name + ' ' + surname + ' for your ' + userData['subject'] + ' subject and his email id is ' + email + ' and contact number is ' + mobileNumber + '. Thank you!'
@@ -188,29 +191,20 @@
 						}
 						if (image) {
 							$('#messages').append('<div class="message to ready"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + name + " " + surname + '</figcaption></div>').animate({ scrollTop: $("#messages").offset().top + 200 }, 200);
-							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
-
+							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
 							get_question(convState, ready);
-
-							// $('#messages').append('<div class="message to ready">You tell us phone number will be encrypted and send to the tutor</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
-							// userInput
-							// $('userInput').removeAttr('disabled');
 						} else {
-							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
-							// $('#messages').append('<div class="message to ready">heoohfdhdh</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
-						}
-						// get_question(convState, ready, 1);
-						// console.log('=======data========', data)
-						// <img src="{{amenity.amenityLogo}}" alt="" width="50" height="50">
+							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);						}
 					}
 				});
 			}
 
 			function get_question(convState, ready) {
 				console.log('=====get_question=start in =========', count)
-				// console.log('======in get question function -------', b)
+				console.log('======convState.current.answer.value -------', convState.current.answer.value)
 				if (convState.current.answer.value === 'end') {
-					convState.current.next = false;
+					console.log("<<<<<<<<==========endquestions=========>>>>>>>>>>>>>>>")
+					// convState.current.next = false;
 					setTimeout(ready, Math.random() * 500 + 100);
 				} else {
 					if (Array.isArray(convState.current.answer)) {
@@ -235,7 +229,7 @@
 					}
 					for (var key in userData) {
 						if (userData.hasOwnProperty(key)) {
-							// console.log('========key======', userData)
+							console.log('========key======', userData)
 							queryString += '&' + key + '=' + userData[key];
 						}
 					}
@@ -243,9 +237,9 @@
 					console.log('-----------------------', $('#languageChange :selected').val())
 					console.log('========url========', url, $('#languageChange').val())
 					jQuery.ajax({
-						url, data: { language: $('#languageChange').val(), question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name, age: userData.age, website: userData.website }, async: false, method: 'post', success: function (result) {
+						url, data: { language: $('#languageChange').val(), question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name, age: userData.age, website: userData.website, notificationId:notificationId }, async: false, method: 'post', success: function (result) {
 							var qData = result.data.data;
-							console.log('=============qData in chatbot===', qData, qData.type, qData.languageCode)
+							console.log('=============qData in chatbot===', qData[0].type, qData.languageCode)
 							if (qData[0].type == "select" && qData[0].languageCode == "it") {
 								setTimeout(function () {
 									// alert('it select qui')
@@ -289,7 +283,7 @@
 								newQuestion = qData[i].question;
 								count = qData[i].question_num;
 								var questionTitle = qData[i].title;
-								var newQuestion = newQuestion.replace("{name}", answer);
+								 newQuestion = newQuestion.replace("{name}", answer);
 
 								if (qData[i].no_answer == 1) {
 									convState.current.next = convState.newState({
@@ -356,7 +350,7 @@
 					setTimeout(ready, Math.random() * 500 + 500);
 				}
 				count++;
-				console.log('=====get_question=end in =========', count)
+				console.log('=====get_question=end in =========', count, convState.current.next)
 			}
 		});
 	</script>
