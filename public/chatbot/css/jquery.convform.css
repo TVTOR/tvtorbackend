@@ -163,6 +163,19 @@ div.conv-form-wrapper:before {
     z-index: 2;
     background: linear-gradient(#fff, transparent);
 }
+
+.image_size {
+	max-width: 90% !important;
+}
+.image_size img {
+    float: left;
+    padding-right: 10px;
+}
+
+.image_size figcaption {
+    float: left;
+    max-width: 70%;
+}
 @media (max-width: 767px) {
     div.conv-form-wrapper div.wrapper-messages, div.conv-form-wrapper div#messages {
         max-height: 80vh !important;
@@ -414,3 +427,4 @@ span.clear {
 .wrapper-messages {
     margin-bottom: 0px !important;
 }
+

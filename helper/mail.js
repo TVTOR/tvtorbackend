@@ -2,31 +2,32 @@ var mailer = require('./mailer');
 var config = require('../config/config');
 
 async function sendForgotPasswordLink(email, id) {
-    const mailoptions = {
-        from: config.EMAIL_ID,
-        to: email,
-        subject: 'Forgot Password',
-        html: '<h1>Change your password</h1><a href ="' + config.API_URL + 'forgotpassword?id=' + id + '">Please click here to change your password</a></b>'
-    };
-    return await mailer.sendMail(mailoptions);
+  const mailoptions = {
+    from: config.EMAIL_ID,
+    to: email,
+    subject: 'Forgot Password',
+    html: '<h1>Change your password</h1><a href ="' + config.API_URL + 'forgotpassword?id=' + id + '">Please click here to change your password</a></b>'
+  };
+  return await mailer.sendMail(mailoptions);
 }
 
 async function sendMailFromChatBot(data) {
-    console.log('======mailer==========', data)
-    const studentInfoTemplate = studentDetailsTemplate(data.name, data.email, data.mobilenumber, data.location, data.website);
-    const mailoptions = {
-        from: config.EMAIL_ID,
-        to: "simone.tagliapietra.job@gmail.com",
-        subject: 'Student Informations',
-        // html: '<h1>Student details</h1>Student details</b>'
-        html: studentInfoTemplate
-    };
-    return await mailer.sendMail(mailoptions);
+  console.log('======mailer==========', data)
+  const studentInfoTemplate = studentDetailsTemplate(data.name, data.mobilenumber, data.location, data.website);
+  const mailoptions = {
+    from: config.EMAIL_ID,
+    to: "simone.tagliapietra.job@gmail.com",
+    // to: "sunilskv36@gmail.com",
+    subject: 'Student Informations',
+    // html: '<h1>Student details</h1>Student details</b>'
+    html: studentInfoTemplate
+  };
+  return await mailer.sendMail(mailoptions);
 }
 
 
-function studentDetailsTemplate(name, email, mobilenumber, location, website) {
-    let html = `
+function studentDetailsTemplate(name, location, website) {
+  let html = `
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="EN">
         <head>
@@ -189,8 +190,6 @@ function studentDetailsTemplate(name, email, mobilenumber, location, website) {
                         Hello Admin,<br/><br/>
                         Student informations. <br/><br>
                         Name: ${name}<br>
-                        Email: ${email}<br>
-                        Contact Number: ${mobilenumber}<br>
                         Location: ${location}<br>
                         Reference: ${website}
                         <br>
@@ -267,10 +266,10 @@ function studentDetailsTemplate(name, email, mobilenumber, location, website) {
             </body>
     </html>
     `;
-    return html;
+  return html;
 }
 
 module.exports = {
-    sendForgotPasswordLink,
-    sendMailFromChatBot
+  sendForgotPasswordLink,
+  sendMailFromChatBot
 }

@@ -31,10 +31,11 @@ const createNotification = async (query) => {
     const locationArray = (query.location).split(',');
     for (let i = 0; i < tmIDs.length; i++) {
       var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
-      console.log('========= device data ========', devicedata)
+      // console.log('========= device data ========', devicedata)
       if (devicedata && devicedata.deviceToken) {
         const title = 'Notification'
-        const message = `Name: ${query.name} Email: ${query.email} Subject: ${subjectArray} Location: ${locationArray}`
+        console.log('========query=================', query)
+        const message = `Name: ${query.name} Email: ${query.email}, Year: ${query.age} Subject: ${subjectArray} Location: ${locationArray}`
         var notdata = await NotificationModel.create({
           tmId: tmIDs[i]._id,
           subject: subjectArray,

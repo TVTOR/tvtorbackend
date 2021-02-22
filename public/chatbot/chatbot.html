@@ -100,8 +100,8 @@
 		});
 		jQuery(function ($) {
 			console.log("=========iiiiiiiiiiiiiiiiiist timeeeeeee==========")
-			// const baseUrl = 'https://tutorbackend.herokuapp.com/api/v1';
-			const baseUrl = 'http://localhost:5000/api/v1';
+			const baseUrl = 'https://tutorbackend.herokuapp.com/api/v1';
+			// const baseUrl = 'http://localhost:5000/api/v1';
 			var userData = {};
 			var isAssignTutor = true;
 			var setIntervalTime;
@@ -190,8 +190,8 @@
 							}
 						}
 						if (image) {
-							$('#messages').append('<div class="message to ready"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + name + " " + surname + '</figcaption></div>').animate({ scrollTop: $("#messages").offset().top + 200 }, 200);
-							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
+							// $('#messages').append('<div class="message to ready"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + name + " " + surname + '</figcaption></div>').animate({ scrollTop: $("#messages").offset().top + 200 }, 200);
+							$('#messages').append('<div class="message to ready image_size"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
 							get_question(convState, ready);
 						} else {
 							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);						}
