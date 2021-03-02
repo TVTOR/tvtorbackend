@@ -4,47 +4,63 @@ var Location = require(`${appRoot}/models/Locations`);
 var Subject = require(`${appRoot}/models/Subjects`);
 const { constants } = require(`${appRoot}/lib/constants`);
 const questionService = require(`${appRoot}/services/Question`);
+const notificationService = require('../services/Notification');
+const NotificationService = require(`${appRoot}/services/SendNotification`);
+const TutorAssignServices = require(`${appRoot}/services/TutorAssign`);
 // const { parse } = require('dotenv/types');
 const mailer = require('../helper/mail');
 
 
 const createQuestion = async (req, res) => {
     try {
-        console.log('=========req.body==============', req.body)
+        // console.log('=========req.body==============', req.body)
         const data = await questionService.insertQuestions(req.body);
 
         return utilServices.successResponse(res, constants.CREATE_QUESTIONS, 200, data);
     } catch (error) {
-        console.log('=========error===========', error)
+        // console.log('=========error===========', error)
         return utilServices.errorResponse(res, constants.DB_ERROR, 500);
     }
 }
 
 const getQuestion = async (req, res) => {
     try {
-        const languageCode = req.body.language? req.body.language: 'en'
+        const languageCode = req.body.language ? req.body.language : 'en'
         // console.log('=========req.body===in getQuestion=======', req.body)
         // console.log('=========req.body in question controller==========', req.body.website)
         if (req.body.name && req.body.location && req.body.subject && req.body.website && req.body.age && req.body.notificationId == "") {
-            console.log('=========notification=======' )
+            // console.log('=========notification=======')
             await mailer.sendMailFromChatBot(req.body)
             questionService.createNotification(req.body)
         }
-        if(req.body.mobilenumber && req.body.notificationId != ""){
-            console.log("===mobilenumber===", req.body.mobilenumber, "====notificationId=====", req.body.notificationId)
+        if (req.body.mobilenumber && req.body.notificationId != "") {
+            // console.log("===mobilenumber===", req.body.mobilenumber, "====notificationId=====", req.body.notificationId)
             questionService.updateNotification(req.body.mobilenumber, req.body.notificationId)
+            let notificationDetails = await notificationService.getNotificationDetails(req.body.notificationId)
+            let query = notificationDetails.queryData;
+            // console.log('===========notificationDetails======', notificationDetails)
+            const tutordata = await TutorAssignServices.getTutor(query.tutorId[0]);
+            const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
+            let arrOfSubject = query.subject;
+            let studentmobile = query.mobilenumber;
+            const title = 'Notification';
+            const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
+            // console.log('==========Message-----------', message)
+            // console.log('==========mobile number-----------', mobileNumber)
+            NotificationService.sendSMS(mobileNumber, title, message);
+            
         }
 
         const detail = {};
         const dataArray = [];
         let questionId = parseInt(req.body.question);
-        console.log('=====Question id===========', { question_num: questionId,  languageCode:languageCode})
-        const data = await Ouestions.findOne({ question_num: questionId,  languageCode:languageCode});
+        console.log('=====Question id===========', { question_num: questionId, languageCode: languageCode })
+        const data = await Ouestions.findOne({ question_num: questionId, languageCode: languageCode });
         console.log('=======data==========', data)
         dataArray.push(data);
         if (data.no_answer == 1) {
             questionId = parseInt(questionId) + 1;
-            const data1 = await Ouestions.findOne({ question_num: questionId, languageCode:languageCode });
+            const data1 = await Ouestions.findOne({ question_num: questionId, languageCode: languageCode });
             dataArray.push(data1);
         }
         detail.data = dataArray;

@@ -2,6 +2,7 @@ const NotificationService = require(`${appRoot}/services/SendNotification`);
 const utilServices = require(`${appRoot}/services/Util`);
 const TutorAssignServices = require(`${appRoot}/services/TutorAssign`);
 const TutorAssign = require(`${appRoot}/models/TutorAssign`);
+const questionService = require(`${appRoot}/services/Question`);
 const { constants } = require(`${appRoot}/lib/constants`);
 
 
@@ -49,19 +50,21 @@ const assignTutor = async (req, res) => {
                     arrOfSubject.push(value.subject);
                 }
 
-                const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ ${studentmobile} and his email id is ${query.email}.`;
-                const id = req.body.tutorId
+                // const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ ${studentmobile} and his email id is ${query.email}.`;
+                const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
+                const id = req.body.tutorId;
                 const tutordata = await TutorAssignServices.getTutor(id);
                 const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
                 const studentMobileNumber = notification.queryData.mobilenumber;
                 const tutorName = tutordata.name;
                 const tutorSurName = tutordata.surname;
                 const tutorEmail = tutordata.email;
+                questionService.updateTutorNotification(req.body.tutorId, req.body.notificationId)
                 if (studentMobileNumber && notification.queryData) {
-                    const message = `Your ${arrOfSubject} Tutor ${tutorName} ${tutorSurName} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber} or ${tutorEmail}.`;
+                    const message = `Your ${arrOfSubject} Tutor ${tutorName} ${tutorSurName} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber}.`;
                     NotificationService.sendSMS(studentMobileNumber, title, message);
                 }
-                NotificationService.sendSMS(mobileNumber, title, message);
+                // NotificationService.sendSMS(mobileNumber, title, message);
                 return utilServices.successResponse(res, constants.ASSIGN_TUTOR, 200, data);
             }
         })

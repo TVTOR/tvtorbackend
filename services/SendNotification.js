@@ -35,6 +35,8 @@ const sendNotification = async (deviceToken, title, body, notdata) => {
 }
 
 async function sendSMS(mobile, title, body) {
+    // console.log('=========mobile number============', mobile)
+    // console.log('=========body body============', body)
     client.messages
         .create({
             body: body,

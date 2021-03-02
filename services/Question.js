@@ -66,6 +66,20 @@ const updateNotification = async (mobilenumber, notificationId) => {
 
 }
 
+const updateTutorNotification = async (tutorId, notificationId) => {
+  try {
+    let queryData = {
+      tutorId: tutorId
+    }
+    const user =  await NotificationModel.update({ _id: notificationId }, {$set:{'queryData.tutorId':tutorId}});
+    console.log("=============usrerrrrrrrrrrrr=========", user)
+    return user;
+  } catch (error) {
+    console.log('Error', error);
+  }
+
+}
+
 async function getTutorId(subject) {
   const sub = subject.split(',');
   let data1 = await subjectModel.find({ subject: { $in: sub } });
@@ -94,5 +108,6 @@ async function getLocationIds(location) {
 module.exports = {
   insertQuestions,
   createNotification,
-  updateNotification
+  updateNotification,
+  updateTutorNotification
 }
