@@ -117,9 +117,10 @@
 						get_question(convState, ready);
 						console.log('=====get_question= end=========', count)
 						if (userData.hasOwnProperty('subject') && userData.hasOwnProperty('location')) {
-
 							setIntervalTime = setInterval(() => {
-								checkTutorAssignOrNot(convState, ready);
+								if(isAssignTutor){
+									checkTutorAssignOrNot(convState, ready);
+								}
 							}, 2000);
 							setTimeout(function () {
 								clearInterval(setIntervalTime);
