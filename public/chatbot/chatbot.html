@@ -123,10 +123,10 @@
 							}, 2000);
 							setTimeout(function () {
 								clearInterval(setIntervalTime);
-								if (isAssignTutor) {
-									assignTutor(convState, ready);
+								// if (isAssignTutor) {
+									// assignTutor(convState, ready);
 									// get_question(convState, ready);
-								}
+								// }
 							}, 60000);
 						}
 					}
@@ -150,13 +150,22 @@
 
 			function checkTutorAssignOrNot(convState, ready) {
 				var checkLocationUrl = `${baseUrl}/checkTutorAssignOrNot/${userData.email}`;
-				jQuery.ajax({
+				if(isAssignTutor){
+					jQuery.ajax({
 					url: checkLocationUrl, async: true, method: 'get', data: userData, success: function (result) {
 						if (result.data && isAssignTutor) {
 							assignTutor(convState, ready);
 						}
 					}
 				})
+				}
+				// jQuery.ajax({
+				// 	url: checkLocationUrl, async: true, method: 'get', data: userData, success: function (result) {
+				// 		if (result.data && isAssignTutor) {
+				// 			assignTutor(convState, ready);
+				// 		}
+				// 	}
+				// })
 			}
 
 			function assignTutor(convState, ready) {
