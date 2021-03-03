@@ -120,6 +120,7 @@
 							setIntervalTime = setInterval(() => {
 								if(isAssignTutor){
 									checkTutorAssignOrNot(convState, ready);
+									isAssignTutor = false
 								}
 							}, 2000);
 							setTimeout(function () {
