@@ -35,10 +35,10 @@ const getQuestion = async (req, res) => {
         }
         if (req.body.mobilenumber && req.body.notificationId != "") {
             // console.log("===mobilenumber===", req.body.mobilenumber, "====notificationId=====", req.body.notificationId)
-            questionService.updateNotification(req.body.mobilenumber, req.body.notificationId)
+           await questionService.updateNotification(req.body.mobilenumber, req.body.notificationId)
             let notificationDetails = await notificationService.getNotificationDetails(req.body.notificationId)
             let query = notificationDetails.queryData;
-            // console.log('===========notificationDetails======', notificationDetails)
+            console.log('===========query in questions page======', query)
             const tutordata = await TutorAssignServices.getTutor(query.tutorId[0]);
             const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
             let arrOfSubject = query.subject;
@@ -47,8 +47,14 @@ const getQuestion = async (req, res) => {
             const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
             // console.log('==========Message-----------', message)
             // console.log('==========mobile number-----------', mobileNumber)
-            NotificationService.sendSMS(mobileNumber, title, message);
-            
+            if(studentmobile){
+                NotificationService.sendSMS(mobileNumber, title, message);
+            }
+            if (studentmobile && query) {
+                const message = `Your ${arrOfSubject} Tutor ${tutordata.name} ${tutordata.surname} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber}.`;
+                console.log('======Student Message===============', message)
+                NotificationService.sendSMS(studentmobile, title, message);
+            }
         }
 
         const detail = {};

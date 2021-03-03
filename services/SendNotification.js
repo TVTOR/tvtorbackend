@@ -2,8 +2,10 @@ var FCM = require('fcm-node');
 var serverKey = 'AAAADcqhd6c:APA91bG1ErDbgDJTjoUCrYbltjTz40zo-VyMf5a-jVEIK2Ko1tMNrfvVTlG78KbpNCNncbZu8vXPezpK7Yt6NQdJLQgc1DqVjKxVWSNDeYofVrJ0PQE68BtV1_0R1QCDIMxam6ad455B'; //put your server key here
 var fcm = new FCM(serverKey);
 
-const accountSid = 'AC5a479b676619bfcdf8f065ac7f04ec41';
-const authToken = '467b418c1f708f0cc4cb89260e2837e1';
+// const accountSid = 'AC5a479b676619bfcdf8f065ac7f04ec41';
+// const authToken = '467b418c1f708f0cc4cb89260e2837e1';
+const accountSid = 'AC39aad605893396aada7ec0c75cfda4f3';
+const authToken = '99739aad8baa5feaccc08d8b609bc172';
 const client = require('twilio')(accountSid, authToken);
 
 const sendNotification = async (deviceToken, title, body, notdata) => {
@@ -35,14 +37,15 @@ const sendNotification = async (deviceToken, title, body, notdata) => {
 }
 
 async function sendSMS(mobile, title, body) {
-    // console.log('=========mobile number============', mobile)
-    // console.log('=========body body============', body)
+    console.log('=========mobile number============', mobile)
+    console.log('=========body body============', body)
     client.messages
         .create({
             body: body,
             title: 'This student assign for tutor',
-            from: '+12054309667',
-            to: '+39' + mobile
+            // from: '+12054309667',
+            from:'+15092045315',
+            to: '+91' + mobile
         })
         .then((message) => {
             console.log(message.sid)
