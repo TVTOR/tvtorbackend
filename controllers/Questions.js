@@ -47,7 +47,7 @@ const getQuestion = async (req, res) => {
             const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
             // console.log('==========Message-----------', message)
             // console.log('==========mobile number-----------', mobileNumber)
-            if(studentmobile){
+            if(mobileNumber){
                 NotificationService.sendSMS(mobileNumber, title, message);
             }
             if (studentmobile && query) {
