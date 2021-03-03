@@ -9,7 +9,7 @@ const authToken = '99739aad8baa5feaccc08d8b609bc172';
 const client = require('twilio')(accountSid, authToken);
 
 const sendNotification = async (deviceToken, title, body, notdata) => {
-    console.log('=====sendNotification===========', deviceToken)
+    // console.log('=====sendNotification===========', deviceToken)
         var message = {
             to: deviceToken,
             collapse_key: 'your_collapse_key',

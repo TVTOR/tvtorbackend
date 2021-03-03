@@ -34,7 +34,7 @@ const createNotification = async (query) => {
       // console.log('========= device data ========', devicedata)
       if (devicedata && devicedata.deviceToken) {
         const title = 'Notification'
-        console.log('========query=================', query)
+        // console.log('========query=================', query)
         const message = `Name: ${query.name} Email: ${query.email}, Year: ${query.age} Subject: ${subjectArray} Location: ${locationArray}`
         var notdata = await NotificationModel.create({
           tmId: tmIDs[i]._id,
@@ -58,7 +58,7 @@ const updateNotification = async (mobilenumber, notificationId) => {
       mobilenumber: mobilenumber
     }
     const user =  await NotificationModel.update({ _id: notificationId }, {$set:{'queryData.mobilenumber':mobilenumber}});
-    console.log("=============usrerrrrrrrrrrrr=========", user)
+    // console.log("=============usrerrrrrrrrrrrr=========", user)
     return user;
   } catch (error) {
     console.log('Error', error);
@@ -72,7 +72,7 @@ const updateTutorNotification = async (tutorId, notificationId) => {
       tutorId: tutorId
     }
     const user =  await NotificationModel.update({ _id: notificationId }, {$set:{'queryData.tutorId':tutorId}});
-    console.log("=============usrerrrrrrrrrrrr=========", user)
+    // console.log("=============usrerrrrrrrrrrrr=========", user)
     return user;
   } catch (error) {
     console.log('Error', error);

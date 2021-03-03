@@ -65,6 +65,7 @@ const assignTutor = async (req, res) => {
                     NotificationService.sendSMS(studentMobileNumber, title, message);
                 }
                 // NotificationService.sendSMS(mobileNumber, title, message);
+                console.log('========data after tutor assign==============', data);
                 return utilServices.successResponse(res, constants.ASSIGN_TUTOR, 200, data);
             }
         })
@@ -130,7 +131,7 @@ const getAssignTutor = async (req, res) => {
         }
         let tutorassigndataId = tutorassigndata.tutorId;
         let tutordata = await TutorAssignServices.getTutorData(tutorassigndataId);
-        console.log('=====tutordata===========', tutordata)
+        // console.log('=====tutordata===========', tutordata)
         var data = JSON.parse(JSON.stringify(tutorassigndata));
         // console.log('======data==========', data)
         data.tutor = {

@@ -38,7 +38,7 @@ const getQuestion = async (req, res) => {
            await questionService.updateNotification(req.body.mobilenumber, req.body.notificationId)
             let notificationDetails = await notificationService.getNotificationDetails(req.body.notificationId)
             let query = notificationDetails.queryData;
-            console.log('===========query in questions page======', query)
+            // console.log('===========query in questions page======', query)
             const tutordata = await TutorAssignServices.getTutor(query.tutorId[0]);
             const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
             let arrOfSubject = query.subject;
@@ -52,7 +52,7 @@ const getQuestion = async (req, res) => {
             }
             if (studentmobile && query) {
                 const message = `Your ${arrOfSubject} Tutor ${tutordata.name} ${tutordata.surname} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber}.`;
-                console.log('======Student Message===============', message)
+                // console.log('======Student Message===============', message)
                 NotificationService.sendSMS(studentmobile, title, message);
             }
         }
@@ -60,9 +60,9 @@ const getQuestion = async (req, res) => {
         const detail = {};
         const dataArray = [];
         let questionId = parseInt(req.body.question);
-        console.log('=====Question id===========', { question_num: questionId, languageCode: languageCode })
+        // console.log('=====Question id===========', { question_num: questionId, languageCode: languageCode })
         const data = await Ouestions.findOne({ question_num: questionId, languageCode: languageCode });
-        console.log('=======data==========', data)
+        // console.log('=======data==========', data)
         dataArray.push(data);
         if (data.no_answer == 1) {
             questionId = parseInt(questionId) + 1;
