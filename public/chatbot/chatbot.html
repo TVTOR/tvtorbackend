@@ -154,9 +154,12 @@
 				if(isAssignTutor){
 					jQuery.ajax({
 					url: checkLocationUrl, async: true, method: 'get', data: userData, success: function (result) {
+						console.log('=======is Assign tutor=============', isAssignTutor)
 						if (result.data && isAssignTutor) {
+						
 							assignTutor(convState, ready);
 						}
+						
 					}
 				})
 				}
@@ -201,6 +204,7 @@
 						}
 						if (image) {
 							// $('#messages').append('<div class="message to ready"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + name + " " + surname + '</figcaption></div>').animate({ scrollTop: $("#messages").offset().top + 200 }, 200);
+							console.log('=======is Assign tutor in image=============', isAssignTutor)
 							$('#messages').append('<div class="message to ready image_size"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
 							get_question(convState, ready);
 						} else {

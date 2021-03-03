@@ -70,6 +70,7 @@ const assignTutor = async (req, res) => {
             }
         })
     } catch (error) {
+        console.log('==================', error)
         return utilServices.errorResponse(res, constants.DB_ERROR, 500);
     }
 }

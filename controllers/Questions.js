@@ -26,43 +26,37 @@ const createQuestion = async (req, res) => {
 const getQuestion = async (req, res) => {
     try {
         const languageCode = req.body.language ? req.body.language : 'en'
-        // console.log('=========req.body===in getQuestion=======', req.body)
-        // console.log('=========req.body in question controller==========', req.body.website)
         if (req.body.name && req.body.location && req.body.subject && req.body.website && req.body.age && req.body.notificationId == "") {
-            // console.log('=========notification=======')
             await mailer.sendMailFromChatBot(req.body)
             questionService.createNotification(req.body)
         }
-        // if (req.body.mobilenumber && req.body.notificationId != "") {
-            // console.log("===mobilenumber===", req.body.mobilenumber, "====notificationId=====", req.body.notificationId)
+        if (req.body.notificationId != "") {
            await questionService.updateNotification(req.body.mobilenumber, req.body.notificationId)
             let notificationDetails = await notificationService.getNotificationDetails(req.body.notificationId)
             let query = notificationDetails.queryData;
-            // console.log('===========query in questions page======', query)
             const tutordata = await TutorAssignServices.getTutor(query.tutorId[0]);
-            const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
+            const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : ''
             let arrOfSubject = query.subject;
             let studentmobile = query.mobilenumber;
             const title = 'Notification';
-            const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
-            // console.log('==========Message-----------', message)
-            console.log('==========mobile number-----------', mobileNumber)
-            if(mobileNumber){
+            
+            if(mobileNumber && req.body.mobilenumber){
+                const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
+                NotificationService.sendSMS(mobileNumber, title, message);
+            } else {
+                const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰.`;
                 NotificationService.sendSMS(mobileNumber, title, message);
             }
             if (studentmobile && query) {
                 const message = `Your ${arrOfSubject} Tutor ${tutordata.name} ${tutordata.surname} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber}.`;
-                // console.log('======Student Message===============', message)
                 NotificationService.sendSMS(studentmobile, title, message);
             }
-        // }
+        }
 
         const detail = {};
         const dataArray = [];
         let questionId = parseInt(req.body.question);
-        // console.log('=====Question id===========', { question_num: questionId, languageCode: languageCode })
         const data = await Ouestions.findOne({ question_num: questionId, languageCode: languageCode });
-        // console.log('=======data==========', data)
         dataArray.push(data);
         if (data.no_answer == 1) {
             questionId = parseInt(questionId) + 1;
