@@ -33,7 +33,7 @@ const getQuestion = async (req, res) => {
             await mailer.sendMailFromChatBot(req.body)
             questionService.createNotification(req.body)
         }
-        if (req.body.mobilenumber && req.body.notificationId != "") {
+        // if (req.body.mobilenumber && req.body.notificationId != "") {
             // console.log("===mobilenumber===", req.body.mobilenumber, "====notificationId=====", req.body.notificationId)
            await questionService.updateNotification(req.body.mobilenumber, req.body.notificationId)
             let notificationDetails = await notificationService.getNotificationDetails(req.body.notificationId)
@@ -46,7 +46,7 @@ const getQuestion = async (req, res) => {
             const title = 'Notification';
             const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
             // console.log('==========Message-----------', message)
-            // console.log('==========mobile number-----------', mobileNumber)
+            console.log('==========mobile number-----------', mobileNumber)
             if(mobileNumber){
                 NotificationService.sendSMS(mobileNumber, title, message);
             }
@@ -55,7 +55,7 @@ const getQuestion = async (req, res) => {
                 // console.log('======Student Message===============', message)
                 NotificationService.sendSMS(studentmobile, title, message);
             }
-        }
+        // }
 
         const detail = {};
         const dataArray = [];
