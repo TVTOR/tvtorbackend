@@ -176,6 +176,17 @@ div.conv-form-wrapper:before {
     float: left;
     max-width: 70%;
 }
+
+.danger .options.dragscroll {
+    height: auto;
+}
+.danger #messages {
+    margin-bottom: 0 !important;
+}
+.options.dragscroll {
+    background: #fff;
+}
+
 @media (max-width: 767px) {
     div.conv-form-wrapper div.wrapper-messages, div.conv-form-wrapper div#messages {
         max-height: 80vh !important;

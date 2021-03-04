@@ -35,7 +35,7 @@ const createNotification = async (query) => {
       if (devicedata && devicedata.deviceToken) {
         const title = 'Notification'
         // console.log('========query=================', query)
-        const message = `Name: ${query.name} Email: ${query.email}, Year: ${query.age} Subject: ${subjectArray} Location: ${locationArray}`
+        const message = `Name: ${query.name}, Year: ${query.age}, Subject: ${subjectArray} Location: ${locationArray}`
         var notdata = await NotificationModel.create({
           tmId: tmIDs[i]._id,
           subject: subjectArray,

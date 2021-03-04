@@ -114,20 +114,34 @@
 			var convForm = $('#chat').convform({
 				selectInputStyle: 'disable', eventList: {
 					onInputSubmit: function (convState, ready) {
-						console.log('=====get_question= start=========', count)
+						// console.log('=====convState convState= start=========', convState)
 						get_question(convState, ready);
-						console.log('=====get_question= end=========', count)
+						console.log('=====convState.current.input.name =========', convState.current.input.name)
+						// $("button").click(function () {
+						console.log('=======button click===========')
+						if (convState.current.input.name != "name") {
+							$("#chat").addClass("danger");
+						}
+						if (convState.current.input.name == "name") {
+							$("#chat").removeClass("danger");
+
+						}
+						if (convState.current.input.name == "age") {
+							$("#chat").removeClass("danger");
+
+						}
+						// });
 						if (userData.hasOwnProperty('subject') && userData.hasOwnProperty('location')) {
 							setIntervalTime = setInterval(() => {
-								if(isAssignTutor){
+								if (isAssignTutor) {
 									checkTutorAssignOrNot(convState, ready);
 								}
 							}, 2000);
 							setTimeout(function () {
 								clearInterval(setIntervalTime);
 								// if (isAssignTutor) {
-									// assignTutor(convState, ready);
-									// get_question(convState, ready);
+								// assignTutor(convState, ready);
+								// get_question(convState, ready);
 								// }
 							}, 60000);
 						}
@@ -152,17 +166,17 @@
 
 			function checkTutorAssignOrNot(convState, ready) {
 				var checkLocationUrl = `${baseUrl}/checkTutorAssignOrNot/${userData.email}`;
-				if(isAssignTutor){
+				if (isAssignTutor) {
 					jQuery.ajax({
-					url: checkLocationUrl, async: true, method: 'get', data: userData, success: function (result) {
-						console.log('=======is Assign tutor=============', isAssignTutor)
-						if (result.data && isAssignTutor && isAssignTutor_check) {
-							isAssignTutor_check = false
-							assignTutor(convState, ready);
+						url: checkLocationUrl, async: true, method: 'get', data: userData, success: function (result) {
+							console.log('=======is Assign tutor=============', isAssignTutor)
+							if (result.data && isAssignTutor && isAssignTutor_check) {
+								isAssignTutor_check = false
+								assignTutor(convState, ready);
+							}
+
 						}
-						
-					}
-				})
+					})
 				}
 				// jQuery.ajax({
 				// 	url: checkLocationUrl, async: true, method: 'get', data: userData, success: function (result) {
@@ -209,7 +223,8 @@
 							$('#messages').append('<div class="message to ready image_size"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
 							get_question(convState, ready);
 						} else {
-							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);						}
+							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
+						}
 					}
 				});
 			}
@@ -236,7 +251,7 @@
 					// name: "df"
 					// subject: "Java"
 					// website: "fggf"
-					if (userData.age && userData.name && userData.subject && userData.website) {
+					if (userData.age && userData.name && userData.subject && !userData.website) {
 						var d = new Date();
 						var n = d.getTime();
 						var name = userData.name.replace(/\s/g, '')
@@ -252,7 +267,7 @@
 					console.log('-----------------------', $('#languageChange :selected').val())
 					console.log('========url========', url, $('#languageChange').val())
 					jQuery.ajax({
-						url, data: { language: $('#languageChange').val(), question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name, age: userData.age, website: userData.website, notificationId:notificationId }, async: false, method: 'post', success: function (result) {
+						url, data: { language: $('#languageChange').val(), question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name, age: userData.age, website: userData.website, notificationId: notificationId }, async: false, method: 'post', success: function (result) {
 							var qData = result.data.data;
 							console.log('=============qData in chatbot===', qData[0].type, qData.languageCode)
 							if (qData[0].type == "select" && qData[0].languageCode == "it") {
@@ -298,7 +313,7 @@
 								newQuestion = qData[i].question;
 								count = qData[i].question_num;
 								var questionTitle = qData[i].title;
-								 newQuestion = newQuestion.replace("{name}", answer);
+								newQuestion = newQuestion.replace("{name}", answer);
 
 								if (qData[i].no_answer == 1) {
 									convState.current.next = convState.newState({

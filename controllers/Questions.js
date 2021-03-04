@@ -26,7 +26,7 @@ const createQuestion = async (req, res) => {
 const getQuestion = async (req, res) => {
     try {
         const languageCode = req.body.language ? req.body.language : 'en'
-        if (req.body.name && req.body.location && req.body.subject && req.body.website && req.body.age && req.body.notificationId == "") {
+        if (req.body.name && req.body.location && req.body.subject && !req.body.website && req.body.age && req.body.notificationId == "") {
             await mailer.sendMailFromChatBot(req.body)
             questionService.createNotification(req.body)
         }
@@ -43,10 +43,11 @@ const getQuestion = async (req, res) => {
             if(mobileNumber && req.body.mobilenumber){
                 const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
                 NotificationService.sendSMS(mobileNumber, title, message);
-            } else {
-                const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰.`;
-                NotificationService.sendSMS(mobileNumber, title, message);
             }
+            //  else {
+            //     const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰.`;
+            //     NotificationService.sendSMS(mobileNumber, title, message);
+            // }
             if (studentmobile && query) {
                 const message = `Your ${arrOfSubject} Tutor ${tutordata.name} ${tutordata.surname} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber}.`;
                 NotificationService.sendSMS(studentmobile, title, message);
