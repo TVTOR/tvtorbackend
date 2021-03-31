@@ -67,7 +67,7 @@ const assignTutor = async (req, res) => {
                     NotificationService.sendSMS(studentMobileNumber, title, message);
                 }
                 // NotificationService.sendSMS(mobileNumber, title, message);
-                console.log('========data after tutor assign==============', data);
+                // console.log('========data after tutor assign==============', data);
                 return utilServices.successResponse(res, constants.ASSIGN_TUTOR, 200, data);
             }
         })
