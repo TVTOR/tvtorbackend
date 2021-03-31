@@ -71,7 +71,7 @@
 				if ($("#userInput").attr("placeholder") == "Select an option") {
 					$("#userInput").attr("placeholder", "seleziona un'opzione");
 				} else {
-					alert('=====change italic======')
+					// alert('=====change italic======')
 					$("textarea#userInput").attr("placeholder", "digita qui");
 
 				}
@@ -99,8 +99,8 @@
 			}
 		});
 		jQuery(function ($) {
-			const baseUrl = 'https://tutorbackend.herokuapp.com/api/v1';
-			// const baseUrl = 'http://localhost:5000/api/v1';
+			// const baseUrl = 'https://tutorbackend.herokuapp.com/api/v1';
+			const baseUrl = 'http://localhost:5000/api/v1';
 			var userData = {};
 			var isAssignTutor = true;
 			var isAssignTutor_check = true;
@@ -166,7 +166,7 @@
 				if (isAssignTutor) {
 					jQuery.ajax({
 						url: checkLocationUrl, async: true, method: 'get', data: userData, success: function (result) {
-							console.log('=======is Assign tutor=============', isAssignTutor)
+							// console.log('=======is Assign tutor=============', isAssignTutor)
 							if (result.data && isAssignTutor && isAssignTutor_check) {
 								isAssignTutor_check = false
 								assignTutor(convState, ready);
@@ -207,30 +207,31 @@
 							const profileImage = result.data.tutor.imageUrl;
 							notificationId = result.data.notificationId;
 							image = profileImage
+							console.log('=======tvtor assign without image=============')
 							if ($('#languageChange').val() == 'en') {
 								que = 'We have assigned ' + name + ' ' + surname + ' for your ' + userData['subject'] + ' subject and his email id is ' + email + ' and contact number is ' + mobileNumber + '. Thank you!'
 							} else if ($('#languageChange').val() == 'it') {
 								que = 'Ti abbiamo assegnato ' + name + ' ' + surname + ' per ' + userData['subject'] + ' email ' + email + ' I suoi contatti sono: ' + mobileNumber + '.'
-
 							}
 						}
 						if (image) {
 							// $('#messages').append('<div class="message to ready"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + name + " " + surname + '</figcaption></div>').animate({ scrollTop: $("#messages").offset().top + 200 }, 200);
-							console.log('=======is Assign tutor in image=============', isAssignTutor)
+							console.log('=======tvtor assign with image=============', isAssignTutor)
 							$('#messages').append('<div class="message to ready image_size"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
 							get_question(convState, ready);
 						} else {
 							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
+							get_question(convState, ready);
 						}
 					}
 				});
 			}
 
 			function get_question(convState, ready) {
-				console.log('=====get_question=start in =========', count)
-				console.log('======convState.current.answer.value -------', convState.current.answer.value)
+				// console.log('=====get_question=start in =========', count)
+				// console.log('======convState.current.answer.value -------', convState.current.answer.value)
 				if (convState.current.answer.value === 'end') {
-					console.log("<<<<<<<<==========endquestions=========>>>>>>>>>>>>>>>")
+					// console.log("<<<<<<<<==========endquestions=========>>>>>>>>>>>>>>>")
 					// convState.current.next = false;
 					setTimeout(ready, Math.random() * 500 + 100);
 				} else {
@@ -243,7 +244,7 @@
 						userData[convState.current.input.name] = answer;
 					}
 					var queryString = '';
-					console.log('========userData======', userData)
+					// console.log('========userData======', userData)
 					// mobilenumber: "67676767"
 					// name: "df"
 					// subject: "Java"
@@ -256,17 +257,17 @@
 					}
 					for (var key in userData) {
 						if (userData.hasOwnProperty(key)) {
-							console.log('========key======', userData)
+							// console.log('========key======', userData)
 							queryString += '&' + key + '=' + userData[key];
 						}
 					}
 					// $(".messages .message:first-child").text('si')
-					console.log('-----------------------', $('#languageChange :selected').val())
-					console.log('========url========', url, $('#languageChange').val())
+					// console.log('-----------------------', $('#languageChange :selected').val())
+					// console.log('========url========', url, $('#languageChange').val())
 					jQuery.ajax({
 						url, data: { language: $('#languageChange').val(), question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name, age: userData.age, website: userData.website, notificationId: notificationId }, async: false, method: 'post', success: function (result) {
 							var qData = result.data.data;
-							console.log('=============qData in chatbot===', qData[0].type, qData.languageCode)
+							// console.log('=============qData in chatbot===', qData[0].type, qData.languageCode)
 							if (qData[0].type == "select" && qData[0].languageCode == "it") {
 								setTimeout(function () {
 									// alert('it select qui')
@@ -302,7 +303,7 @@
 							// if(count == 10){
 							// 	$('#messages').append('<div class="message to ready">'+qData[0].question+'</div>').animate({ scrollTop: $("#messages").offset().top + 600 }, 600);
 							// }
-							console.log('======qData.length;=========', qData, count)
+							// console.log('======qData.length;=========', qData, count)
 							for (var i = 0; i < qData.length; i++) {
 								if (qData[i].title == 'email') {
 									pattern = "^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$";
@@ -332,12 +333,12 @@
 												questions: [newQuestion],
 											});
 										} else {
-											console.log('==== select next========', lastNext, count, {
-												type: 'select',
-												name: questionTitle,
-												questions: [newQuestion],
-												answers: qData[i].options
-											})
+											// console.log('==== select next========', lastNext, count, {
+											// 	type: 'select',
+											// 	name: questionTitle,
+											// 	questions: [newQuestion],
+											// 	answers: qData[i].options
+											// })
 											convState.current.next.next = convState.newState({
 												type: 'select',
 												name: questionTitle,
@@ -347,12 +348,12 @@
 										}
 									} else {
 										if (qData[i].type == 'text') {
-											console.log('==== hdshdhfdhlast next========', lastNext, count, {
-												type: 'text',
-												pattern: pattern,
-												name: questionTitle,
-												questions: [newQuestion],
-											})
+											// console.log('==== hdshdhfdhlast next========', lastNext, count, {
+											// 	type: 'text',
+											// 	pattern: pattern,
+											// 	name: questionTitle,
+											// 	questions: [newQuestion],
+											// })
 											convState.current.next = convState.newState({
 												type: 'text',
 												pattern: pattern,
@@ -377,7 +378,7 @@
 					setTimeout(ready, Math.random() * 500 + 500);
 				}
 				count++;
-				console.log('=====get_question=end in =========', count, convState.current.next)
+				// console.log('=====get_question=end in =========', count, convState.current.next)
 			}
 		});
 	</script>

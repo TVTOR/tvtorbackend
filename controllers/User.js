@@ -302,9 +302,9 @@ async function getSubject(subject) {
 const updateUser = async function (req, res) {
   try {
     var userId = req.params.id;
-    console.log('==========userId=========', userId)
+    // console.log('==========userId=========', userId)
     const updateData = await userService.checkUser(userId)
-    console.log('==========update data=========', updateData)
+    // console.log('==========update data=========', updateData)
     if (!updateData) {
       return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 404);
     }
@@ -340,7 +340,7 @@ const updateUser = async function (req, res) {
       updateData.mobileNumber = req.body.mobileNumber;
     }
     if (req.file && req.file.path) {
-      console.log('=========req.file=======', req.file)
+      // console.log('=========req.file=======', req.file)
       uploadImage.imageUpload(req.file, async function (err, data) {
         if (err) {
           return utilServices.errorResponse(res, constants.DB_ERROR, 500);
@@ -354,6 +354,7 @@ const updateUser = async function (req, res) {
       return utilServices.successResponse(res, constants.UPDATE_DATA, 200, data1);
     }
   } catch (error) {
+    console.log('=======error=======', error)
     return utilServices.successResponse(res, constants.DB_ERROR, 500);
   }
 }

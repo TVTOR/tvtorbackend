@@ -192,7 +192,7 @@ ConvState.prototype.printAnswers = function (answers, multiple) {
                     .data("answer", answers[i])
                     .click(function (event) {
                         let answerText = $(event.target).data("answer").text
-                        console.log('===============$(event.target).data("answer").text,=====', $(event.target).data("answer").text)
+                        // console.log('===============$(event.target).data("answer").text,=====', $(event.target).data("answer").text)
                         if ($(event.target).data("answer").text == 'Yes' && $('#languageChange').val() == 'en') {
                             answerText = 'Yes'
                         } else if ($(event.target).data("answer").text == 'Yes' && $('#languageChange').val() == 'it') {
@@ -355,7 +355,7 @@ ConvState.prototype.answerWith = function (answerText, answerObject) {
 
 (function ($) {
     $.fn.convform = function (options) {
-        console.log('step-1')
+        // console.log('step-1')
         var wrapper = this;
         var originalFormHtml = $(wrapper).html();
         $(this).addClass('conv-form-wrapper');
@@ -442,9 +442,9 @@ ConvState.prototype.answerWith = function (answerText, answerObject) {
 
             var inputForm;
             parameters.inputIdHashTagName = '#' + parameters.inputIdName;
-            console.log('==========place holder===========', parameters.placeHolder)
+            // console.log('==========place holder===========', parameters.placeHolder)
 
-            console.log('==========place holder===========', $('#languageChange').val() == 'en')
+            // console.log('==========place holder===========', $('#languageChange').val() == 'en')
             if ($('#languageChange').val() == 'en') {
                 parameters.placeHolder = 'Type Here'
             } else {
@@ -615,7 +615,7 @@ ConvState.prototype.answerWith = function (answerText, answerObject) {
             $(inputForm).submit(function (e) {
                 e.preventDefault();
                 var answer = $(this).find(parameters.inputIdHashTagName).val();
-                console.log("=========================================iNPUT Answer=========================", answer);
+                // console.log("=========================================iNPUT Answer=========================", answer);
                 $(this).find(parameters.inputIdHashTagName).val("");
                 if (state.current.input.type == 'select') {
                     if (!state.current.input.multiple) {
@@ -626,7 +626,7 @@ ConvState.prototype.answerWith = function (answerText, answerObject) {
                 } else {
                     state.answerWith(answer, answer);
                 }
-                console.log(state)
+                // console.log(state)
 
             });
 
