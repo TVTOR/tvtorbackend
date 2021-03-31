@@ -12,7 +12,8 @@ const authToken = '467b418c1f708f0cc4cb89260e2837e1';
 const client = require('twilio')(accountSid, authToken);
 
 const sendNotification = async (deviceToken, title, body, notdata) => {
-    console.log('=====sendNotification===========', deviceToken)
+    // console.log('=====sendNotification===========', deviceToken)
+    // console.log('=====notdata===========', notdata)
         var message = {
             to: deviceToken,
             collapse_key: 'your_collapse_key',
@@ -28,11 +29,13 @@ const sendNotification = async (deviceToken, title, body, notdata) => {
     console.log(message);
     // Send Notification
     fcm.send(message, function (err, response) {
-        console.log(response);
+        console.log('in fcm send condition');
         if (err) {
-            console.log("Something has gone wrong!");
+            console.log('Error=========');
+            console.log("Something has gone wrong!", err);
             return false;
         } else {
+            console.log('Successfully=========');
             console.log("Successfully sent with response: ", response);
             return true;
         }

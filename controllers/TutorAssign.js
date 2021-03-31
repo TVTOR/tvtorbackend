@@ -9,7 +9,9 @@ const { constants } = require(`${appRoot}/lib/constants`);
 const assignTutor = async (req, res) => {
     try {
         const notificationId = req.body.notificationId
+        console.log('=======notificationId==============', notificationId)
         const notification = await TutorAssignServices.getNotificationData(notificationId);
+        console.log('=======notification data==============', notification)
         const obj = {};
         obj.name = notification.queryData.name;
         obj.email = notification.queryData.email;
