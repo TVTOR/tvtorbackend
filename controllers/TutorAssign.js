@@ -7,6 +7,7 @@ const { constants } = require(`${appRoot}/lib/constants`);
 
 
 const assignTutor = async (req, res) => {
+    console.log('=======assignTutor====function=============')
     try {
         const notificationId = req.body.notificationId
         console.log('=======notificationId==============', notificationId)
@@ -72,7 +73,7 @@ const assignTutor = async (req, res) => {
             }
         })
     } catch (error) {
-        console.log('==================', error)
+        console.log('=======assign tvtor error===========', error)
         return utilServices.errorResponse(res, constants.DB_ERROR, 500);
     }
 }
