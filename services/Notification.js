@@ -1,6 +1,9 @@
 'use strict';
 
 const notificationModel = require(`${appRoot}/models/Notification`);
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+var ObjectID = require('mongodb').ObjectID;
 
 async function insertNotification(params) {
     var obj = {
@@ -20,7 +23,7 @@ async function getNotifications(managerId) {
 
 // getNotificationDetails
 async function getNotificationDetails(notificationId) {
-    const notification = notificationModel.findOne({ _id: notificationId });
+    const notification = notificationModel.findOne({ _id: new ObjectID(notificationId) });
     return notification;
 }
 module.exports = {
