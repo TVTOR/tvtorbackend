@@ -57,6 +57,7 @@ const getQuestion = async (req, res) => {
         const detail = {};
         const dataArray = [];
         let questionId = parseInt(req.body.question);
+        console.log('=======questionId=============', questionId)
         const data = await Ouestions.findOne({ question_num: questionId, languageCode: languageCode });
         dataArray.push(data);
         if (data.no_answer == 1) {
@@ -91,7 +92,7 @@ const getQuestion = async (req, res) => {
                 }
             })
         }
-        console.log('======detail===========', JSON.stringify(detail))
+        console.log('====getQuestion==detail===========', JSON.stringify(detail))
         return utilServices.successResponse(res, "Set values for notification.", 200, detail);
     } catch (error) {
         console.log('-----------------Notification Error===', error);
