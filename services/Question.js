@@ -60,7 +60,7 @@ const updateNotification = async (mobilenumber, notificationId) => {
     let queryData = {
       mobilenumber: mobilenumber
     }
-    const user =  await NotificationModel.update({ _id: notificationId }, {$set:{'queryData.mobilenumber':mobilenumber}});
+    const user =  await NotificationModel.update({ _id: new ObjectID(notificationId) }, {$set:{'queryData.mobilenumber':mobilenumber}});
     // console.log("=============usrerrrrrrrrrrrr=========", user)
     return user;
   } catch (error) {
@@ -74,7 +74,7 @@ const updateTutorNotification = async (tutorId, notificationId) => {
     let queryData = {
       tutorId: tutorId
     }
-    const user =  await NotificationModel.update({ _id: new ObjectID(notificationId) }, {$set:{'queryData.tutorId':tutorId}});
+    const user =  await NotificationModel.update({ _id: notificationId }, {$set:{'queryData.tutorId':tutorId}});
     // console.log("=============usrerrrrrrrrrrrr=========", user)
     return user;
   } catch (error) {
