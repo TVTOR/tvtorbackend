@@ -144,6 +144,7 @@ const getAssignTutor = async (req, res) => {
             email: tutordata.email ? tutordata.email : '',
             mobileNumber: tutordata.mobileNumber ? tutordata.mobileNumber : '',
             imageUrl: tutordata.imageUrl ? tutordata.imageUrl : '',
+            description: tutordata.description ? tutordata.description : 'No Descriptions',
         }
         return utilServices.successResponse(res, constants.DATA_FOUND, 200, data);
 

@@ -205,18 +205,23 @@
 							const email = result.data.tutor.email;
 							const mobileNumber = result.data.tutor.mobileNumber;
 							const profileImage = result.data.tutor.imageUrl;
+							const description = result.data.tutor.description;
 							notificationId = result.data.notificationId;
 							image = profileImage
-							console.log('=======tvtor assign without image=============')
+							console.log('=======tvtor assign without image=============', result.data.tutor)
 							if ($('#languageChange').val() == 'en') {
-								que = 'We have assigned ' + name + ' ' + surname + ' for your ' + userData['subject'] + ' subject and his email id is ' + email + ' and contact number is ' + mobileNumber + '. Thank you!'
+								// que = 'We have assigned ' + name + ' ' + surname + ' for your ' + userData['subject'] + ' subject and his email id is ' + email + ' and contact number is ' + mobileNumber + '. Thank you!'
+								que = description;
 							} else if ($('#languageChange').val() == 'it') {
-								que = 'Ti abbiamo assegnato ' + name + ' ' + surname + ' per ' + userData['subject'] + ' email ' + email + ' I suoi contatti sono: ' + mobileNumber + '.'
+								// que = 'Ti abbiamo assegnato ' + name + ' ' + surname + ' per ' + userData['subject'] + ' email ' + email + ' I suoi contatti sono: ' + mobileNumber + '.'
+								que = description;
 							}
 						}
 						if (image) {
 							// $('#messages').append('<div class="message to ready"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + name + " " + surname + '</figcaption></div>').animate({ scrollTop: $("#messages").offset().top + 200 }, 200);
 							console.log('=======tvtor assign with image=============', isAssignTutor)
+							// $('#messages').append('<div class="message to ready image_size"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
+							// get_question(convState, ready);
 							$('#messages').append('<div class="message to ready image_size"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
 							get_question(convState, ready);
 						} else {

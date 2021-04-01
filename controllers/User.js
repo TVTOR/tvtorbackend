@@ -373,7 +373,6 @@ const deleteUser = async function (req, res) {
 }
 
 const getAllTM = async function (req, res) {
-
   try {
     const query = req.query;
     const perpage = parseInt(query.length);
