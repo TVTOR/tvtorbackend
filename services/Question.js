@@ -7,6 +7,9 @@ const User = require(`${appRoot}/models/User`);
 const NotificationModel = require('../models/Notification');
 const subjectModel = require(`${appRoot}/models/Subjects`);
 const locationModel = require(`${appRoot}/models/Locations`);
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+var ObjectID = require('mongodb').ObjectID;
 
 async function insertQuestions(params) {
   var obj = {
@@ -71,7 +74,7 @@ const updateTutorNotification = async (tutorId, notificationId) => {
     let queryData = {
       tutorId: tutorId
     }
-    const user =  await NotificationModel.update({ _id: notificationId }, {$set:{'queryData.tutorId':tutorId}});
+    const user =  await NotificationModel.update({ _id: new ObjectID(notificationId) }, {$set:{'queryData.tutorId':tutorId}});
     // console.log("=============usrerrrrrrrrrrrr=========", user)
     return user;
   } catch (error) {
