@@ -250,9 +250,11 @@ const logout = async function (req, res) {
     var userId = req.params.id;
     const loginStatus = false;
     await userService.statusForLogout(userId, loginStatus);
+    await userService.deleteTutorManagerDeviceRecord(req.params.id);
     await userService.removeSession(userId);
     return utilServices.successResponse(res, constants.LOGOUT, 200);
   } catch (error) {
+    console.log('====error=========', error)
     return utilServices.errorResponse(res, constants.DB_ERROR, 401);
   }
 }

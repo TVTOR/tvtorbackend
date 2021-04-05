@@ -178,6 +178,11 @@ async function getToken(token) {
 	return userSesseionData;
 }
 
+async function deleteTutorManagerDeviceRecord(tutorManagerId) {
+	const user = await deviceModel.findOneAndDelete({ tmId: tutorManagerId });
+	return user;
+}
+
 
 module.exports = {
 	validEmail,
@@ -205,5 +210,6 @@ module.exports = {
 	statusForLogin,
 	statusForLogout,
 	deleteTM,
-	deleteTMandTutors
+	deleteTMandTutors,
+	deleteTutorManagerDeviceRecord
 }
