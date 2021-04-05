@@ -105,6 +105,11 @@
     }
 </style>
 <script type="text/javascript">
+    $('#logo_image-index').on('load', function () {
+        $(".chat-widget-wrap").show();
+        $("#logo_image-index").hide();
+        $('#logo_close_image').show();
+    });
     $('#logo_image-index').on('click', function () {
         $(".chat-widget-wrap").show();
         $("#logo_image-index").hide();
@@ -115,8 +120,4 @@
         $('#logo_close_image').hide();
         $("#logo_image-index").show();
     });
-    // $('select').on('change', function () {
-    //     alert(this.value);
-    // });
-  
 </script>
