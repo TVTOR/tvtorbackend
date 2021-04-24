@@ -1,7 +1,6 @@
 
 require('dotenv').config()
 const path = require('path');
-
 var developmentConfig = require("./development_config");
 var stagingConfig = require("./staging_config");
 var productionConfig = require("./production_config");
@@ -19,10 +18,10 @@ let envObject = {
 config = envObject[env];
 console.log(config);
 module.exports = {
-    mongoUri: config.MONGODB_URI,
+	mongoUri: config.MONGODB_URI,
 	jwtSecret: config.JWT_SECRET,
 	API_URL: config.API_URL,
 	EMAIL: config.EMAIL,
 	PASSWORD: config.PASSWORD,
-    secret: process.env.NODE_ENV === 'production' ? process.env.SECRET : 'secret'
+	secret: process.env.NODE_ENV === 'production' ? process.env.SECRET : 'secret'
 };

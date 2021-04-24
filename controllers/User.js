@@ -97,11 +97,9 @@ const register = async (req, res) => {
           await userService.updateCode(req.body.code);
           if (req.body.location) {
             data.locationData = await getAllLocation(req.body.location);
-            console.log('======data.locationData========', data.locationData)
           }
           if (req.body.subjects) {
             data.subjectData = await getAllSubject(req.body.subjects);
-            console.log('======data.subjectData========', data.subjectData)
           }
           const secretToken = await authHelper.generateJWToken(data);
           res.header('access-token', secretToken);
@@ -142,31 +140,6 @@ const forgotPassword = async (req, res) => {
         if (!data) {
           return utilServices.errorResponse(res, "Email not found", 401);
         } else {
-          // let transporter = nodemailer.createTransport({
-          //   host: "smtp.gmail.com",
-          //   port: 587,
-          //   secure: false, // true for 465, false for other ports
-          //   auth: {
-          //     user: 'sunil.ongraph@gmail.com', // generated ethereal user
-          //     pass: '9696533366' // generated ethereal password
-          //   }
-          // });
-
-          // var mailOptions = {
-          //   from: 'sunil.ongraph@gmail.com',
-          //   to: req.body.email,
-          //   subject: 'Link to reset password.',
-          //   text: 'IMS',
-          //   html: '<h1>Change your password</h1><a href ="' + config.API_URL + 'forgotpassword?id=' + data._id + '">Please click here to change your password</a></b>'
-          // };
-          // transporter.sendMail(mailOptions, function (error, info) {
-          //   if (error) {
-          //     console.log(error);
-          //   } else {
-          //     console.log('Email sent: ' + info.response);
-          //   }
-          // });
-
           mailer.sendForgotPasswordLink(req.body.email, data._id);
           return utilServices.successResponse(res, "Please check your email to reset password.", 201);
         }
@@ -254,7 +227,6 @@ const logout = async function (req, res) {
     await userService.removeSession(userId);
     return utilServices.successResponse(res, constants.LOGOUT, 200);
   } catch (error) {
-    console.log('====error=========', error)
     return utilServices.errorResponse(res, constants.DB_ERROR, 401);
   }
 }
@@ -304,9 +276,7 @@ async function getSubject(subject) {
 const updateUser = async function (req, res) {
   try {
     var userId = req.params.id;
-    // console.log('==========userId=========', userId)
     const updateData = await userService.checkUser(userId)
-    // console.log('==========update data=========', updateData)
     if (!updateData) {
       return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 404);
     }
@@ -342,7 +312,6 @@ const updateUser = async function (req, res) {
       updateData.mobileNumber = req.body.mobileNumber;
     }
     if (req.file && req.file.path) {
-      // console.log('=========req.file=======', req.file)
       uploadImage.imageUpload(req.file, async function (err, data) {
         if (err) {
           return utilServices.errorResponse(res, constants.DB_ERROR, 500);
@@ -356,7 +325,6 @@ const updateUser = async function (req, res) {
       return utilServices.successResponse(res, constants.UPDATE_DATA, 200, data1);
     }
   } catch (error) {
-    console.log('=======error=======', error)
     return utilServices.successResponse(res, constants.DB_ERROR, 500);
   }
 }
@@ -397,7 +365,6 @@ const getAllTM = async function (req, res) {
     search.userType = "tutormanager";
     search.status = false;
     search.isDeleted = false;
-
     const total = await userService.countTutorManager(search);
     const data = await userService.getTutorManagersList(search, sort, order, perpage, skip);
     return utilServices.successResponse(res, constants.DATA_FOUND, 200, { data: data, total: total });
@@ -471,7 +438,6 @@ const changeUserStatus = async function (req, res) {
     await userService.acceptTutorManagers(userId, statuschange)
     return utilServices.successResponse(res, constants.ACCEPT_TM, 200);
   } catch (error) {
-    console.log(error)
     return utilServices.successResponse(res, constants.DB_ERROR, 500);
   }
 }
@@ -516,7 +482,6 @@ const getAllTutorsOfManager = async function (req, res) {
     data = JSON.parse(JSON.stringify(data));
     for (let i = 0; i < data.length; i++) {
       var subjects = await getAllSubject(data[i].subjects);
-      console.log('----subjects---------', subjects);
       data[i].subjectData = subjects ? subjects : null;
       var commentdata = await userService.getComment(data[i]._id);
       data[i].comment = commentdata ? commentdata.comment : null;
@@ -531,11 +496,11 @@ const getAllTutorsOfManager = async function (req, res) {
   }
 }
 
-const deleteTMandTutors= async function (req, res) {
+const deleteTMandTutors = async function (req, res) {
   try {
     const userId = req.params.id;
     const tmdata = await userService.userDelete(userId);
-   const tutordata = await userService.deleteTMandTutors(userId);
+    const tutordata = await userService.deleteTMandTutors(userId);
     if (!tmdata && !tutordata) {
       return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 400);
     }
@@ -589,5 +554,5 @@ module.exports = {
   getAllTutorsOfManager: getAllTutorsOfManager,
   getAllSubject: getAllSubject,
   getAllLocation: getAllLocation,
-  deleteTMandTutors:deleteTMandTutors
+  deleteTMandTutors: deleteTMandTutors
 }

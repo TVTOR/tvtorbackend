@@ -1,8 +1,8 @@
-var crypto   = require('crypto'),
-    jwt      = require('jsonwebtoken'),
-    config   = require('../config/config');
+var crypto = require('crypto'),
+  jwt = require('jsonwebtoken'),
+  config = require('../config/config');
 
-module.exports.generateJwt = function(user) {
+module.exports.generateJwt = function (user) {
   var expiry = new Date();
   expiry.setDate(expiry.getDate() + 7);
 

@@ -7,12 +7,9 @@ const { constants } = require(`${appRoot}/lib/constants`);
 
 
 const assignTutor = async (req, res) => {
-    console.log('=======assignTutor====function=============')
     try {
         const notificationId = req.body.notificationId
-        console.log('=======notificationId==============', notificationId)
         const notification = await TutorAssignServices.getNotificationData(notificationId);
-        console.log('=======notification data==============', notification)
         const obj = {};
         obj.name = notification.queryData.name;
         obj.email = notification.queryData.email;
@@ -52,8 +49,6 @@ const assignTutor = async (req, res) => {
                 for (var value of data1) {
                     arrOfSubject.push(value.subject);
                 }
-
-                // const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ ${studentmobile} and his email id is ${query.email}.`;
                 const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
                 const id = req.body.tutorId;
                 const tutordata = await TutorAssignServices.getTutor(id);
@@ -67,13 +62,10 @@ const assignTutor = async (req, res) => {
                     const message = `Your ${arrOfSubject} Tutor ${tutorName} ${tutorSurName} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber}.`;
                     NotificationService.sendSMS(studentMobileNumber, title, message);
                 }
-                // NotificationService.sendSMS(mobileNumber, title, message);
-                console.log('========data after tutor assign==============', data);
                 return utilServices.successResponse(res, constants.ASSIGN_TUTOR, 200, data);
             }
         })
     } catch (error) {
-        console.log('=======assign tvtor error===========', error)
         return utilServices.errorResponse(res, constants.DB_ERROR, 500);
     }
 }
@@ -91,13 +83,11 @@ const getStudentTutor = async (req, res) => {
     try {
         const emailId = req.params.email;
         let tutorassigndata = await TutorAssignServices.getStudentTutorByEmail(emailId)
-        console.log('=======get tutor assigned data by email=====', tutorassigndata)
         if (!tutorassigndata) {
             return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 400);
         }
         let tutorassigndataId = tutorassigndata.tutorId;
         let tutordata = await TutorAssignServices.getTutorData(tutorassigndataId);
-        console.log('=======tutordata=====', tutordata)
         var data = JSON.parse(JSON.stringify(tutorassigndata));
         data.tutor = {
             name: tutordata.name ? tutordata.name : '',
@@ -127,17 +117,13 @@ const checkTutorAssignOrNot = async (req, res) => {
 
 const getAssignTutor = async (req, res) => {
     try {
-        // console.log('======req.body==========', req.body)
         let tutorassigndata = await TutorAssignServices.getAssignTutor(req.body);
-        // console.log('======tutorassigndata==========', tutorassigndata)
         if (!tutorassigndata) {
             return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 400);
         }
         let tutorassigndataId = tutorassigndata.tutorId;
         let tutordata = await TutorAssignServices.getTutorData(tutorassigndataId);
-        // console.log('=====tutordata===========', tutordata)
         var data = JSON.parse(JSON.stringify(tutorassigndata));
-        // console.log('======data==========', data)
         data.tutor = {
             name: tutordata.name ? tutordata.name : '',
             surname: tutordata.surname ? tutordata.surname : '',

@@ -7,18 +7,14 @@ const questionService = require(`${appRoot}/services/Question`);
 const notificationService = require('../services/Notification');
 const NotificationService = require(`${appRoot}/services/SendNotification`);
 const TutorAssignServices = require(`${appRoot}/services/TutorAssign`);
-// const { parse } = require('dotenv/types');
 const mailer = require('../helper/mail');
 
 
 const createQuestion = async (req, res) => {
     try {
-        // console.log('=========req.body==============', req.body)
         const data = await questionService.insertQuestions(req.body);
-
         return utilServices.successResponse(res, constants.CREATE_QUESTIONS, 200, data);
     } catch (error) {
-        // console.log('=========error===========', error)
         return utilServices.errorResponse(res, constants.DB_ERROR, 500);
     }
 }
@@ -31,7 +27,7 @@ const getQuestion = async (req, res) => {
             questionService.createNotification(req.body)
         }
         if (req.body.notificationId != "") {
-           await questionService.updateNotification(req.body.mobilenumber, req.body.notificationId)
+            await questionService.updateNotification(req.body.mobilenumber, req.body.notificationId)
             let notificationDetails = await notificationService.getNotificationDetails(req.body.notificationId)
             let query = notificationDetails.queryData;
             const tutordata = await TutorAssignServices.getTutor(query.tutorId[0]);
@@ -39,15 +35,11 @@ const getQuestion = async (req, res) => {
             let arrOfSubject = query.subject;
             let studentmobile = query.mobilenumber;
             const title = 'Notification';
-            
-            if(mobileNumber && req.body.mobilenumber){
+
+            if (mobileNumber && req.body.mobilenumber) {
                 const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
                 NotificationService.sendSMS(mobileNumber, title, message);
             }
-            //  else {
-            //     const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰.`;
-            //     NotificationService.sendSMS(mobileNumber, title, message);
-            // }
             if (studentmobile && query) {
                 const message = `Your ${arrOfSubject} Tutor ${tutordata.name} ${tutordata.surname} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber}.`;
                 NotificationService.sendSMS(studentmobile, title, message);
@@ -57,7 +49,6 @@ const getQuestion = async (req, res) => {
         const detail = {};
         const dataArray = [];
         let questionId = parseInt(req.body.question);
-        console.log('=======questionId=============', questionId)
         const data = await Ouestions.findOne({ question_num: questionId, languageCode: languageCode });
         dataArray.push(data);
         if (data.no_answer == 1) {
@@ -92,10 +83,8 @@ const getQuestion = async (req, res) => {
                 }
             })
         }
-        console.log('====getQuestion==detail===========', JSON.stringify(detail))
         return utilServices.successResponse(res, "Set values for notification.", 200, detail);
     } catch (error) {
-        console.log('-----------------Notification Error===', error);
         return utilServices.errorResponse(res, "Something went wrong", 400);
     }
 }

@@ -34,10 +34,8 @@ const createNotification = async (query) => {
     const locationArray = (query.location).split(',');
     for (let i = 0; i < tmIDs.length; i++) {
       var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
-      // console.log('========= device data ========', devicedata)
       if (devicedata && devicedata.deviceToken) {
         const title = 'Notification'
-        // console.log('========query=================', query)
         const message = `Name: ${query.name}, Year: ${query.age}, Subject: ${subjectArray} Location: ${locationArray}`
         var notdata = await NotificationModel.create({
           tmId: tmIDs[i]._id,
@@ -46,7 +44,6 @@ const createNotification = async (query) => {
           message: message,
           queryData: query,
         });
-        // console.log('=====notdata==========', notdata)
         NotificationService.sendNotification(devicedata.deviceToken, title, message, notdata);
       }
     }
@@ -61,7 +58,6 @@ const updateNotification = async (mobilenumber, notificationId) => {
       mobilenumber: mobilenumber
     }
     const user =  await NotificationModel.update({ _id: notificationId }, {$set:{'queryData.mobilenumber':mobilenumber}});
-    // console.log("=============usrerrrrrrrrrrrr=========", user)
     return user;
   } catch (error) {
     console.log('Error', error);
@@ -75,7 +71,6 @@ const updateTutorNotification = async (tutorId, notificationId) => {
       tutorId: tutorId
     }
     const user =  await NotificationModel.update({ _id: notificationId }, {$set:{'queryData.tutorId':tutorId}});
-    // console.log("=============usrerrrrrrrrrrrr=========", user)
     return user;
   } catch (error) {
     console.log('Error', error);

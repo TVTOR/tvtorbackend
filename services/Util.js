@@ -1,39 +1,39 @@
 var util = {};
 
-util.successResponse = function(res, successMsg, statusCode, data = null) {
+util.successResponse = function (res, successMsg, statusCode, data = null) {
     var sendData = {
         success: true,
         data: null,
         message: null,
         statusCode: statusCode
     }
-    if(data){
+    if (data) {
         sendData.data = data;
     }
-    if(successMsg){
+    if (successMsg) {
         sendData.message = successMsg;
     }
-    if(statusCode){
+    if (statusCode) {
         res.status = statusCode;
     }
     return res.json(sendData);
 };
 
-util.errorResponse = function(res, errorMsg, statusCode, data = null){
+util.errorResponse = function (res, errorMsg, statusCode, data = null) {
     var sendData = {
         success: false,
         data: null,
         message: null,
         statusCode: statusCode
     }
-    if(errorMsg){
+    if (errorMsg) {
         sendData.message = errorMsg
     }
-    if(data){
+    if (data) {
         sendData.data = data
     }
-    if(statusCode){
-         res.status = statusCode
+    if (statusCode) {
+        res.status = statusCode
     }
     return res.json(sendData);
 }

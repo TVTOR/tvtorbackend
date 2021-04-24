@@ -6,6 +6,6 @@ var deviceUser = new Schema({
     deviceType: { type: String },
     deviceToken: { type: String },
     tmId: { type: mongoose.Schema.Types.ObjectId }
-}, {timestamps: true})
+}, { timestamps: true })
 
 module.exports = mongoose.model('deviceUser', deviceUser);

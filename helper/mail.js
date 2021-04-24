@@ -12,14 +12,11 @@ async function sendForgotPasswordLink(email, id) {
 }
 
 async function sendMailFromChatBot(data) {
-  // console.log('======mailer==========', data)
   const studentInfoTemplate = studentDetailsTemplate(data.name, data.mobilenumber, data.location, data.website);
   const mailoptions = {
     from: config.EMAIL_ID,
     to: "simone.tagliapietra.job@gmail.com",
-    // to: "sunilskv36@gmail.com",
     subject: 'Student Informations',
-    // html: '<h1>Student details</h1>Student details</b>'
     html: studentInfoTemplate
   };
   return await mailer.sendMail(mailoptions);

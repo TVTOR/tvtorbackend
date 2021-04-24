@@ -9,7 +9,7 @@ var user = new Schema({
     password: { type: String },
     location: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Locations' }],
     subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Subjects' }],
-    code: { type: Number  },
+    code: { type: Number },
     status: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
     availability: { type: String },
@@ -19,9 +19,9 @@ var user = new Schema({
     subjectId: { type: Array },
     subjectData: { type: Array },
     locationData: { type: Array },
-    loginStatus: {type: Boolean, default: false},
+    loginStatus: { type: Boolean, default: false },
     managerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-    userType: { type: String, enum: ['tutormanager', 'admin','tutor'], default:'tutormanager' }
+    userType: { type: String, enum: ['tutormanager', 'admin', 'tutor'], default: 'tutormanager' }
 }, { timestamps: true })
 
 user.statics.hashPassword = function hashPassword(password) {

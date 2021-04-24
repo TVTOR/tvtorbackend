@@ -75,7 +75,6 @@ async function getLocationIds(locations) {
     return locIds;
 }
 
-
 module.exports = {
     checkLocation,
     insertLocation,

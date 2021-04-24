@@ -89,14 +89,12 @@ const getSingleLocation = async function (req, res) {
 
 const getTutorsLocation = async function (req, res) {
   try {
-
     const location = req.body.location;
     const locations = location.split(',');
     const locationIds = await locationService.getLocationIds(locations);
     if(locationIds.length == 0){
       return utilServices.successResponse(res, constants.DATA_FOUND, 404);
     }
-    
     let tutor = await locationService.getLocationOfTutors(locationIds);
     if(tutor && tutor.length>0){
       return utilServices.successResponse(res, constants.DATA_FOUND, 200);

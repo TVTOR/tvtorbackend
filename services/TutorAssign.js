@@ -52,8 +52,6 @@ async function getSubjectfromNotification(notsubject) {
 }
 
 async function getTutor(tutorId) {
-    console.log('=======tutor assign model============', tutorId)
-    console.log('=======type of tutor id============',typeof tutorId)
     let tutorData = await userModel.findOne({ _id: tutorId });
     return tutorData
 }

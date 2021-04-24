@@ -1,6 +1,5 @@
 const utilServices = require(`${appRoot}/services/Util`)
 const { constants } = require(`${appRoot}/lib/constants`);
-// const codeService = require(`${appRoot}/services/Code`);
 const codeService = require('../services/Code')
 
 const randomNumber = async (req, res) => {
@@ -24,18 +23,14 @@ const deviceData = async (req, res) => {
             if (req.body.deviceToken) {
                 deviceDetails.deviceToken = req.body.deviceToken;
             }
-            console.log('=====deviceDetails=======', deviceDetails)
             await codeService.deviceTokenUpdate(deviceId, deviceDetails)
-            //   console.log('========update device token ===========', updatedData)
             const updatedDeviceData = await codeService.checkDeviceId(deviceId)
             return utilServices.successResponse(res, constants.UPDATE_DATA, 200, updatedDeviceData);
         } else {
             const data = await codeService.insertDevice(req.body);
-            console.log('========first time create device token===========', data)
             return utilServices.successResponse(res, constants.CREATE_DEVICES, 200, data);
         }
     } catch (error) {
-        console.log('========Error=========', error)
         return utilServices.errorResponse(res, constants.DB_ERROR, 500);
     }
 }

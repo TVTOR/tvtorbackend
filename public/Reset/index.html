@@ -59,9 +59,10 @@
         clear: both;
         display: table;
     }
+
     p {
-     color: rgb(255, 0, 43);
-   }
+        color: rgb(255, 0, 43);
+    }
 
     /* Change styles for cancel button and signup button on extra small screens */
     @media screen and (max-width: 300px) {
@@ -80,39 +81,35 @@
             var password2 = document.getElementById('password2').value;
             var addUrl = window.location.href;
             var dataUrl = addUrl.split('forgotpassword');
-            
-            if(password.length > 0 && password  == password2){
+            if (password.length > 0 && password == password2) {
                 var currentLocation = window.location.search;
                 console.log('current location', currentLocation);
-            var text = currentLocation.toString().slice(4);
-            var  token = text
-            var data = {
-                token: token,
-                password: password
-            }
-            var xhttp = new XMLHttpRequest();
-
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var res = JSON.parse(this.responseText);
-                    document.getElementById("demo").innerHTML = res.message;
+                var text = currentLocation.toString().slice(4);
+                var token = text
+                var data = {
+                    token: token,
+                    password: password
                 }
-            };
-            var apiUrl = dataUrl[0] + 'api/v1/updatepassword/';
-            xhttp.open("PUT", apiUrl + data.token, true);
-            xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhttp.send("&password=" + data.password);
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var res = JSON.parse(this.responseText);
+                        document.getElementById("demo").innerHTML = res.message;
+                    }
+                };
+                var apiUrl = dataUrl[0] + 'api/v1/updatepassword/';
+                xhttp.open("PUT", apiUrl + data.token, true);
+                xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhttp.send("&password=" + data.password);
             } else {
                 document.getElementById('error').innerHTML = "Password and confirm password should be same";
             }
-            
         }
     </script>
 
     <div class="container" id="demo">
         <p class="para">Please enter your new password</p>
         <hr>
-
         <label for="password"><b>New Password</b></label>
         <br>
         <input type="password" id="password" placeholder="Password" name="password" required>
@@ -125,7 +122,6 @@
         </div>
         <div id="error" style="color: red;"></div>
     </div>
-
 </body>
 
 </html>

@@ -26,33 +26,6 @@ ConvState.prototype.destroy = function () {
     return false;
 };
 ConvState.prototype.newState = function (options) {
-    // if(options.questions[0] == "Please, choose the subject in which you have a problem?"){
-    //     var input = $.extend(true, {}, {
-    //         name: '',
-    //         noAnswer: false,
-    //         required: true,
-    //         questions: ['You forgot the question!'],
-    //         type: 'text',
-    //         multiple: true,
-    //         selected: "",
-    //         answers: []
-    //     }, options);
-    //     input.element = $('<input type="text" name="'+input.name+'"/>');
-    //     return new SingleConvState(input);
-    // } else {
-    //     var input = $.extend(true, {}, {
-    //         name: '',
-    //         noAnswer: false,
-    //         required: true,
-    //         questions: ['You forgot the question!'],
-    //         type: 'text',
-    //         multiple: false,
-    //         selected: "",
-    //         answers: []
-    //     }, options);
-    //     input.element = $('<input type="text" name="'+input.name+'"/>');
-    //     return new SingleConvState(input);
-    // }
     var input = $.extend(true, {}, {
         name: '',
         noAnswer: false,
@@ -68,13 +41,6 @@ ConvState.prototype.newState = function (options) {
 
 };
 ConvState.prototype.next = function () {
-    // if(this.current.input.hasOwnProperty('callback')) {
-    //     if(typeof this.current.input.callback === 'string') {
-    //         window[this.current.input.callback](this);
-    //     } else {
-    //         this.current.input.callback(this);
-    //     }
-    // }
     if (this.current.hasNext()) {
         this.current = this.current.next;
         if (this.current.input.hasOwnProperty('fork') && this.current.input.hasOwnProperty('case')) {
@@ -135,21 +101,19 @@ ConvState.prototype.printQuestion = function () {
                 this.parameters.eventList.onSubmitForm(this);
             }
         }
-        if(question == 'Tutor assign for you he will contact with you as soon as possible.'){
+        if (question == 'Tutor assign for you he will contact with you as soon as possible.') {
             $(this.wrapper).find('#' + this.parameters.inputIdName).prop('disabled', true);
         }
-        if(question == 'Il tutor assegnato per te si metterà in contatto con te il prima possibile'){
+        if (question == 'Il tutor assegnato per te si metterà in contatto con te il prima possibile') {
             $(this.wrapper).find('#' + this.parameters.inputIdName).prop('disabled', true);
         }
-        if(question == 'Please enter your phone number?'){
-            $(this.wrapper).find('#messages').append('<div class="message to ready">'+question+'</div>');
+        if (question == 'Please enter your phone number?') {
+            $(this.wrapper).find('#messages').append('<div class="message to ready">' + question + '</div>');
             $(this.wrapper).find('#' + this.parameters.inputIdName).prop('disabled', false);
-            // $(this.wrapper).find(this.parameters.inputIdHashTagName).focus();
         }
-        if(question == 'Digita il tuo numero di telefono?'){
-            $(this.wrapper).find('#messages').append('<div class="message to ready">'+question+'</div>');
+        if (question == 'Digita il tuo numero di telefono?') {
+            $(this.wrapper).find('#messages').append('<div class="message to ready">' + question + '</div>');
             $(this.wrapper).find('#' + this.parameters.inputIdName).prop('disabled', false);
-            // $(this.wrapper).find(this.parameters.inputIdHashTagName).focus();
         }
         $(this.wrapper).find(this.parameters.inputIdHashTagName).focus();
     }.bind(this), 500);
@@ -192,7 +156,6 @@ ConvState.prototype.printAnswers = function (answers, multiple) {
                     .data("answer", answers[i])
                     .click(function (event) {
                         let answerText = $(event.target).data("answer").text
-                        // console.log('===============$(event.target).data("answer").text,=====', $(event.target).data("answer").text)
                         if ($(event.target).data("answer").text == 'Yes' && $('#languageChange').val() == 'en') {
                             answerText = 'Yes'
                         } else if ($(event.target).data("answer").text == 'Yes' && $('#languageChange').val() == 'it') {
@@ -204,8 +167,6 @@ ConvState.prototype.printAnswers = function (answers, multiple) {
                         } else if ($(event.target).data("answer").text == 'Sure!' && $('#languageChange').val() == 'it') {
                             answerText = 'certo!'
                         }
-                        // $("#userInput").attr("placeholder", "Select an option");
-
                         if ($("#userInput").attr("placeholder") == "Select an option" && $('#languageChange').val() == 'en') {
                             $("#userInput").attr("placeholder", "seleziona un'opzione");
                         } else {
@@ -222,31 +183,12 @@ ConvState.prototype.printAnswers = function (answers, multiple) {
                             $("#userInput").attr("placeholder", "digita qui");
 
                         }
-                        if($("#userInput").attr("placeholder") == "Select an option" && ('#languageChange').val() == 'it'){
+                        if ($("#userInput").attr("placeholder") == "Select an option" && ('#languageChange').val() == 'it') {
                             setTimeout(function () {
                                 $("#userInput").attr("placeholder", "digfgdgfghfita qui");
                             }, 5);
                             $("#userInput").attr("placeholder", "digidfgfgfta qui");
                         }
-                        // if ($('#languageChange').val() == 'en') {
-                        //     // answerText = 'Yes'
-                        //     // alert('===if en===')
-                        //     $("textarea#userInput").attr("placeholder", "Select an option");
-                        // } else {
-                        //     // answerText = 'si'
-                        //     alert('====type====', answers[i])
-                        //     // console.log('========text area in ======', $("textarea#userInput").attr("placeholder", "fgfghfyhyt an option"))
-                        //     // alert('===if it===')
-                        //     setTimeout(function () {
-                        //         $("textarea#userInput").attr("placeholder", "fgfghfyhyt an option")
-                        //     }, 10);
-                        //     $("textarea#userInput").attr("placeholder", "fgfghfyhyt an option");
-
-                        // }
-
-
-                        // $("#userInput").attr("placeholder", "Select an option");
-
                         this.current.input.selected = $(event.target).data("answer").value;
                         this.wrapper.find(this.parameters.inputIdHashTagName).removeClass('error');
                         this.wrapper.find(this.parameters.inputIdHashTagName).val('');
@@ -280,7 +222,6 @@ ConvState.prototype.printAnswers = function (answers, multiple) {
 
 };
 ConvState.prototype.answerWith = function (answerText, answerObject) {
-    //console.log('previous answer: ', answerObject);
     //puts answer inside answers array to give questions access to previous answers
     if (this.current.input.hasOwnProperty('name')) {
         if (typeof answerObject == 'string') {
@@ -288,7 +229,6 @@ ConvState.prototype.answerWith = function (answerText, answerObject) {
                 answerObject = answerObject.replace(/\s|\(|\)|-/g, "");
             this.answers[this.current.input.name] = { text: answerText, value: answerObject };
             this.current.answer = { text: answerText, value: answerObject };
-            //console.log('previous answer: ', answerObject);
         } else {
             this.answers[this.current.input.name] = answerObject;
             this.current.answer = answerObject;
@@ -355,7 +295,6 @@ ConvState.prototype.answerWith = function (answerText, answerObject) {
 
 (function ($) {
     $.fn.convform = function (options) {
-        // console.log('step-1')
         var wrapper = this;
         var originalFormHtml = $(wrapper).html();
         $(this).addClass('conv-form-wrapper');
@@ -439,12 +378,8 @@ ConvState.prototype.answerWith = function (answerText, answerObject) {
         if (inputs.length) {
             //hides original form so users cant interact with it
             var form = $(wrapper).find('form').hide();
-
             var inputForm;
             parameters.inputIdHashTagName = '#' + parameters.inputIdName;
-            // console.log('==========place holder===========', parameters.placeHolder)
-
-            // console.log('==========place holder===========', $('#languageChange').val() == 'en')
             if ($('#languageChange').val() == 'en') {
                 parameters.placeHolder = 'Type Here'
             } else {
@@ -615,7 +550,6 @@ ConvState.prototype.answerWith = function (answerText, answerObject) {
             $(inputForm).submit(function (e) {
                 e.preventDefault();
                 var answer = $(this).find(parameters.inputIdHashTagName).val();
-                // console.log("=========================================iNPUT Answer=========================", answer);
                 $(this).find(parameters.inputIdHashTagName).val("");
                 if (state.current.input.type == 'select') {
                     if (!state.current.input.multiple) {
@@ -626,16 +560,11 @@ ConvState.prototype.answerWith = function (answerText, answerObject) {
                 } else {
                     state.answerWith(answer, answer);
                 }
-                // console.log(state)
-
             });
-
-
             if (typeof autosize == 'function') {
                 $textarea = $(state.wrapper).find(parameters.inputIdHashTagName);
                 autosize($textarea);
             }
-
             return state;
         } else {
             return false;

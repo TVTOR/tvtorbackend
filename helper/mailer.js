@@ -24,23 +24,6 @@ async function sendMail(mailOptions) {
       }
     });
   }
-  
-//   let transporter = nodemailer.createTransport({
-//     host: "smtp.gmail.com",
-//     port: 465,
-//     secure: true, // use TLS
-//     auth: {
-//       user: config.EMAIL_ID,
-//       pass: config.PASSWORD
-//       // user: "coupanbasedbackend@gmail.com",
-//       // pass: "Ongraph@123"
-//     },
-//     tls: {
-//       // do not fail on invalid certs
-//       rejectUnauthorized: false
-//     }
-//   });
-
   module.exports = {
       sendMail
   }

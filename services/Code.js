@@ -24,14 +24,11 @@ async function insertDevice(params) {
 }
 
 async function checkDeviceId(deviceId) {
-	console.log('========device id======', deviceId)
 	const device = await deviceModel.findOne({ deviceId: deviceId });
-	console.log('========device device======', device)
 	return device;
 }
 
 async function deviceTokenUpdate(deviceId, updatedata) {
-	console.log('========updatedata========', updatedata)
 	return await deviceModel.updateOne({ deviceId: deviceId }, updatedata);
 }
 
