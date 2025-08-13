@@ -153,28 +153,47 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const getUser = await User.findOne({ _id: req.params._id });
-    let encryptedPassword = await bcrypt.compare(req.body.oldPassword, getUser.password);
-    if (encryptedPassword) {
-      let passwordToUpadate = {
-        password: User.hashPassword(req.body.resetPassword)
-      }
-      await User.findByIdAndUpdate({ _id: req.params._id }, passwordToUpadate, (err, updatedPassword) => {
-        if (err) {
-          return utilServices.errorResponse(res, "Something went wrong", 401);
-        } else {
-          if (!updatedPassword) {
-            return utilServices.errorResponse(res, "Data not found", 401);
-          } else {
-            return utilServices.successResponse(res, "Password successfully reset.", 201);
-          }
-        }
-      });
-    } else {
-      return utilServices.errorResponse(res, "Password not matched", 401);
+    // Validate required fields
+    if (!req.body.oldPassword || !req.body.resetPassword) {
+      return utilServices.errorResponse(res, "Old password and new password are required", 400);
     }
+
+    // Validate password strength (minimum 6 characters)
+    if (req.body.resetPassword.length < 6) {
+      return utilServices.errorResponse(res, "New password must be at least 6 characters long", 400);
+    }
+
+    // Find user
+    const getUser = await User.findOne({ _id: req.params._id });
+    if (!getUser) {
+      return utilServices.errorResponse(res, "User not found", 404);
+    }
+
+    // Verify old password
+    const isOldPasswordValid = await bcrypt.compare(req.body.oldPassword, getUser.password);
+    if (!isOldPasswordValid) {
+      return utilServices.errorResponse(res, "Current password is incorrect", 401);
+    }
+
+    // Update password using async/await
+    const passwordToUpdate = {
+      password: User.hashPassword(req.body.resetPassword)
+    };
+    
+    const updatedUser = await User.findByIdAndUpdate(
+      { _id: req.params._id }, 
+      passwordToUpdate, 
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return utilServices.errorResponse(res, "Failed to update password", 500);
+    }
+
+    return utilServices.successResponse(res, "Password successfully reset.", 200);
   } catch (err) {
-    return utilServices.errorResponse(res, "Something went wrong", 401);
+    console.error('Reset password error:', err);
+    return utilServices.errorResponse(res, "Something went wrong", 500);
   }
 }
 
@@ -438,7 +457,7 @@ const changeUserStatus = async function (req, res) {
     await userService.acceptTutorManagers(userId, statuschange)
     return utilServices.successResponse(res, constants.ACCEPT_TM, 200);
   } catch (error) {
-    return utilServices.successResponse(res, constants.DB_ERROR, 500);
+    return utilServices.errorResponse(res, constants.DB_ERROR, 500);
   }
 }
 
@@ -449,7 +468,7 @@ const changeUserDelete = async function (req, res) {
     await userService.declineTutorManagers(userId, statuschange)
     return utilServices.successResponse(res, constants.DECLINE_TM, 200);
   } catch (error) {
-    return utilServices.successResponse(res, constants.DB_ERROR, 500);
+    return utilServices.errorResponse(res, constants.DB_ERROR, 500);
   }
 }
 
