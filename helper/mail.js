@@ -6,7 +6,7 @@ async function sendForgotPasswordLink(email, id) {
     from: config.EMAIL_ID,
     to: email,
     subject: 'Forgot Password',
-    html: '<h1>Change your password</h1><a href ="' + config.API_URL + 'forgotpassword?id=' + id + '">Please click here to change your password</a></b>'
+    html: '<h1>Change your password</h1><a href ="' + config.API_URL + '/forgotpassword?id=' + id + '">Please click here to change your password</a></b>'
   };
   return await mailer.sendMail(mailoptions);
 }

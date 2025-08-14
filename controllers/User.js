@@ -511,7 +511,7 @@ const getAllTutorsOfManager = async function (req, res) {
     return utilServices.successResponse(res, constants.DATA_FOUND, 200, { data: data, total: total });
   }
   catch (error) {
-    return utilServices.successResponse(res, constants.DB_ERROR, 500);
+    return utilServices.errorResponse(res, constants.DB_ERROR, 500);
   }
 }
 

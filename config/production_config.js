@@ -9,16 +9,18 @@
 
 module.exports = {
     // MongoDB connection string for production environment
-    // Currently set to localhost - should be updated to production MongoDB instance
-    // Consider using MongoDB Atlas or other cloud MongoDB service for production
-    MONGODB_URI: "mongodb://localhost:27017/tutor",
+    // Uses environment variable or fallback to your Atlas cluster
+    MONGODB_URI: process.env.MONGODB_URI || "mongodb://localhost:27017/tutor",
     
     // JWT secret key for production environment
-    // WARNING: This should be a strong, unique secret key in production
-    // Consider using environment variables for security
-    JWT_SECRET: 'EEEASDFASDFASDFASDF',
+    // Uses environment variable for security
+    JWT_SECRET: process.env.JWT_SECRET || 'EEEASDFASDFASDFASDF',
     
     // Base API URL for production environment
-    // Should be updated to actual production domain
-    API_URL: "http://localhost:5000"
+    // Will be set automatically by Render
+    API_URL: process.env.RENDER_EXTERNAL_URL || "https://your-app.onrender.com",
+    
+    // Email credentials for production
+    EMAIL: process.env.EMAIL || "noreply.tvtor@gmail.com",
+    PASSWORD: process.env.PASSWORD || "tvtor@#123"
 };

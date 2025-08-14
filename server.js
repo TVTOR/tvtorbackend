@@ -23,7 +23,14 @@ mongoose.Promise = Promise;
 // Database connection configuration
 // Connect to MongoDB using the URI from config
 const mongoUri = config.mongoUri;
-mongoose.connect(mongoUri, { server: { socketOptions: { keepAlive: 1 } } });
+mongoose.connect(mongoUri, { 
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+    bufferMaxEntries: 0, // Disable mongoose buffering
+    bufferCommands: false, // Disable mongoose buffering
+});
 
 // Handle database connection errors
 mongoose.connection.on('error', () => {
