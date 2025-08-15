@@ -10,8 +10,8 @@ const config = require('./config/config');
 
 async function inspectDatabase() {
     try {
-        console.log('🔍 Connecting to MongoDB...');
-        console.log(`Database URI: ${config.mongoUri}`);
+        console.log('🔍 Connecting to MongoDB...'.cyan);
+        console.log(`Database URI: ${config.mongoUri.replace(/\/\/.*:.*@/, '//***:***@')}`.gray);
         
         // Connect to database
         await mongoose.connect(config.mongoUri, { 

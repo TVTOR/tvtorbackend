@@ -18,7 +18,7 @@ var bcrypt = require('bcryptjs');
 let login = async (req, res) => {
   try {
     if (!req.body.email || !req.body.password) {
-      return utilServices.errorResponse(res, constants.PARAMETER_MISSING, 401);
+      return utilServices.errorResponse(res, constants.PARAMETER_MISSING, 400);
     }
     const checkEmail = await userService.validEmail(req.body.email);
     if (!checkEmail) {
@@ -50,7 +50,7 @@ let login = async (req, res) => {
       let email = req.body.email
       const loginStatus = true;
       await userService.statusForLogin(email, loginStatus);
-      return utilServices.successResponse(res, constants.LOGIN_SUCCESS, 201, responseData);
+      return utilServices.successResponse(res, constants.LOGIN_SUCCESS, 200, responseData);
     }
   } catch (err) {
     return utilServices.errorResponse(res, constants.DB_ERROR, 400);
@@ -141,7 +141,7 @@ const forgotPassword = async (req, res) => {
           return utilServices.errorResponse(res, "Email not found", 401);
         } else {
           mailer.sendForgotPasswordLink(req.body.email, data._id);
-          return utilServices.successResponse(res, "Please check your email to reset password.", 201);
+          return utilServices.successResponse(res, "Please check your email to reset password.", 200);
         }
       }
     });
@@ -164,7 +164,7 @@ const resetPassword = async (req, res) => {
     }
 
     // Find user
-    const getUser = await User.findOne({ _id: req.params._id });
+    const getUser = await User.findOne({ _id: req.params.id });
     if (!getUser) {
       return utilServices.errorResponse(res, "User not found", 404);
     }
@@ -181,7 +181,7 @@ const resetPassword = async (req, res) => {
     };
     
     const updatedUser = await User.findByIdAndUpdate(
-      { _id: req.params._id }, 
+      { _id: req.params.id }, 
       passwordToUpdate, 
       { new: true }
     );
@@ -210,7 +210,7 @@ const updatePassword = async (req, res) => {
             if (err) {
               return utilServices.errorResponse(res, "Something went wrong", 401);
             } else {
-              return utilServices.successResponse(res, "Password successfully updated.", 201);
+              return utilServices.successResponse(res, "Password successfully updated.", 200);
             }
           })
         } else {

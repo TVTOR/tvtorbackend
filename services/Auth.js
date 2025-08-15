@@ -19,7 +19,7 @@ const verifyToken = async(req, res, next)=>{
                             return utilServices.errorResponse(res, "Unauthorized", 401); 
                            } else {
                                if(result){
-                                   next();
+                                   return next();
                                } else {
                                    return utilServices.errorResponse(res, "Unauthorized", 401);
                                }
