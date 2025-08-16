@@ -31,8 +31,8 @@ const getAllLocations = async function (req, res) {
     }
     if (query.searchdata) {
       if (query.searchdata.length > 0) {
-        var value = new RegExp("^" + query.searchdata, "i");
-        search['$or'] = [{ name: value }, { email: value }];
+        var value = new RegExp(query.searchdata, "i");
+        search['$or'] = [{ location: value }];
       }
     }
     const total = await locationService.countList(search);

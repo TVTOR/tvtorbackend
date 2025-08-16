@@ -32,8 +32,8 @@ const getAllSubjects = async function (req, res){
     }
     if (query.searchdata) {
       if (query.searchdata.length > 0) {
-        var value = new RegExp("^" + query.searchdata, "i");
-        search['$or'] = [{ name: value }, { email: value }];
+        var value = new RegExp(query.searchdata, "i");
+        search['$or'] = [{ subject: value }];
       }
     }
     const total = await subjectService.countList(search);
