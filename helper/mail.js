@@ -3,7 +3,7 @@ var config = require('../config/config');
 
 async function sendForgotPasswordLink(email, id) {
   const mailoptions = {
-    from: config.EMAIL_ID,
+    from: config.EMAIL,
     to: email,
     subject: 'Forgot Password',
     html: '<h1>Change your password</h1><a href ="' + config.API_URL + '/forgotpassword?id=' + id + '">Please click here to change your password</a></b>'
@@ -14,7 +14,7 @@ async function sendForgotPasswordLink(email, id) {
 async function sendMailFromChatBot(data) {
   const studentInfoTemplate = studentDetailsTemplate(data.name, data.mobilenumber, data.location, data.website);
   const mailoptions = {
-    from: config.EMAIL_ID,
+    from: config.EMAIL,
     to: "simone.tagliapietra.job@gmail.com",
     subject: 'Student Informations',
     html: studentInfoTemplate

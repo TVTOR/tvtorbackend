@@ -104,7 +104,7 @@ const register = async (req, res) => {
           const secretToken = await authHelper.generateJWToken(data);
           res.header('access-token', secretToken);
           const responseData = response(data, secretToken);
-          return utilServices.successResponse(res, constants.TUTOR_CREATE, 200, responseData);
+          return utilServices.successResponse(res, constants.TUTOR_CREATE, 201, responseData);
         }
       } else {
         const password = authHelper.bcryptPassword(req.body.password);
@@ -121,7 +121,7 @@ const register = async (req, res) => {
           const secretToken = await authHelper.generateJWToken(data);
           res.header('access-token', secretToken);
           const responseData = response(data, secretToken);
-          return utilServices.successResponse(res, constants.TUTOR_CREATE, 200, responseData);
+          return utilServices.successResponse(res, constants.TUTOR_CREATE, 201, responseData);
         }
       }
     }
@@ -344,7 +344,7 @@ const updateUser = async function (req, res) {
       return utilServices.successResponse(res, constants.UPDATE_DATA, 200, data1);
     }
   } catch (error) {
-    return utilServices.successResponse(res, constants.DB_ERROR, 500);
+    return utilServices.errorResponse(res, constants.DB_ERROR, 500);
   }
 }
 
@@ -357,7 +357,7 @@ const deleteUser = async function (req, res) {
     }
     return utilServices.successResponse(res, constants.DATA_DELETE, 200);
   } catch (error) {
-    return utilServices.successResponse(res, constants.DB_ERROR, 500);
+    return utilServices.errorResponse(res, constants.DB_ERROR, 500);
   }
 }
 
@@ -388,7 +388,7 @@ const getAllTM = async function (req, res) {
     const data = await userService.getTutorManagersList(search, sort, order, perpage, skip);
     return utilServices.successResponse(res, constants.DATA_FOUND, 200, { data: data, total: total });
   } catch (error) {
-    return utilServices.successResponse(res, constants.DB_ERROR, 500);
+    return utilServices.errorResponse(res, constants.DB_ERROR, 500);
   }
 }
 
@@ -419,7 +419,7 @@ const getAllTManager = async function (req, res) {
     }
     return utilServices.successResponse(res, constants.DATA_FOUND, 200, { data: data, total: total });
   } catch (error) {
-    return utilServices.successResponse(res, constants.DB_ERROR, 500);
+    return utilServices.errorResponse(res, constants.DB_ERROR, 500);
   }
 }
 
@@ -525,7 +525,7 @@ const deleteTMandTutors = async function (req, res) {
     }
     return utilServices.successResponse(res, constants.DATA_DELETE, 200);
   } catch (error) {
-    return utilServices.successResponse(res, constants.DB_ERROR, 500);
+    return utilServices.errorResponse(res, constants.DB_ERROR, 500);
   }
 }
 

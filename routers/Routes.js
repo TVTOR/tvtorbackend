@@ -40,7 +40,7 @@ router.post('/login', User.login);
 router.get('/users', User.getUsers);
 router.post('/forgotpassword', User.forgotPassword);
 router.put('/resetpassword/:id', Authorization.verifyToken, User.resetPassword);
-router.put('/updatepassword/:id', User.updatePassword);
+router.put('/updatepassword/:id', Authorization.verifyToken, User.updatePassword);
 router.post('/randomnumber', Authorization.verifyToken, Code.randomNumber);
 router.delete('/user/logout/:id', Authorization.verifyToken, User.logout);
 router.get('/user/:id', Authorization.verifyToken, User.getUser);
