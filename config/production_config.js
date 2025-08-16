@@ -29,7 +29,7 @@ module.exports = {
     
     // Base API URL for production environment
     // Will be set automatically by Render or provided via API_URL env var
-    API_URL: process.env.RENDER_EXTERNAL_URL || process.env.API_URL,
+    API_URL: process.env.API_URL,
     
     // Email credentials for production
     // Must be provided via environment variables
