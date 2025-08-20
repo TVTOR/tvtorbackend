@@ -13,9 +13,9 @@ const createSubjects = async function(req, res){
       return utilServices.errorResponse(res, constants.SUBJECT_ALREADY_EXIST, 409);
     }
     const data = await subjectService.insertSubject(req.body);
-    return utilServices.successResponse(res, constants.CREATE_SUBJECT, 200, data);
+    return utilServices.successResponse(res, constants.CREATE_SUBJECT, 201, data);
   } catch (error) {
-    return utilServices.successResponse(res, constants.DB_ERROR, 500);
+    return utilServices.errorResponse(res, constants.DB_ERROR, 500);
   }
 }
 
@@ -32,15 +32,15 @@ const getAllSubjects = async function (req, res){
     }
     if (query.searchdata) {
       if (query.searchdata.length > 0) {
-        var value = new RegExp("^" + query.searchdata, "i");
-        search['$or'] = [{ name: value }, { email: value }];
+        var value = new RegExp(query.searchdata, "i");
+        search['$or'] = [{ subject: value }];
       }
     }
     const total = await subjectService.countList(search);
     const data = await subjectService.getSubjectsList(search, sort, order, perpage, skip);
     return utilServices.successResponse(res, constants.DATA_FOUND, 200, { data: data, total: total });
     } catch (error) {
-      return utilServices.successResponse(res, constants.DB_ERROR, 500);
+      return utilServices.errorResponse(res, constants.DB_ERROR, 500);
     }
   }
 
@@ -60,7 +60,7 @@ const getAllSubjects = async function (req, res){
     const data = await subjectService.subjectUpdate(updateData)
     return utilServices.successResponse(res, constants.UPDATE_DATA, 200, data);
     } catch (error) {
-      return utilServices.successResponse(res, constants.DB_ERROR, 500);
+      return utilServices.errorResponse(res, constants.DB_ERROR, 500);
     }
   }
 
@@ -73,7 +73,7 @@ const getAllSubjects = async function (req, res){
       }
       return utilServices.successResponse(res, constants.DATA_DELETE, 200);
     } catch (error) {
-      return utilServices.successResponse(res, constants.DB_ERROR, 500);
+      return utilServices.errorResponse(res, constants.DB_ERROR, 500);
     }
   }
 
@@ -86,7 +86,7 @@ const getAllSubjects = async function (req, res){
       }
       return utilServices.successResponse(res, constants.DATA_FOUND, 200, data);
     } catch (error) {
-      return utilServices.successResponse(res, constants.DB_ERROR, 500);
+      return utilServices.errorResponse(res, constants.DB_ERROR, 500);
     }
   }
 
