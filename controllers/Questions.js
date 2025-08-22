@@ -23,17 +23,8 @@ const getQuestion = async (req, res) => {
     try {
         const languageCode = req.body.language ? req.body.language : 'en'
         if (req.body.name && req.body.location && req.body.subject && !req.body.website && req.body.age && req.body.notificationId == "") {
-            try {
-                await mailer.sendMailFromChatBot(req.body)
-
-                
-                console.log("📝 Creating notification");
-                await questionService.createNotification(req.body);
-                console.log("✅ Notification created successfully!");
-            } catch (error) {
-                console.error("❌ Error creating notification:", error);
-
-            }
+            //await mailer.sendMailFromChatBot(req.body)
+            questionService.createNotification(req.body)
         }
         if (req.body.notificationId != "") {
             await questionService.updateNotification(req.body.mobilenumber, req.body.notificationId)
@@ -48,19 +39,35 @@ const getQuestion = async (req, res) => {
                 return utilServices.errorResponse(res, "Notification has no query data", 400);
             }
             
-            const tutordata = await TutorAssignServices.getTutor(query.tutorId[0]);
+            console.log('✅ Notification ID present, proceeding with SMS logic');
+            console.log('🔍 Query Data:', query.tutorId[0], '----------------------------');
+            const tutordata = await TutorAssignServices.getTutor(query.tutorId);
+            console.log('👨‍🏫 Fetched Tutor Data:', tutordata, '------------------');
             const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : ''
+            console.log('📞 Tutor Mobile Number:', mobileNumber, '------------------');
             let arrOfSubject = query.subject;
             let studentmobile = query.mobilenumber;
             const title = 'Notification';
 
             if (mobileNumber && req.body.mobilenumber) {
                 const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
-                NotificationService.sendSMS(mobileNumber, title, message);
+                try {
+                    console.log('📤 Sending SMS to tutor...');
+                    await NotificationService.sendSMS(mobileNumber, title, message);
+                    console.log('✅ SMS to tutor sent successfully');
+                } catch (error) {
+                    console.error('❌ Failed to send SMS to tutor:', error.message);
+                }
             }
             if (studentmobile && query) {
                 const message = `Your ${arrOfSubject} Tutor ${tutordata.name} ${tutordata.surname} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber}.`;
-                NotificationService.sendSMS(studentmobile, title, message);
+                try {
+                    console.log('📤 Sending SMS to student...');
+                    await NotificationService.sendSMS(studentmobile, title, message);
+                    console.log('✅ SMS to student sent successfully');
+                } catch (error) {
+                    console.error('❌ Failed to send SMS to student:', error.message);
+                }
             }
         }
 

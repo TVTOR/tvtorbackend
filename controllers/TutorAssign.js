@@ -60,7 +60,13 @@ const assignTutor = async (req, res) => {
                 questionService.updateTutorNotification(req.body.tutorId, req.body.notificationId)
                 if (studentMobileNumber && notification.queryData) {
                     const message = `Your ${arrOfSubject} Tutor ${tutorName} ${tutorSurName} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber}.`;
-                    NotificationService.sendSMS(studentMobileNumber, title, message);
+                    try {
+                        console.log('📤 Sending SMS to student from TutorAssign...');
+                        await NotificationService.sendSMS(studentMobileNumber, title, message);
+                        console.log('✅ SMS to student sent successfully from TutorAssign');
+                    } catch (error) {
+                        console.error('❌ Failed to send SMS to student from TutorAssign:', error.message);
+                    }
                 }
                 return utilServices.successResponse(res, constants.ASSIGN_TUTOR, 200, data);
             }
