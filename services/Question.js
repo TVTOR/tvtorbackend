@@ -27,26 +27,63 @@ async function insertQuestions(params) {
 
 const createNotification = async (query) => {
   try {
+    console.log('🔄 Creating notification for query:', JSON.stringify(query, null, 2));
+    
     const subtmId = await getTutorId(query.subject);
-    const lIds = await getLocationIds(query.location);
-    const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: subtmId }, isDeleted: false, userType: 'tutormanager', status: true })
+    console.log('📚 Found valid manager IDs:', subtmId.length);
+    
+    const lIds = await getLocationIds(query.location);  
+    console.log('📍 Found location IDs:', lIds.length);
+    
     const subjectArray = (query.subject).split(',');
     const locationArray = (query.location).split(',');
-    for (let i = 0; i < tmIDs.length; i++) {
-      var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
-      if (devicedata && devicedata.deviceToken) {
-        const title = 'Notification'
-        const message = `Name: ${query.name}, Year: ${query.age}, Subject: ${subjectArray} Location: ${locationArray}`
-        var notdata = await NotificationModel.create({
-          tmId: tmIDs[i]._id,
-          subject: subjectArray,
-          location: locationArray,
-          message: message,
-          queryData: query,
-        });
-        NotificationService.sendNotification(devicedata.deviceToken, title, message, notdata);
+    const title = 'Notification';
+    const message = `Name: ${query.name}, Year: ${query.age}, Subject: ${subjectArray} Location: ${locationArray}`;
+    
+    let notificationCreated = false;
+    
+    // Try to find managers and create notifications
+    if (subtmId.length > 0) {
+      const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: subtmId }, isDeleted: false, userType: 'tutormanager', status: true });
+      console.log('👥 Found matching tutor managers:', tmIDs.length);
+      
+      for (let i = 0; i < tmIDs.length; i++) {
+        console.log(`📱 Checking manager ${i + 1}: ${tmIDs[i].name || 'Unknown'}`);
+        var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
+        
+        if (devicedata && devicedata.deviceToken) {
+          console.log('✅ Found device token, creating notification...');
+          var notdata = await NotificationModel.create({
+            tmId: tmIDs[i]._id,
+            subject: subjectArray,
+            location: locationArray,
+            message: message,
+            queryData: query,
+          });
+          console.log('📝 Notification created with ID:', notdata._id);
+          NotificationService.sendNotification(devicedata.deviceToken, title, message, notdata);
+          notificationCreated = true;
+          break; // Exit after first successful notification
+        } else {
+          console.log('⚠️ No device token found for this manager');
+        }
       }
     }
+    
+    // FALLBACK: Create notification without manager if none worked
+    if (!notificationCreated) {
+      console.log('🔄 No managers with device tokens found, creating fallback notification...');
+      var fallbackNotdata = await NotificationModel.create({
+        tmId: new mongoose.Types.ObjectId(), // Generate dummy ObjectId
+        subject: subjectArray,
+        location: locationArray,
+        message: message,
+        queryData: query,
+      });
+      console.log('✅ Fallback notification created with ID:', fallbackNotdata._id);
+      console.log('📋 This will enable SMS sending without FCM push notifications');
+    }
+    
   } catch (error) {
     console.log('Error', error);
   }
@@ -88,7 +125,12 @@ async function getTutorId(subject) {
   let userData = await User.find({ subjects: { $in: subjectArray }, isDeleted: false, userType: 'tutor' });
   let usersIds = [];
   await userData.map((users) => {
-    usersIds.push(users.managerId);
+    // Only add valid ObjectIds (24 hex characters)
+    if (users.managerId && mongoose.Types.ObjectId.isValid(users.managerId)) {
+      usersIds.push(users.managerId);
+    } else {
+      console.log('⚠️ Skipping invalid managerId:', users.managerId, 'for user:', users.name || users._id);
+    }
   });
   return usersIds;
 }
