@@ -27,30 +27,53 @@ async function insertQuestions(params) {
 
 const createNotification = async (query) => {
   try {
+    console.log('🔄 Creating notification for query:', JSON.stringify(query, null, 2));
+    
     const subtmId = await getTutorId(query.subject);
-    const lIds = await getLocationIds(query.location);
-    const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: subtmId }, isDeleted: false, userType: 'tutormanager', status: true })
+    console.log('📚 Found tutor manager IDs:', subtmId.length);
+    
+    const lIds = await getLocationIds(query.location);  
+    console.log('📍 Found location IDs:', lIds.length);
+    
+    const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: subtmId }, isDeleted: false, userType: 'tutormanager', status: true });
+    console.log('👥 Found matching tutor managers:', tmIDs.length);
+    
     const subjectArray = (query.subject).split(',');
     const locationArray = (query.location).split(',');
-    for (let i = 0; i < tmIDs.length; i++) {
-      var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
+    
+    // Create notification even without device token for testing
+    if (tmIDs.length > 0) {
+      console.log('✅ Creating notification for first available manager...');
+      const title = 'Notification';
+      const message = `Name: ${query.name}, Year: ${query.age}, Subject: ${subjectArray} Location: ${locationArray}`;
+      
+      var notdata = await NotificationModel.create({
+        tmId: tmIDs[0]._id,
+        subject: subjectArray,
+        location: locationArray,
+        message: message,
+        queryData: query,
+      });
+      
+      console.log('📝 Notification created with ID:', notdata._id);
+      
+      // Try to send push notification if device token exists
+      var devicedata = await Device.findOne({ tmId: (tmIDs[0]._id) });
       if (devicedata && devicedata.deviceToken) {
-        const title = 'Notification'
-        const message = `Name: ${query.name}, Year: ${query.age}, Subject: ${subjectArray} Location: ${locationArray}`
-        var notdata = await NotificationModel.create({
-          tmId: tmIDs[i]._id,
-          subject: subjectArray,
-          location: locationArray,
-          message: message,
-          queryData: query,
-        });
+        console.log('📱 Sending push notification...');
         NotificationService.sendNotification(devicedata.deviceToken, title, message, notdata);
+      } else {
+        console.log('⚠️  No device token found - notification created but no push sent');
+        console.log('   Manager ID:', tmIDs[0]._id);
+        console.log('   For mobile team: Need to register FCM device tokens');
       }
+    } else {
+      console.log('❌ No matching tutor managers found!');
+      console.log('   Available subjects/locations might not match');
     }
   } catch (error) {
-    console.log('Error', error);
+    console.log('❌ Error creating notification:', error);
   }
-
 }
 const updateNotification = async (mobilenumber, notificationId) => {
   try {

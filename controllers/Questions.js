@@ -1,4 +1,4 @@
-var Ouestions = require(`${appRoot}/models/Question`);
+var Questions = require(`${appRoot}/models/Question`);
 var utilServices = require(`${appRoot}/services/Util`);
 var Location = require(`${appRoot}/models/Locations`);
 var Subject = require(`${appRoot}/models/Subjects`);
@@ -23,13 +23,31 @@ const getQuestion = async (req, res) => {
     try {
         const languageCode = req.body.language ? req.body.language : 'en'
         if (req.body.name && req.body.location && req.body.subject && !req.body.website && req.body.age && req.body.notificationId == "") {
-            await mailer.sendMailFromChatBot(req.body)
-            questionService.createNotification(req.body)
+            try {
+                await mailer.sendMailFromChatBot(req.body)
+
+                
+                console.log("📝 Creating notification");
+                await questionService.createNotification(req.body);
+                console.log("✅ Notification created successfully!");
+            } catch (error) {
+                console.error("❌ Error creating notification:", error);
+
+            }
         }
         if (req.body.notificationId != "") {
             await questionService.updateNotification(req.body.mobilenumber, req.body.notificationId)
             let notificationDetails = await notificationService.getNotificationDetails(req.body.notificationId)
+            
+            if (!notificationDetails) {
+                return utilServices.errorResponse(res, `Notification ${req.body.notificationId} not found`, 404);
+            }
+            
             let query = notificationDetails.queryData;
+            if (!query) {
+                return utilServices.errorResponse(res, "Notification has no query data", 400);
+            }
+            
             const tutordata = await TutorAssignServices.getTutor(query.tutorId[0]);
             const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : ''
             let arrOfSubject = query.subject;
@@ -49,11 +67,17 @@ const getQuestion = async (req, res) => {
         const detail = {};
         const dataArray = [];
         let questionId = parseInt(req.body.question);
-        const data = await Ouestions.findOne({ question_num: questionId, languageCode: languageCode });
+        const data = await Questions.findOne({ question_num: questionId, languageCode: languageCode });
+        
+        // Check if question exists
+        if (!data) {
+            return utilServices.errorResponse(res, `Question ${questionId} not found for language ${languageCode}`, 404);
+        }
+        
         dataArray.push(data);
         if (data.no_answer == 1) {
             questionId = parseInt(questionId) + 1;
-            const data1 = await Ouestions.findOne({ question_num: questionId, languageCode: languageCode });
+            const data1 = await Questions.findOne({ question_num: questionId, languageCode: languageCode });
             dataArray.push(data1);
         }
         detail.data = dataArray;
@@ -85,7 +109,8 @@ const getQuestion = async (req, res) => {
         }
         return utilServices.successResponse(res, "Set values for notification.", 200, detail);
     } catch (error) {
-        return utilServices.errorResponse(res, "Something went wrong", 400);
+        console.error('Questions API Error:', error);
+        return utilServices.errorResponse(res, `Questions API Error: ${error.message}`, 400);
     }
 }
 
