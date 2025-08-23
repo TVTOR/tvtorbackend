@@ -13,6 +13,7 @@ const initializeFirebase = () => {
         const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
         
         if (serviceAccountJson) {
+            
             try {
                 const serviceAccount = JSON.parse(serviceAccountJson);
                 firebaseApp = admin.initializeApp({
@@ -26,8 +27,8 @@ const initializeFirebase = () => {
         }
         
         // Option 2: Fallback to file path (original method)
-        const serviceAccountPath = 'tvtor-a9803-firebase-adminsdk-fbsvc-6066a8a059.json';
-        const serviceAccount = require(`../${serviceAccountPath}`);
+        // const serviceAccountPath = 'tvtor-a9803-firebase-adminsdk-fbsvc-6066a8a059.json';
+        // const serviceAccount = require(`../${serviceAccountPath}`);
         
         firebaseApp = admin.initializeApp({
             credential: admin.credential.cert(serviceAccount)
@@ -105,7 +106,7 @@ const sendNotificationV1 = async (deviceToken, title, body, notdata) => {
 
 // Twilio Configuration (unchanged)
 const accountSid = process.env.TWILIO_ACCOUNT_SID || 'AC5a479b676619bfcdf8f065ac7f04ec41';
-const authToken = process.env.TWILIO_AUTH_TOKEN || '388fd4964d75424249c77555b6228aea';
+const authToken = process.env.TWILIO_AUTH_TOKEN || '71895a8d90363b05d7e5e90c2a26c7b7';
 const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER || '+12054309667';
 
 console.log('🔧 Twilio Configuration:');
