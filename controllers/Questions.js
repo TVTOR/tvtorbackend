@@ -39,12 +39,8 @@ const getQuestion = async (req, res) => {
                 return utilServices.errorResponse(res, "Notification has no query data", 400);
             }
             
-            console.log('✅ Notification ID present, proceeding with SMS logic');
-            console.log('🔍 Query Data:', query.tutorId[0], '----------------------------');
             const tutordata = await TutorAssignServices.getTutor(query.tutorId);
-            console.log('👨‍🏫 Fetched Tutor Data:', tutordata, '------------------');
             const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : ''
-            console.log('📞 Tutor Mobile Number:', mobileNumber, '------------------');
             let arrOfSubject = query.subject;
             let studentmobile = query.mobilenumber;
             const title = 'Notification';
@@ -52,21 +48,17 @@ const getQuestion = async (req, res) => {
             if (mobileNumber && req.body.mobilenumber) {
                 const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
                 try {
-                    console.log('📤 Sending SMS to tutor...');
                     await NotificationService.sendSMS(mobileNumber, title, message);
-                    console.log('✅ SMS to tutor sent successfully');
                 } catch (error) {
-                    console.error('❌ Failed to send SMS to tutor:', error.message);
+                    // SMS sending failed - continue with flow
                 }
             }
             if (studentmobile && query) {
                 const message = `Your ${arrOfSubject} Tutor ${tutordata.name} ${tutordata.surname} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber}.`;
                 try {
-                    console.log('📤 Sending SMS to student...');
                     await NotificationService.sendSMS(studentmobile, title, message);
-                    console.log('✅ SMS to student sent successfully');
                 } catch (error) {
-                    console.error('❌ Failed to send SMS to student:', error.message);
+                    // SMS sending failed - continue with flow
                 }
             }
         }
@@ -116,7 +108,6 @@ const getQuestion = async (req, res) => {
         }
         return utilServices.successResponse(res, "Set values for notification.", 200, detail);
     } catch (error) {
-        console.error('Questions API Error:', error);
         return utilServices.errorResponse(res, `Questions API Error: ${error.message}`, 400);
     }
 }
