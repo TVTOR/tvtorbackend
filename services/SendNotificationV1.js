@@ -9,35 +9,37 @@ const initializeFirebase = () => {
     if (firebaseApp) return firebaseApp;
     
     try {
-        // Option 1: Use service account key file from env path
-        const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH || 'tvtor-a9803-firebase-adminsdk-fbsvc-6066a8a059.json';
-        const serviceAccount = require(`../${serviceAccountPath}`);
+        // Option 1: Use service account JSON directly from FIREBASE_SERVICE_ACCOUNT_PATH env variable
+        const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+        
+        if (serviceAccountJson) {
+            
+            try {
+                const serviceAccount = JSON.parse(serviceAccountJson);
+                firebaseApp = admin.initializeApp({
+                    credential: admin.credential.cert(serviceAccount)
+                });
+                console.log('🔥 Firebase Admin initialized from FIREBASE_SERVICE_ACCOUNT_PATH env variable');
+                return firebaseApp;
+            } catch (jsonError) {
+                console.error('❌ Failed to parse FIREBASE_SERVICE_ACCOUNT_PATH JSON:', jsonError.message);
+            }
+        }
+        
+        // Option 2: Fallback to file path (original method)
+        // const serviceAccountPath = 'tvtor-a9803-firebase-adminsdk-fbsvc-6066a8a059.json';
+        // const serviceAccount = require(`../${serviceAccountPath}`);
         
         firebaseApp = admin.initializeApp({
             credential: admin.credential.cert(serviceAccount)
         });
         
-        console.log('🔥 Firebase Admin initialized successfully');
+        console.log('🔥 Firebase Admin initialized from service account file');
         console.log('📁 Service Account Path:', serviceAccountPath);
         return firebaseApp;
         
     } catch (error) {
-        console.error('❌ Firebase initialization failed:', error.message);
-        
-        // Option 2: Fallback to environment variable
-        if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-            try {
-                const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-                firebaseApp = admin.initializeApp({
-                    credential: admin.credential.cert(serviceAccount)
-                });
-                console.log('🔥 Firebase Admin initialized via environment variable');
-                return firebaseApp;
-            } catch (envError) {
-                console.error('❌ Environment variable Firebase init failed:', envError.message);
-            }
-        }
-        
+        console.error('❌ Firebase initialization failed completely:', error.message);
         throw error;
     }
 };
@@ -104,7 +106,7 @@ const sendNotificationV1 = async (deviceToken, title, body, notdata) => {
 
 // Twilio Configuration (unchanged)
 const accountSid = process.env.TWILIO_ACCOUNT_SID || 'AC5a479b676619bfcdf8f065ac7f04ec41';
-const authToken = process.env.TWILIO_AUTH_TOKEN || '388fd4964d75424249c77555b6228aea';
+const authToken = process.env.TWILIO_AUTH_TOKEN || '71895a8d90363b05d7e5e90c2a26c7b7';
 const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER || '+12054309667';
 
 console.log('🔧 Twilio Configuration:');

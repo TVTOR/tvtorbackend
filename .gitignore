@@ -1,3 +1,11 @@
 /node_modules
 package-lock.json
 .env
+
+# Firebase service account credentials (sensitive)
+tvtor-*.json
+*firebase-adminsdk*.json
+
+# Test files and logs
+.DS_Store
+*.log
