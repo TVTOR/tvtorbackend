@@ -9,35 +9,36 @@ const initializeFirebase = () => {
     if (firebaseApp) return firebaseApp;
     
     try {
-        // Option 1: Use service account key file from env path
-        const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH || 'tvtor-a9803-firebase-adminsdk-fbsvc-6066a8a059.json';
+        // Option 1: Use service account JSON directly from FIREBASE_SERVICE_ACCOUNT_PATH env variable
+        const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+        
+        if (serviceAccountJson) {
+            try {
+                const serviceAccount = JSON.parse(serviceAccountJson);
+                firebaseApp = admin.initializeApp({
+                    credential: admin.credential.cert(serviceAccount)
+                });
+                console.log('🔥 Firebase Admin initialized from FIREBASE_SERVICE_ACCOUNT_PATH env variable');
+                return firebaseApp;
+            } catch (jsonError) {
+                console.error('❌ Failed to parse FIREBASE_SERVICE_ACCOUNT_PATH JSON:', jsonError.message);
+            }
+        }
+        
+        // Option 2: Fallback to file path (original method)
+        const serviceAccountPath = 'tvtor-a9803-firebase-adminsdk-fbsvc-6066a8a059.json';
         const serviceAccount = require(`../${serviceAccountPath}`);
         
         firebaseApp = admin.initializeApp({
             credential: admin.credential.cert(serviceAccount)
         });
         
-        console.log('🔥 Firebase Admin initialized successfully');
+        console.log('🔥 Firebase Admin initialized from service account file');
         console.log('📁 Service Account Path:', serviceAccountPath);
         return firebaseApp;
         
     } catch (error) {
-        console.error('❌ Firebase initialization failed:', error.message);
-        
-        // Option 2: Fallback to environment variable
-        if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-            try {
-                const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-                firebaseApp = admin.initializeApp({
-                    credential: admin.credential.cert(serviceAccount)
-                });
-                console.log('🔥 Firebase Admin initialized via environment variable');
-                return firebaseApp;
-            } catch (envError) {
-                console.error('❌ Environment variable Firebase init failed:', envError.message);
-            }
-        }
-        
+        console.error('❌ Firebase initialization failed completely:', error.message);
         throw error;
     }
 };
