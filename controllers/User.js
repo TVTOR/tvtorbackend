@@ -412,6 +412,7 @@ const getAllTManager = async function (req, res) {
     }
     search.userType = "tutormanager";
     search.status = true;
+    search.isDeleted = false; // 🔧 FIX: Exclude soft-deleted managers
     const total = await userService.countTutorManager(search);
     const data = await userService.getTutorManagersList(search, sort, order, perpage, skip)
     if (!data.length > 0) {
