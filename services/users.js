@@ -160,7 +160,7 @@ async function getUsersList() {
  * @returns {Object} - Deletion result
  */
 async function removeSession(userId) {
-	const userSesseionData = await userSesseion.remove({ userId: userId });
+	const userSesseionData = await userSesseion.deleteMany({ userId: userId });
 	return userSesseionData;
 }
 
