@@ -172,6 +172,8 @@
 						let image
 						let name
 						let surname
+						let contactMessage = '';
+						
 						if (result.success) {
 							name = result.data.tutor.name;
 							surname = result.data.tutor.surname;
@@ -181,18 +183,80 @@
 							const description = result.data.tutor.description;
 							notificationId = result.data.notificationId;
 							image = profileImage
+							
+							// Set tutor description
 							if ($('#languageChange').val() == 'en') {
 								que = description;
+								contactMessage = `You can now contact the tutor at the number ${mobileNumber}. Have a nice lesson!`;
 							} else if ($('#languageChange').val() == 'it') {
 								que = description;
+								contactMessage = `Ora puoi contattare il tutor al numero ${mobileNumber}. Buona lezione!`;
 							}
 						}
+						
+						// Show tutor profile
 						if (image) {
 							$('#messages').append('<div class="message to ready image_size"><img src=' + image + ' alt="" width="70" height="70"><figcaption>' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
-							get_question(convState, ready);
+
+							// get_question(convState, ready);
 						} else {
 							$('#messages').append('<div class="message to ready">' + que + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
-							get_question(convState, ready);
+							// get_question(convState, ready);
+						}
+						
+						// Show contact message and end conversation
+						if (result.success && contactMessage) {
+							setTimeout(() => {
+								$('#messages').append('<div class="message to ready">' + contactMessage + '</div>').animate({ scrollTop: $("#messages").offset().top + 900 }, 600);
+								
+								// Disable input after successful tutor assignment
+								$('#userInput').prop('disabled', true);
+								$('.submit').prop('disabled', true);
+								$('#userInput').attr('placeholder', $('#languageChange').val() == 'it' ? 'Conversazione terminata' : 'Conversation ended');
+								$('#userInput').css({
+									'background-color': '#f5f5f5',
+									'color': '#888',
+									'cursor': 'not-allowed'
+								});
+								$('.submit').css({
+									'background-color': '#ccc',
+									'cursor': 'not-allowed'
+								});
+								
+								// End the conversation
+								convState.current.next = convState.newState({
+									type: 'text',
+									name: 'end',
+									questions: ['Thank you for using TVTOR! 👋'],
+									answers: [{text: 'end', value: 'end'}]
+								});
+								setTimeout(ready, 1000);
+							}, 1500);
+						} else {
+							// No tutor found, end conversation and disable input
+							setTimeout(() => {
+								// Disable input when no tutor is found
+								$('#userInput').prop('disabled', true);
+								$('.submit').prop('disabled', true);
+								$('#userInput').attr('placeholder', $('#languageChange').val() == 'it' ? 'Nessun tutor disponibile' : 'No tutor available');
+								$('#userInput').css({
+									'background-color': '#f5f5f5',
+									'color': '#888',
+									'cursor': 'not-allowed'
+								});
+								$('.submit').css({
+									'background-color': '#ccc',
+									'cursor': 'not-allowed'
+								});
+								
+								convState.current.next = convState.newState({
+									type: 'text',
+									name: 'end',
+									questions: ['Thank you for using TVTOR! 👋'],
+									answers: [{text: 'end', value: 'end'}]
+								});
+								setTimeout(ready, 1000);
+							}, 1000);
 						}
 					}
 				});
@@ -217,6 +281,21 @@
 						var name = userData.name.replace(/\s/g, '')
 						userData.email = n + name + "@gmail.com"
 					}
+					
+					// Skip mobile number question (question 7 and beyond) - tutor assignment will handle the end
+					if (count >= 7) {
+						// Don't fetch question 7 or higher, let tutor assignment handle the conversation end
+						// Create a simple end state to prevent further questions
+						convState.current.next = convState.newState({
+							type: 'text',
+							name: 'end',
+							questions: [''],
+							answers: [{text: 'end', value: 'end'}]
+						});
+						setTimeout(ready, 500);
+						return;
+					}
+					
 					for (var key in userData) {
 						if (userData.hasOwnProperty(key)) {
 							queryString += '&' + key + '=' + userData[key];
