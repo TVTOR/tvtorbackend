@@ -130,7 +130,36 @@ ConvState.prototype.printAnswers = function (answers, multiple) {
                     .click(function (event) {
                         if (!Array.isArray(this.current.input.selected)) this.current.input.selected = [];
                         var indexOf = this.current.input.selected.indexOf($(event.target).data("answer").value);
+                        
+                        // Check if this is a subject selection (based on input name)
+                        var isSubjectSelection = this.current.input.name === 'subject';
+                        var maxSelections = isSubjectSelection ? 2 : Infinity;
+                        
                         if (indexOf == -1) {
+                            // Check if we've reached the maximum selections for subjects
+                            if (isSubjectSelection && this.current.input.selected.length >= maxSelections) {
+                                // Show a message about the limit
+                                var limitMessage = $('#languageChange').val() == 'it' ? 
+                                    'Puoi selezionare al massimo 2 materie' : 
+                                    'You can select at most 2 subjects';
+                                
+                                // Remove any existing limit message
+                                this.wrapper.find('.limit-message').remove();
+                                
+                                // Add temporary limit message
+                                var messageDiv = $('<div class="limit-message" style="color: #ff6b6b; font-size: 12px; margin: 5px; text-align: center;">' + limitMessage + '</div>');
+                                this.wrapper.find('div.options').after(messageDiv);
+                                
+                                // Remove the message after 3 seconds
+                                setTimeout(function() {
+                                    messageDiv.fadeOut(300, function() {
+                                        $(this).remove();
+                                    });
+                                }, 3000);
+                                
+                                return;
+                            }
+                            
                             this.current.input.selected.push($(event.target).data("answer").value);
                             $(event.target).addClass('selected');
                         } else {
@@ -143,6 +172,11 @@ ConvState.prototype.printAnswers = function (answers, multiple) {
                             this.wrapper.find('button.submit').addClass('glow');
                         } else {
                             this.wrapper.find('button.submit').removeClass('glow');
+                        }
+                        
+                        // Update subject counter if this is a subject selection
+                        if (isSubjectSelection) {
+                            this.updateSubjectCounter();
                         }
                     }.bind(this));
                 this.wrapper.find('div.options').append(option);
@@ -220,6 +254,11 @@ ConvState.prototype.printAnswers = function (answers, multiple) {
         }
     }
 
+    // Add initial subject counter if this is a subject selection
+    if (this.current.input.name === 'subject' && multiple) {
+        this.updateSubjectCounter();
+    }
+
 };
 ConvState.prototype.answerWith = function (answerText, answerObject) {
     //puts answer inside answers array to give questions access to previous answers
@@ -259,6 +298,9 @@ ConvState.prototype.answerWith = function (answerText, answerObject) {
 
     //removes options before appending message so scroll animation runs without problems
     $(this.wrapper).find("div.options div.option").remove();
+    
+    // Remove subject counter when transitioning to next question
+    $(this.wrapper).find(".subject-counter").remove();
 
 
 
@@ -291,6 +333,31 @@ ConvState.prototype.answerWith = function (answerText, answerObject) {
             this.parameters.eventList.onSubmitForm(this);
         }
     }.bind(this));
+};
+
+ConvState.prototype.updateSubjectCounter = function () {
+    if (this.current.input.name === 'subject') {
+        var selectedCount = this.current.input.selected.length;
+        var maxSelections = 2;
+        
+        // Remove existing counter
+        this.wrapper.find('.subject-counter').remove();
+        
+        // Add counter message
+        var counterText;
+        if (selectedCount === 0) {
+            counterText = $('#languageChange').val() == 'it' ? 
+                'Seleziona fino a ' + maxSelections + ' materie' : 
+                'Select up to ' + maxSelections + ' subjects';
+        } else {
+            counterText = $('#languageChange').val() == 'it' ? 
+                selectedCount + ' di ' + maxSelections + ' materie selezionate' : 
+                selectedCount + ' of ' + maxSelections + ' subjects selected';
+        }
+            
+        var counterDiv = $('<div class="subject-counter">' + counterText + '</div>');
+        this.wrapper.find('div.options').after(counterDiv);
+    }
 };
 
 (function ($) {

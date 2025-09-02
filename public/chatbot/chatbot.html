@@ -223,14 +223,7 @@
 									'cursor': 'not-allowed'
 								});
 								
-								// End the conversation
-								convState.current.next = convState.newState({
-									type: 'text',
-									name: 'end',
-									questions: ['Thank you for using TVTOR! 👋'],
-									answers: [{text: 'end', value: 'end'}]
-								});
-								setTimeout(ready, 1000);
+								// End the conversation without calling ready
 							}, 1500);
 						} else {
 							// No tutor found, end conversation and disable input
@@ -249,13 +242,7 @@
 									'cursor': 'not-allowed'
 								});
 								
-								convState.current.next = convState.newState({
-									type: 'text',
-									name: 'end',
-									questions: ['Thank you for using TVTOR! 👋'],
-									answers: [{text: 'end', value: 'end'}]
-								});
-								setTimeout(ready, 1000);
+								// End the conversation without calling ready
 							}, 1000);
 						}
 					}
@@ -301,8 +288,10 @@
 							queryString += '&' + key + '=' + userData[key];
 						}
 					}
+					
 					jQuery.ajax({
-						url, data: { language: $('#languageChange').val(), question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name, age: userData.age, website: userData.website, notificationId: notificationId }, async: false, method: 'post', success: function (result) {
+						url, data: { language: $('#languageChange').val(), question: count, email: userData.email, subject: userData.subject, location: userData.location, mobilenumber: userData.mobilenumber, name: userData.name, age: userData.age, website: userData.website, notificationId: notificationId }, async: false, method: 'post', 
+						success: function (result) {
 							var qData = result.data.data;
 							if (qData[0].type == "select" && qData[0].languageCode == "it") {
 								setTimeout(function () {
@@ -364,7 +353,9 @@
 												type: 'select',
 												name: questionTitle,
 												questions: [newQuestion],
-												answers: qData[i].options
+												answers: qData[i].options,
+												multiple: questionTitle === 'subject', // Enable multiple selection for subjects
+												selected: questionTitle === 'subject' ? [] : ""
 											});
 										}
 									} else {
@@ -382,7 +373,9 @@
 												type: 'select',
 												name: questionTitle,
 												questions: [newQuestion],
-												answers: answersOption
+												answers: answersOption,
+												multiple: questionTitle === 'subject', // Enable multiple selection for subjects
+												selected: questionTitle === 'subject' ? [] : ""
 											});
 										}
 									}

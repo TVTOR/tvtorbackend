@@ -35,8 +35,8 @@ const createNotification = async (query) => {
     const lIds = await getLocationIds(query.location);  
     console.log('📍 Found location IDs:', lIds.length);
     
-    const subjectArray = (query.subject).split(',');
-    const locationArray = (query.location).split(',');
+    const subjectArray = (query.subject).split(',').map(s => s.trim());
+    const locationArray = (query.location).split(',').map(l => l.trim());
     const title = 'Notification';
     const message = `Name: ${query.name}, Year: ${query.age}, Subject: ${subjectArray} Location: ${locationArray}`;
     
@@ -63,7 +63,7 @@ const createNotification = async (query) => {
           console.log('📝 Notification created with ID:', notdata._id);
           NotificationService.sendNotification(devicedata.deviceToken, title, message, notdata);
           notificationCreated = true;
-          break; // Exit after first successful notification
+          // break; // Exit after first successful notification
         } else {
           console.log('⚠️ No device token found for this manager');
         }
@@ -116,7 +116,7 @@ const updateTutorNotification = async (tutorId, notificationId) => {
 }
 
 async function getTutorId(subject) {
-  const sub = subject.split(',');
+  const sub = subject.split(',').map(s => s.trim());
   let data1 = await subjectModel.find({ subject: { $in: sub } });
   let subjectArray = [];
   await data1.map((subjectData) => {
@@ -136,7 +136,7 @@ async function getTutorId(subject) {
 }
 
 async function getLocationIds(location) {
-  const loc = location.split(',');
+  const loc = location.split(',').map(l => l.trim());
   let data2 = await locationModel.find({ location: loc });
   let locationArray = [];
   await data2.map((locationData) => {
