@@ -15,7 +15,7 @@
 <body>
 	<select name="" id="languageChange">
 		<option value="en">English</option>
-		<option value="it">Italic</option>
+		<option value="it" selected>Italian</option>
 	</select>
 	<section id="demo">
 		<div class="vertical-align">
@@ -25,17 +25,17 @@
 						<div class="card no-border">
 							<div id="chat">
 								<form action="" id="form-english" method="GET" class="hidden">
-									<select id="question-data-en"
-										data-conv-question="Hello! Welcome to Simon. May I help you?"
-										name="first-question">
-										<option value="yes">Yes</option>
-										<option value="sure">Sure!</option>
-									</select>
-									<select id="question-data-it" style="display: none;"
+									<select id="question-data-it"
 										data-conv-question="Ciao, benvenuto su TVTOR, posso aiutarti a trovare un tutor?"
 										name="first-question">
 										<option value="si">si</option>
 										<option value="sure">certo!</option>
+									</select>
+									<select id="question-data-en" style="display: none;"
+										data-conv-question="Hello! Welcome to Simon. May I help you?"
+										name="first-question">
+										<option value="yes">Yes</option>
+										<option value="sure">Sure!</option>
 									</select>
 								</form>
 							</div>
@@ -54,6 +54,10 @@
 	<script>
 		$('#languageChange').on('change', function () {
 			if ($('#languageChange').val() == 'it') {
+				// Show Italian, hide English
+				$('#question-data-it').show();
+				$('#question-data-en').hide();
+	
 				$('.message:first-child').html('')
 				$('.message:first-child').html('Ciao, benvenuto su TVTOR, posso aiutarti a trovare un tutor?')
 				$("#convForm .option:first-child").html('si')
@@ -72,6 +76,10 @@
 				$(".submit").html('invia');
 
 			} else {
+				// Show English, hide Italian
+				$('#question-data-en').show();
+				$('#question-data-it').hide();
+				
 				$('.message:first-child').html('')
 				$('.message:first-child').html('Hello! Welcome to Simon. May I help you?')
 				$("#convForm .option:first-child").html('Yes')
