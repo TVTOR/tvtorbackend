@@ -90,7 +90,7 @@ const getSingleLocation = async function (req, res) {
 const getTutorsLocation = async function (req, res) {
   try {
     const location = req.body.location;
-    const locations = location.split(',');
+    const locations = location.split(',').map(l => l.trim());
     const locationIds = await locationService.getLocationIds(locations);
     if(locationIds.length == 0){
       return utilServices.errorResponse(res, constants.DATA_NOT_FOUND, 404);

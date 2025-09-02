@@ -24,7 +24,7 @@ const getQuestion = async (req, res) => {
         const languageCode = req.body.language ? req.body.language : 'en'
         if (req.body.name && req.body.location && req.body.subject && !req.body.website && req.body.age && req.body.notificationId == "") {
             //await mailer.sendMailFromChatBot(req.body)
-            questionService.createNotification(req.body)
+            await questionService.createNotification(req.body)
         }
         if (req.body.notificationId != "") {
             await questionService.updateNotification(req.body.mobilenumber, req.body.notificationId)

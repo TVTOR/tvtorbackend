@@ -334,6 +334,37 @@ div.conv-form-wrapper div.options div.option.selected:hover {
     background: #2b89c4;
 }
 
+/* Limit message styling */
+.limit-message {
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid #ff6b6b;
+    border-radius: 15px;
+    padding: 8px 12px;
+    margin: 15px 5px 8px 5px;
+    font-size: 12px;
+    text-align: center;
+    color: #ff6b6b;
+    animation: shake 0.5s ease-in-out;
+    position: relative;
+    z-index: 10;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Visual indicator for subject selection count */
+.subject-counter {
+    font-size: 11px;
+    color: #666;
+    text-align: center;
+    margin-top: 15px;
+    font-style: italic;
+    padding-top: 5px;
+}
+
 form.convFormDynamic button.submit {
     padding: 3px;
     border: none;
