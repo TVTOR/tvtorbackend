@@ -67,7 +67,7 @@ const sendNotificationV1 = async (deviceToken, title, body, notdata) => {
             android: {
                 priority: 'high',
                 notification: {
-                    sound: 'default',
+                    sound: 'tvtor_notification_sound',
                     channel_id: 'tvtor_notifications'
                 }
             }
