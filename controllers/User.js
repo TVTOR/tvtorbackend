@@ -24,7 +24,8 @@ let login = async (req, res) => {
     if (!checkEmail) {
       return utilServices.errorResponse(res, constants.INCORRECT_EMAIL, 401);
     }
-    if (checkEmail.loginStatus) {
+    // Allow admin users to bypass duplicate login validation
+    if (checkEmail.loginStatus && checkEmail.userType !== 'admin') {
       return utilServices.errorResponse(res, 'User already logged in another device.', 401);
     }
     if (checkEmail.status === false && checkEmail.userType === 'tutormanager') {
