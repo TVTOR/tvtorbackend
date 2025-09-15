@@ -27,13 +27,11 @@ async function insertQuestions(params) {
 
 const createNotification = async (query) => {
   try {
-    console.log('🔄 Creating notification for query:', JSON.stringify(query, null, 2));
-    
-    const subtmId = await getTutorId(query.subject);
-    console.log('📚 Found valid manager IDs:', subtmId.length);
-    
-    const lIds = await getLocationIds(query.location);  
-    console.log('📍 Found location IDs:', lIds.length);
+  console.log('[Notification] Incoming request:', { subject: query.subject, location: query.location });
+  const subtmId = await getTutorId(query.subject);
+  console.log('[Notification] Tutor manager IDs for subject:', subtmId);
+  const lIds = await getLocationIds(query.location);  
+  console.log('[Notification] Location IDs:', lIds);
     
     const subjectArray = (query.subject).split(',').map(s => s.trim());
     const locationArray = (query.location).split(',').map(l => l.trim());
@@ -45,12 +43,12 @@ const createNotification = async (query) => {
     // Try to find managers and create notifications
     if (subtmId.length > 0) {
       const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: subtmId }, isDeleted: false, userType: 'tutormanager', status: true });
-      console.log('👥 Found matching tutor managers:', tmIDs.length);
-      
+      console.log('[Notification] Matching tutor managers:', tmIDs.map(t => ({ id: t._id, email: t.email })));
+
       for (let i = 0; i < tmIDs.length; i++) {
-        console.log(`📱 Checking manager ${i + 1}: ${tmIDs[i].name || 'Unknown'}`);
+        console.log(`📱 Checking manager ${i + 1}: ${tmIDs[i].name || 'Unknown'} and tmId: ${tmIDs[i]._id}`);
         var devicedata = await Device.findOne({ tmId: (tmIDs[i]._id) });
-        
+
         if (devicedata && devicedata.deviceToken) {
           console.log('✅ Found device token, creating notification...');
           var notdata = await NotificationModel.create({
@@ -126,7 +124,7 @@ async function getTutorId(subject) {
   let usersIds = [];
   await userData.map((users) => {
     // Only add valid ObjectIds (24 hex characters)
-    if (users.managerId && mongoose.Types.ObjectId.isValid(users.managerId)) {
+    if (users.managerId) {
       usersIds.push(users.managerId);
     } else {
       console.log('⚠️ Skipping invalid managerId:', users.managerId, 'for user:', users.name || users._id);
@@ -136,8 +134,14 @@ async function getTutorId(subject) {
 }
 
 async function getLocationIds(location) {
-  const loc = location.split(',').map(l => l.trim());
-  let data2 = await locationModel.find({ location: loc });
+
+  // Comment out the splitting to test with complete location string
+  // const loc = location.split(',').map(l => l.trim());
+  // let data2 = await locationModel.find({ location: { $in: loc } });
+
+  // Try searching for the complete location string as-is
+  let data2 = await locationModel.find({ location: location });
+
   let locationArray = [];
   await data2.map((locationData) => {
     locationArray.push(locationData._id);
