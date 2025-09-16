@@ -61,8 +61,8 @@ const sendNotificationV1 = async (deviceToken, title, body, notdata) => {
                 click_action: 'FLUTTER_NOTIFICATION_CLICK',
                 notificationId: notdata._id.toString(),
                 studentName: notdata.queryData?.name || '',
-                subject: notdata.queryData?.subject || '',
-                location: notdata.queryData?.location || ''
+                subject: Array.isArray(notdata.queryData?.subject) ? notdata.queryData.subject.join(',') : (notdata.queryData?.subject || ''),
+                location: Array.isArray(notdata.queryData?.location) ? notdata.queryData.location.join(',') : (notdata.queryData?.location || '')
             },
             android: {
                 priority: 'high',

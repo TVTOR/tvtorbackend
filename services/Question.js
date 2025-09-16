@@ -33,7 +33,8 @@ const createNotification = async (query) => {
   const lIds = await getLocationIds(query.location);  
   console.log('[Notification] Location IDs:', lIds);
     
-    const subjectArray = (query.subject).split(',').map(s => s.trim());
+    // Handle both array and string input for subjects
+    const subjectArray = Array.isArray(query.subject) ? query.subject : (query.subject).split(',').map(s => s.trim());
     const locationArray = (query.location).split(',').map(l => l.trim());
     const title = 'Notification';
     const message = `Name: ${query.name}, Year: ${query.age}, Subject: ${subjectArray} Location: ${locationArray}`;
@@ -114,7 +115,14 @@ const updateTutorNotification = async (tutorId, notificationId) => {
 }
 
 async function getTutorId(subject) {
-  const sub = subject.split(',').map(s => s.trim());
+  // Handle both array and string input for backward compatibility
+  let sub;
+  if (Array.isArray(subject)) {
+    sub = subject; // Already an array
+  } else {
+    sub = subject.split(',').map(s => s.trim()); // Split string by comma
+  }
+  
   let data1 = await subjectModel.find({ subject: { $in: sub } });
   let subjectArray = [];
   await data1.map((subjectData) => {
