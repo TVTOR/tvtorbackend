@@ -272,6 +272,19 @@
 						userData.email = n + 'student' + '@gmail.com'
 					}
 					
+					// Stop after age question (question 5) - we have all needed info
+					if (userData.age && userData.subject && userData.location) {
+						// We have all required data, stop asking questions
+						convState.current.next = convState.newState({
+							type: 'text',
+							name: 'end',
+							questions: [''],
+							answers: [{text: 'end', value: 'end'}]
+						});
+						setTimeout(ready, 500);
+						return;
+					}
+					
 					// Skip questions after age (question 5) - tutor assignment will handle the end
 					if (count >= 6) {
 						// Don't fetch question 7 or higher, let tutor assignment handle the conversation end
