@@ -23,6 +23,7 @@ const getQuestion = async (req, res) => {
     try {
         const languageCode = req.body.language ? req.body.language : 'en'
         if (req.body.location && req.body.subject && !req.body.website && req.body.age && req.body.notificationId == "") {
+            console.log('Creating notification with data:', req.body);
             //await mailer.sendMailFromChatBot(req.body)
             await questionService.createNotification(req.body)
         }

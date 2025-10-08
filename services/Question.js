@@ -27,7 +27,7 @@ async function insertQuestions(params) {
 
 const createNotification = async (query) => {
   try {
-  console.log('[Notification] Incoming request:', { subject: query.subject, location: query.location });
+  console.log('[Notification] Incoming request:', { subject: query.subject, location: query.location, age: query.age });
   const subtmId = await getTutorId(query.subject);
   console.log('[Notification] Tutor manager IDs for subject:', subtmId);
   const lIds = await getLocationIds(query.location);  
