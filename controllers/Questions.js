@@ -22,7 +22,7 @@ const createQuestion = async (req, res) => {
 const getQuestion = async (req, res) => {
     try {
         const languageCode = req.body.language ? req.body.language : 'en'
-        if (req.body.name && req.body.location && req.body.subject && !req.body.website && req.body.age && req.body.notificationId == "") {
+        if (req.body.location && req.body.subject && !req.body.website && req.body.age && req.body.notificationId == "") {
             //await mailer.sendMailFromChatBot(req.body)
             await questionService.createNotification(req.body)
         }
@@ -46,7 +46,7 @@ const getQuestion = async (req, res) => {
             const title = 'Notification';
 
             if (mobileNumber && req.body.mobilenumber) {
-                const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
+                const message = `Contact: Student 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
                 try {
                     await NotificationService.sendSMS(mobileNumber, title, message);
                 } catch (error) {

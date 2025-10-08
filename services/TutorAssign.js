@@ -22,7 +22,7 @@ async function getSubjectData(subject) {
 }
 
 async function getAssignTutor(deatils) {
-    let assignData = await assignTutorModel.findOne({ name: deatils.name, email: deatils.email, subject: deatils.subject, location: deatils.location });
+    let assignData = await assignTutorModel.findOne({ email: deatils.email, subject: deatils.subject, location: deatils.location });
     return assignData;
 }
 

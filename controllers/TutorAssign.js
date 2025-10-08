@@ -11,7 +11,7 @@ const assignTutor = async (req, res) => {
         const notificationId = req.body.notificationId
         const notification = await TutorAssignServices.getNotificationData(notificationId);
         const obj = {};
-        obj.name = notification.queryData.name;
+        obj.name = notification.queryData.name || 'Student';
         obj.email = notification.queryData.email;
         obj.subject = notification.queryData.subject;
         obj.location = notification.queryData.location;
@@ -49,7 +49,7 @@ const assignTutor = async (req, res) => {
                 for (var value of data1) {
                     arrOfSubject.push(value.subject);
                 }
-                const message = `Contact: ${query.name} 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
+                const message = `Contact: Student 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
                 // TODO from Vittorio: send SMS to tutor
                 const id = req.body.tutorId;
                 const tutordata = await TutorAssignServices.getTutor(id);

@@ -37,7 +37,7 @@ const createNotification = async (query) => {
     const subjectArray = Array.isArray(query.subject) ? query.subject : (query.subject).split(',').map(s => s.trim());
     const locationArray = (query.location).split(',').map(l => l.trim());
     const title = 'Notification';
-    const message = `Name: ${query.name}, Year: ${query.age}, Subject: ${subjectArray} Location: ${locationArray}`;
+    const message = `Student, Year: ${query.age}, Subject: ${subjectArray} Location: ${locationArray}`;
     
     let notificationCreated = false;
     
