@@ -22,6 +22,14 @@ const createQuestion = async (req, res) => {
 const getQuestion = async (req, res) => {
     try {
         const languageCode = req.body.language ? req.body.language : 'en'
+        console.log('[DEBUG] Request body:', JSON.stringify(req.body, null, 2));
+        console.log('[DEBUG] Condition check:', {
+            location: !!req.body.location,
+            subject: !!req.body.subject,
+            website: req.body.website,
+            age: !!req.body.age,
+            notificationId: req.body.notificationId
+        });
         if (req.body.location && req.body.subject && !req.body.website && req.body.age && req.body.notificationId == "") {
             console.log('Creating notification with data:', req.body);
             //await mailer.sendMailFromChatBot(req.body)
