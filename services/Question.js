@@ -43,8 +43,15 @@ const createNotification = async (query) => {
     
     // Try to find managers and create notifications
     if (subtmId.length > 0) {
+      console.log('[Notification] Searching for tutor managers with criteria:', {
+        location: { $in: lIds },
+        _id: { $in: subtmId },
+        isDeleted: false,
+        userType: 'tutormanager',
+        status: true
+      });
       const tmIDs = await User.find({ location: { $in: lIds }, _id: { $in: subtmId }, isDeleted: false, userType: 'tutormanager', status: true });
-      console.log('[Notification] Matching tutor managers:', tmIDs.map(t => ({ id: t._id, email: t.email })));
+      console.log('[Notification] Matching tutor managers:', tmIDs.map(t => ({ id: t._id, email: t.email, name: t.name })));
 
       for (let i = 0; i < tmIDs.length; i++) {
         console.log(`📱 Checking manager ${i + 1}: ${tmIDs[i].name || 'Unknown'} and tmId: ${tmIDs[i]._id}`);
@@ -123,12 +130,16 @@ async function getTutorId(subject) {
     sub = subject.split(',').map(s => s.trim()); // Split string by comma
   }
   
+  console.log('[Notification] Searching for subjects:', sub);
   let data1 = await subjectModel.find({ subject: { $in: sub } });
+  console.log('[Notification] Found subjects in database:', data1.map(s => ({ id: s._id, subject: s.subject })));
   let subjectArray = [];
   await data1.map((subjectData) => {
     subjectArray.push(subjectData._id);
   });
+  console.log('[Notification] Subject IDs to search:', subjectArray);
   let userData = await User.find({ subjects: { $in: subjectArray }, isDeleted: false, userType: 'tutor' });
+  console.log('[Notification] Found tutors for subjects:', userData.map(u => ({ id: u._id, name: u.name, managerId: u.managerId })));
   let usersIds = [];
   await userData.map((users) => {
     // Only add valid ObjectIds (24 hex characters)
@@ -138,22 +149,26 @@ async function getTutorId(subject) {
       console.log('⚠️ Skipping invalid managerId:', users.managerId, 'for user:', users.name || users._id);
     }
   });
+  console.log('[Notification] Manager IDs found:', usersIds);
   return usersIds;
 }
 
 async function getLocationIds(location) {
 
+  console.log('[Notification] Searching for location:', location);
   // Comment out the splitting to test with complete location string
   // const loc = location.split(',').map(l => l.trim());
   // let data2 = await locationModel.find({ location: { $in: loc } });
 
   // Try searching for the complete location string as-is
   let data2 = await locationModel.find({ location: location });
+  console.log('[Notification] Found locations in database:', data2.map(l => ({ id: l._id, location: l.location })));
 
   let locationArray = [];
   await data2.map((locationData) => {
     locationArray.push(locationData._id);
   });
+  console.log('[Notification] Location IDs found:', locationArray);
   return locationArray;
 }
 
