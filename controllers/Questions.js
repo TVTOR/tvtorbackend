@@ -103,7 +103,8 @@ const getQuestion = async (req, res) => {
             })
         }
         if (data.optionTable == "subject" || detail.data.length == 2) {
-            const subjectdata = await Subject.find({}, { subject: 1, _id: 0 });
+            // Ordina per createdAt crescente (dal più vecchio al più recente)
+            const subjectdata = await Subject.find({}, { subject: 1, _id: 0 }).sort({ createdAt: 1 });
             subjectdata.forEach((sub) => {
                 const subData = {};
                 subData.text = sub.subject
@@ -115,6 +116,7 @@ const getQuestion = async (req, res) => {
                 }
             })
         }
+
         return utilServices.successResponse(res, "Set values for notification.", 200, detail);
     } catch (error) {
         return utilServices.errorResponse(res, `Questions API Error: ${error.message}`, 400);
