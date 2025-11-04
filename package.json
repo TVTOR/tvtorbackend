@@ -11,7 +11,7 @@
     "license": "ISC",
     "dependencies": {
         "axios": "^1.11.0",
-        "bcrypt": "^4.0.1",
+        "bcrypt": "^5.1.1",
         "bcryptjs": "^2.4.3",
         "body-parser": "^1.19.0",
         "cloudinary": "^1.21.0",
@@ -23,7 +23,7 @@
         "jsonwebtoken": "^8.5.1",
         "mongo-express": "^0.54.0",
         "mongoose": "^5.8.11",
-        "multer": "^1.4.2",
+        "multer": "^1.4.4",
         "nodemailer": "^6.4.6",
         "nodemailer-smtp-transport": "^2.7.4",
         "twilio": "^3.43.0"

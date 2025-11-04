@@ -331,9 +331,10 @@ const updateUser = async function (req, res) {
     if (req.body.mobileNumber) {
       updateData.mobileNumber = req.body.mobileNumber;
     }
-    if (req.file && req.file.path) {
+    if (req.file) {
       uploadImage.imageUpload(req.file, async function (err, data) {
         if (err) {
+          console.error("Image upload error:", err);
           return utilServices.errorResponse(res, constants.DB_ERROR, 500);
         }
         updateData.imageUrl = data.secure_url;
@@ -345,9 +346,11 @@ const updateUser = async function (req, res) {
       return utilServices.successResponse(res, constants.UPDATE_DATA, 200, data1);
     }
   } catch (error) {
+    console.error("Update user error:", error);
     return utilServices.errorResponse(res, constants.DB_ERROR, 500);
   }
 }
+
 
 const deleteUser = async function (req, res) {
   try {
