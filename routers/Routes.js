@@ -21,17 +21,8 @@ const storage = multer.diskStorage({
         cb(undefined, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 });
-const upload = multer({
-    storage: storage,
-    fileFilter: function (req, file, callback, res) {
-        var ext = path.extname(file.originalname);
-        if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
-            return callback(new Error('Only images are allowed'))
-        }
-        callback(null, true)
-    },
-    limits: { fileSize: 100000000000000 }
-});
+const upload = require('../services/uploadMiddleware');
+
 
 
 
