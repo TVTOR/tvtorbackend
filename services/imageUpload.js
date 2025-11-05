@@ -10,23 +10,28 @@ upload.imageUpload = function (file, callback) {
             api_key: '256778662438995',
             api_secret: 'ufJtkTlSDttDwFWJwtH2G6bWmFw'
         })
-        let path = file.path
+
+        // Upload il buffer direttamente a Cloudinary
         const uniqueFilename = new Date().toISOString()
-        cloudinary.uploader.upload(
-            path, { public_id: `blog/${uniqueFilename}`, tags: `blog` }, // directory and tags are optional
+
+        const uploadStream = cloudinary.uploader.upload_stream(
+            {
+                public_id: `blog/${uniqueFilename}`,
+                tags: `blog`
+            },
             function (err, image) {
                 if (err) {
                     callback(err, null);
                     console.log(err);
                 } else {
-                    const fs = require('fs');
-                    fs.unlinkSync(__dirname + '/../' + path);
                     callback(null, image);
                 }
             }
-        )
-    }
+        );
 
+        // Scrivi il buffer nel stream
+        uploadStream.end(file.buffer);
+    }
 }
 
 module.exports = upload;
