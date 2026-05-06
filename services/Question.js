@@ -11,6 +11,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 var ObjectID = require('mongodb').ObjectID;
 
+function formatBudgetLabel(budget) {
+  if (budget === 'under_15') return 'Meno di 15€/ora';
+  if (budget === 'over_15') return 'Piu di 15€/ora';
+  return '';
+}
+
 async function insertQuestions(params) {
   var obj = {
     question: params.question ? params.question : '',
@@ -27,7 +33,7 @@ async function insertQuestions(params) {
 
 const createNotification = async (query) => {
   try {
-  console.log('[Notification] Incoming request:', { subject: query.subject, location: query.location, age: query.age });
+  console.log('[Notification] Incoming request:', { subject: query.subject, location: query.location, age: query.age, budget: query.budget });
   const subtmId = await getTutorId(query.subject);
   console.log('[Notification] Tutor manager IDs for subject:', subtmId);
   const lIds = await getLocationIds(query.location);  
@@ -36,8 +42,10 @@ const createNotification = async (query) => {
     // Handle both array and string input for subjects
     const subjectArray = Array.isArray(query.subject) ? query.subject : (query.subject).split(',').map(s => s.trim());
     const locationArray = (query.location).split(',').map(l => l.trim());
+    const budgetLabel = formatBudgetLabel(query.budget);
+    const budgetSuffix = budgetLabel ? ` Budget: ${budgetLabel}` : '';
     const title = 'Notification';
-    const message = `Student, Year: ${query.age}, Subject: ${subjectArray} Location: ${locationArray}`;
+    const message = `Student, Year: ${query.age}, Subject: ${subjectArray} Location: ${locationArray}${budgetSuffix}`;
     
     let notificationCreated = false;
     
