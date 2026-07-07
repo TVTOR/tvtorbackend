@@ -8,17 +8,27 @@ const { constants } = require(`${appRoot}/lib/constants`);
 
 const assignTutor = async (req, res) => {
     try {
-        const notificationId = req.body.notificationId
+        const notificationId = req.body.notificationId;
+
+        // Accept either the new `tutorIds` array (1..3) or the legacy `tutorId` single value.
+        let tutorIds = [];
+        if (Array.isArray(req.body.tutorIds)) {
+            tutorIds = req.body.tutorIds.filter(id => typeof id === 'string' && id.length > 0);
+        } else if (req.body.tutorId) {
+            tutorIds = [req.body.tutorId];
+        }
+        // Deduplicate while keeping order
+        tutorIds = [...new Set(tutorIds)];
+
+        if (tutorIds.length < 1 || tutorIds.length > 3) {
+            return utilServices.errorResponse(res, constants.DB_ERROR, 500);
+        }
+
         const notification = await TutorAssignServices.getNotificationData(notificationId);
-        const obj = {};
-        obj.name = notification.queryData.name || 'Student';
-        obj.email = notification.queryData.email;
-        obj.subject = notification.queryData.subject;
-        obj.location = notification.queryData.location;
-        obj.tutorId = req.body.tutorId;
-        obj.notificationId = notification._id;
         const notificationemail = notification.queryData.email;
-        const data = await TutorAssignServices.getAssignTutorStatus(req.body.notificationId);
+
+        // Same guards as before, executed once for the whole batch.
+        const data = await TutorAssignServices.getAssignTutorStatus(notificationId);
         if (data && data.length) {
             return utilServices.errorResponse(res, constants.REQUEST_EXPIRED, 500);
         }
@@ -31,47 +41,59 @@ const assignTutor = async (req, res) => {
         if (tutorassigndata && tutorassigndata.length) {
             return utilServices.errorResponse(res, constants.ALREADY_ASSIGNED_TUTOR, 500);
         }
-        await TutorAssign.create(obj, async (err, data) => {
-            if (err) {
-                return utilServices.errorResponse(res, constants.DB_ERROR, 500);
-            } else {
-                const title = 'Notification'
-                const query = notification.queryData
-                const studentmobile = notification.queryData.mobilenumber;
-                let notsubject = notification.subject
-                const subjectdata = await TutorAssignServices.getSubjectfromNotification(notsubject);
-                let subjectIds = [];
-                for (let i = 0; i < subjectdata.length; i++) {
-                    subjectIds.push(subjectdata[i]._id);
-                }
-                let data1 = await getAllSubject(subjectIds);
-                var arrOfSubject = [];
-                for (var value of data1) {
-                    arrOfSubject.push(value.subject);
-                }
-                const message = `Contact: Student 👨🎓 for teaching ${arrOfSubject} 👨🏫 within 12h⏰ mobile number is ${studentmobile}.`;
-                // TODO from Vittorio: send SMS to tutor
-                const id = req.body.tutorId;
-                const tutordata = await TutorAssignServices.getTutor(id);
-                const mobileNumber = tutordata.mobileNumber ? tutordata.mobileNumber : '12345'
-                const studentMobileNumber = notification.queryData.mobilenumber;
-                const tutorName = tutordata.name;
-                const tutorSurName = tutordata.surname;
-                const tutorEmail = tutordata.email;
-                questionService.updateTutorNotification(req.body.tutorId, req.body.notificationId)
-                if (studentMobileNumber && notification.queryData) {
-                    const message = `Your ${arrOfSubject} Tutor ${tutorName} ${tutorSurName} will contact you in the next 12h. You can Contact him/her before that time at ${mobileNumber}.`;
-                    try {
-                        console.log('📤 Sending SMS to student from TutorAssign...');
-                        //await NotificationService.sendSMS(studentMobileNumber, title, message);
-                        console.log('✅ SMS to student sent successfully from TutorAssign');
-                    } catch (error) {
-                        console.error('❌ Failed to send SMS to student from TutorAssign:', error.message);
-                    }
-                }
-                return utilServices.successResponse(res, constants.ASSIGN_TUTOR, 200, data);
+
+        // Base document shared across all created assignments.
+        const baseObj = {
+            name: notification.queryData.name || 'Student',
+            email: notification.queryData.email,
+            subject: notification.queryData.subject,
+            location: notification.queryData.location,
+            notificationId: notification._id,
+        };
+
+        // Create one TutorAssign per selected tutor.
+        let createdDocs;
+        try {
+            createdDocs = await Promise.all(
+                tutorIds.map(tid => TutorAssign.create({ ...baseObj, tutorId: tid }))
+            );
+        } catch (err) {
+            return utilServices.errorResponse(res, constants.DB_ERROR, 500);
+        }
+
+        // Update TutorNotification for each tutor.
+        await Promise.all(
+            tutorIds.map(tid => questionService.updateTutorNotification(tid, notificationId))
+        );
+
+        // Build the subject list once.
+        const notsubject = notification.subject;
+        const subjectdata = await TutorAssignServices.getSubjectfromNotification(notsubject);
+        const subjectIds = subjectdata.map(s => s._id);
+        const data1 = await getAllSubject(subjectIds);
+        const arrOfSubject = data1.map(v => v.subject);
+
+        // Fetch tutor info in parallel to compose the SMS body.
+        const tutors = await Promise.all(tutorIds.map(id => TutorAssignServices.getTutor(id)));
+
+        const studentMobileNumber = notification.queryData.mobilenumber;
+        if (studentMobileNumber && notification.queryData) {
+            const tutorListText = tutors
+                .map(t => `${t.name || ''} ${t.surname || ''} (${t.mobileNumber || 'n/d'})`)
+                .join(', ');
+            const message = tutors.length === 1
+                ? `Your ${arrOfSubject} Tutor ${tutors[0].name} ${tutors[0].surname} will contact you in the next 12h. You can contact him/her before that time at ${tutors[0].mobileNumber || '12345'}.`
+                : `Your ${arrOfSubject} Tutors are: ${tutorListText}. They will contact you within 12h. You can reach them at the numbers above.`;
+            try {
+                console.log('📤 Sending SMS to student from TutorAssign...');
+                //await NotificationService.sendSMS(studentMobileNumber, 'Notification', message);
+                console.log('✅ SMS to student sent successfully from TutorAssign');
+            } catch (error) {
+                console.error('❌ Failed to send SMS to student from TutorAssign:', error.message);
             }
-        })
+        }
+
+        return utilServices.successResponse(res, constants.ASSIGN_TUTOR, 200, createdDocs);
     } catch (error) {
         return utilServices.errorResponse(res, constants.DB_ERROR, 500);
     }
